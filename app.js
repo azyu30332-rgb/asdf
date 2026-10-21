@@ -94,20 +94,34 @@ document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA','SE
 function updateDetailDates(b){$('#detail-dates').textContent=`등록일 ${dateLabel(localDay(new Date(b.createdAt)))}${saleSummary(b)?' · '+saleSummary(b):''}`;}
 function openDetail(id){
   currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;
-  updateDetailDates(b);$('#detail-note').value=b.note;showPhoto('detail',b.photo||null);$('#bulk-status').value='보유중';$('#sale-controls').hidden=true;$('#sold-on').value=localDay();$('#replace-sold-date').checked=false;renderVolumes(b);$('#detail').showModal();
+  updateDetailDates(b);$('#detail-note').value=b.note;showPhoto('detail',b.photo||null);$('#sale-controls').hidden=true;$('#sold-on').value=localDay();$('#replace-sold-date').checked=false;renderVolumes(b);$('#detail').showModal();$('#detail').scrollTop=0;
 }
 function renderVolumes(b){$('#volumes').replaceChildren();b.volumes.forEach(v=>{
   const l=el('label','volume '+(v.status==='거래중'?'trading':v.status==='거래완료'?'sold':v.status==='미보유'?'missing':'')),input=el('input');input.type='checkbox';input.value=v.number;input.setAttribute('aria-label',`${v.number}권 · ${v.status}`);
   const span=el('span','',`${v.number}권 · ${v.status}`);if(v.status==='거래완료')span.append(el('small','',v.soldAt?`판매 ${dateLabel(v.soldAt)}`:'판매일 미기록'));l.append(input,span);$('#volumes').append(l);
-});}
-$('#select-all').onclick=()=>{const all=$$('#volumes input'),checked=all.some(n=>!n.checked);all.forEach(n=>n.checked=checked);};
-$('#bulk-status').onchange=e=>$('#sale-controls').hidden=e.target.value!=='거래완료';
-$('#apply').onclick=async()=>{
+});updateSelection();}
+function updateSelection(){
+  const count=$$('#volumes input:checked').length;$('#selected-count').textContent=`${count}권 선택`;
+  $$('[data-set-status]').forEach(b=>b.disabled=!count||saveBusy);$('#apply').disabled=!count||saveBusy;
+  $('#select-all').textContent=count===$$('#volumes input').length?'전체 해제':'전체 선택';
+}
+$('#volumes').onchange=()=>{$('#sale-controls').hidden=true;updateSelection();};
+$('#clear-selection').onclick=()=>{$$('#volumes input').forEach(n=>n.checked=false);$('#sale-controls').hidden=true;updateSelection();};
+$$('[data-select-status]').forEach(button=>button.onclick=()=>{const book=books.find(b=>b.id===currentId);const numbers=new Set(book.volumes.filter(v=>v.status===button.dataset.selectStatus).map(v=>v.number));$$('#volumes input').forEach(n=>n.checked=numbers.has(Number(n.value)));$('#sale-controls').hidden=true;updateSelection();});
+$('#select-all').onclick=()=>{const all=$$('#volumes input'),checked=all.some(n=>!n.checked);all.forEach(n=>n.checked=checked);$('#sale-controls').hidden=true;updateSelection();};
+$$('[data-set-status]').forEach(button=>button.onclick=()=>{
+  if(button.dataset.setStatus==='거래완료'){$('#sale-controls').hidden=false;$('#sold-on').focus();}
+  else{$('#sale-controls').hidden=true;applyStatus(button.dataset.setStatus);}
+});
+$('#cancel-sale').onclick=()=>$('#sale-controls').hidden=true;
+$('#apply').onclick=()=>applyStatus('거래완료');
+async function applyStatus(status){
+  if(saveBusy)return;
   const selected=new Set($$('#volumes input:checked').map(n=>Number(n.value)));if(!selected.size){toast('상태를 변경할 권을 먼저 선택해 주세요.');return;}
-  try{const status=$('#bulk-status').value,next=books.map(b=>b.id===currentId?{...b,volumes:b.volumes.map(v=>selected.has(v.number)?changeStatus(v,status,$('#sold-on').value,$('#replace-sold-date').checked):v)}:b);
-    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);updateDetailDates(b);$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
-  }catch(err){toast(err.message);}
-};
+  try{$$('[data-set-status]').forEach(b=>b.disabled=true);$('#apply').disabled=true;const next=books.map(b=>b.id===currentId?{...b,volumes:b.volumes.map(v=>selected.has(v.number)?changeStatus(v,status,$('#sold-on').value,$('#replace-sold-date').checked):v)}:b);
+    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);$('#sale-controls').hidden=true;updateDetailDates(b);$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
+  }catch(err){toast(err.message);}finally{updateSelection();}
+}
 $('#save-note').onclick=async()=>{if(photoRequest?.target==='detail'){toast('사진을 처리 중이에요. 잠시 기다려 주세요.');return;}if(await persist(books.map(b=>b.id===currentId?{...b,note:$('#detail-note').value,photo:draftPhotos.detail}:b))){$('#detail').close();toast('사진과 메모를 저장했어요.');}};
 $('#delete').onclick=async()=>{const b=books.find(b=>b.id===currentId);if(confirm(`「${b.title}」 ${b.volumes.length}권을 삭제할까요? 삭제 전 백업을 권장해요.`)&&await persist(books.filter(b=>b.id!==currentId))){$('#detail').close();toast('시리즈를 삭제했어요.');}};
 async function shrinkPhoto(file){

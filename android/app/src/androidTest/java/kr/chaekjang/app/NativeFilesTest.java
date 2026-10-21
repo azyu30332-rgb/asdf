@@ -90,7 +90,7 @@ public class NativeFilesTest {
         assertEquals("10",js("document.querySelectorAll('#volumes label').length"));
         assertEquals("4",js("document.querySelectorAll('#volumes .missing').length"));
         assertEquals("false",js("document.querySelector('#volumes input[value=\"3\"]').disabled"));
-        fire("document.querySelector('#volumes input[value=\"3\"]').click();document.querySelector('#apply').click()");
+        fire("document.querySelector('#volumes input[value=\"3\"]').click();document.querySelector('[data-set-status=보유중]').click()");
         waitJs("books[0].volumes[2].status==='보유중' && !saveBusy");
         activity.getScenario().recreate();
         waitJs("document.querySelector('#loading').hidden && books.length===1");

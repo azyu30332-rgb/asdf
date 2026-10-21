@@ -20,6 +20,8 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
 
 .add-book-row{display:flex;justify-content:center;margin:16px 0}.add-book-row .primary{width:min(100%,360px);min-height:56px;font-size:20px}.volume.missing span,.badge.missing{background:var(--bg);color:var(--muted);border:1px dashed var(--line)}
 @media(max-width:760px){.heading{display:block}.stats article{padding:14px 13px;min-height:96px}.stats strong{font-size:30px}.add-book-row{margin:12px 0 16px}.add-book-row .primary{width:100%;max-width:360px;min-height:56px;font-size:20px}}
+
+.selection-shortcuts,.quick-status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.selection-shortcuts{margin:8px 0}.selection-shortcuts button{font-size:13px;min-height:40px;padding:5px 2px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--muted)}.quick-status-panel{margin:12px 0 18px;border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:10px}.selection-summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:15px}.selection-summary button{color:var(--green);min-height:36px}.quick-status button{min-height:48px;padding:8px 2px;border:1px solid var(--line);border-radius:6px;background:var(--soft);font-size:15px;font-weight:700}.quick-status button[data-set-status="거래중"]{background:var(--trading-bg);border-color:var(--trading-border)}.quick-status button[data-set-status="거래완료"]{background:var(--sold-bg);color:var(--sold-text)}.quick-status button[data-set-status="미보유"]{background:var(--bg);color:var(--muted)}.quick-status button:disabled{opacity:.45;cursor:default}.sale-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}#detail .volume-toolbar{margin-top:14px}#detail .range b{white-space:normal}
 </style></head>
 <body>
 <aside>
@@ -32,7 +34,7 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
 </aside>
 <main>
 <header>
-  <span class="mobile-brand">冊 책장<span>.</span></span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.2.0</span><span class="header-context">나만의 작은 도서관</span>
+  <span class="mobile-brand">冊 책장<span>.</span></span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.3.0</span><span class="header-context">나만의 작은 도서관</span>
   <div class="header-actions"><button id="theme-settings" aria-label="색깔 테마 설정" title="색깔 테마">◐</button><button id="backup">백업</button><button id="restore">복원</button></div>
   <input type="file" id="file" accept="application/json,.json" hidden>
 </header>
@@ -56,7 +58,7 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
   <div id="list" class="book-grid"></div>
   <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 책 등록하기</button></div>
   <div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div>
-  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.2.0</span></footer>
+  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.3.0</span></footer>
 </section>
 </main>
 <dialog id="editor"><form id="book-form">
@@ -67,7 +69,7 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
   <div class="form-row"><label>시작 권<input name="from" type="number" min="1" max="10000" value="1" required></label><label>마지막 권<input name="to" type="number" min="1" max="10000" value="1" required></label></div>
   <label>빠진 권 <span class="optional">선택</span><input name="missing" placeholder="예: 3, 7-9"><small>예: 3, 7-9. 빠진 권도 회색 미보유로 표시돼요.</small></label>
   <label>등록일<input type="date" name="registeredOn" min="1970-01-01" required></label>
-  <label>등록 상태<select name="status"><option>보유중</option><option>거래중</option><option>거래완료</option><option>미보유</option></select></label>
+  <label>등록 상태<select name="status"><option>거래중</option><option>거래완료</option><option selected>보유중</option><option>미보유</option></select></label>
   <label id="initial-sale" hidden>거래완료일<input type="date" name="soldOn"></label>
   <label>나만의 메모<textarea name="note" rows="3" maxlength="5000" placeholder="책 상태, 보관 위치, 판매 가격 등을 남겨보세요."></textarea></label>
   <p id="form-error" class="error" role="alert"></p>
@@ -76,12 +78,18 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
 <dialog id="detail">
   <div class="modal-head"><h2 id="detail-title"></h2><button class="close" aria-label="닫기">×</button></div>
   <p class="muted" id="detail-author"></p><p class="date-info" id="detail-dates"></p>
-  <fieldset class="photo-field"><legend>표지 사진</legend><div class="photo-layout"><div class="photo-preview" id="detail-preview"><span>冊</span><img hidden alt="시리즈 표지 사진"></div><div class="photo-actions"><button class="secondary" data-photo="detail" data-source="camera">사진 찍기</button><button class="secondary" data-photo="detail" data-source="gallery">사진 변경</button><button class="text-button" data-photo-remove="detail">사진 지우기</button></div></div></fieldset>
-  <div class="volume-toolbar"><strong>권별 거래 상태</strong><button id="select-all">전체 선택</button></div><p class="hint">회색은 미보유예요. 구매한 권을 선택하고 보유중을 적용하면 활성화돼요.</p>
+
+  <div class="volume-toolbar"><strong>권별 거래 상태</strong><button id="select-all">전체 선택</button></div>
+  <div class="selection-shortcuts" aria-label="같은 상태의 권 선택"><button data-select-status="거래중">거래중만</button><button data-select-status="거래완료">거래완료만</button><button data-select-status="보유중">보유중만</button><button data-select-status="미보유">미보유만</button></div>
+  <p class="hint">변경할 권을 선택하고 아래 상태 버튼을 누르세요. 회색은 미보유예요.</p>
   <div id="volumes"></div>
-  <div class="bulk"><select id="bulk-status" aria-label="변경할 상태"><option>보유중</option><option>거래중</option><option>거래완료</option><option>미보유</option></select><button class="primary" id="apply">선택한 권에 적용</button></div>
-  <div id="sale-controls" hidden><label>거래완료일<input id="sold-on" type="date"></label><label class="checkline"><input type="checkbox" id="replace-sold-date">이미 완료된 권의 판매일도 수정</label><small>체크하지 않으면 기록된 판매일을 유지해요.</small></div>
+  <div class="quick-status-panel">
+    <div class="selection-summary"><strong id="selected-count" aria-live="polite">0권 선택</strong><button id="clear-selection">선택 해제</button></div>
+    <div class="quick-status" role="group" aria-label="선택한 권의 상태 변경"><button data-set-status="거래중">거래중</button><button data-set-status="거래완료">거래완료</button><button data-set-status="보유중">보유중</button><button data-set-status="미보유">미보유</button></div>
+    <div id="sale-controls" hidden><label>거래완료일<input id="sold-on" type="date"></label><label class="checkline"><input type="checkbox" id="replace-sold-date">이미 완료된 권의 판매일도 수정</label><small>기록된 판매일은 유지해요. 변경하려면 위 항목을 체크하세요.</small><div class="sale-actions"><button id="cancel-sale" class="secondary">취소</button><button class="primary" id="apply">거래완료 저장</button></div></div>
+  </div>
   <label class="note-label">나만의 메모<textarea id="detail-note" rows="3" maxlength="5000"></textarea></label>
+  <fieldset class="photo-field"><legend>표지 사진</legend><div class="photo-layout"><div class="photo-preview" id="detail-preview"><span>冊</span><img hidden alt="시리즈 표지 사진"></div><div class="photo-actions"><button class="secondary" data-photo="detail" data-source="camera">사진 찍기</button><button class="secondary" data-photo="detail" data-source="gallery">사진 변경</button><button class="text-button" data-photo-remove="detail">사진 지우기</button></div></div></fieldset>
   <div class="modal-actions"><button id="delete" class="danger">시리즈 삭제</button><button id="save-note" class="primary">사진·메모 저장</button></div>
 </dialog>
 <dialog id="backup-dialog">
@@ -305,20 +313,34 @@ document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA','SE
 function updateDetailDates(b){$('#detail-dates').textContent=`등록일 ${dateLabel(localDay(new Date(b.createdAt)))}${saleSummary(b)?' · '+saleSummary(b):''}`;}
 function openDetail(id){
   currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;
-  updateDetailDates(b);$('#detail-note').value=b.note;showPhoto('detail',b.photo||null);$('#bulk-status').value='보유중';$('#sale-controls').hidden=true;$('#sold-on').value=localDay();$('#replace-sold-date').checked=false;renderVolumes(b);$('#detail').showModal();
+  updateDetailDates(b);$('#detail-note').value=b.note;showPhoto('detail',b.photo||null);$('#sale-controls').hidden=true;$('#sold-on').value=localDay();$('#replace-sold-date').checked=false;renderVolumes(b);$('#detail').showModal();$('#detail').scrollTop=0;
 }
 function renderVolumes(b){$('#volumes').replaceChildren();b.volumes.forEach(v=>{
   const l=el('label','volume '+(v.status==='거래중'?'trading':v.status==='거래완료'?'sold':v.status==='미보유'?'missing':'')),input=el('input');input.type='checkbox';input.value=v.number;input.setAttribute('aria-label',`${v.number}권 · ${v.status}`);
   const span=el('span','',`${v.number}권 · ${v.status}`);if(v.status==='거래완료')span.append(el('small','',v.soldAt?`판매 ${dateLabel(v.soldAt)}`:'판매일 미기록'));l.append(input,span);$('#volumes').append(l);
-});}
-$('#select-all').onclick=()=>{const all=$$('#volumes input'),checked=all.some(n=>!n.checked);all.forEach(n=>n.checked=checked);};
-$('#bulk-status').onchange=e=>$('#sale-controls').hidden=e.target.value!=='거래완료';
-$('#apply').onclick=async()=>{
+});updateSelection();}
+function updateSelection(){
+  const count=$$('#volumes input:checked').length;$('#selected-count').textContent=`${count}권 선택`;
+  $$('[data-set-status]').forEach(b=>b.disabled=!count||saveBusy);$('#apply').disabled=!count||saveBusy;
+  $('#select-all').textContent=count===$$('#volumes input').length?'전체 해제':'전체 선택';
+}
+$('#volumes').onchange=()=>{$('#sale-controls').hidden=true;updateSelection();};
+$('#clear-selection').onclick=()=>{$$('#volumes input').forEach(n=>n.checked=false);$('#sale-controls').hidden=true;updateSelection();};
+$$('[data-select-status]').forEach(button=>button.onclick=()=>{const book=books.find(b=>b.id===currentId);const numbers=new Set(book.volumes.filter(v=>v.status===button.dataset.selectStatus).map(v=>v.number));$$('#volumes input').forEach(n=>n.checked=numbers.has(Number(n.value)));$('#sale-controls').hidden=true;updateSelection();});
+$('#select-all').onclick=()=>{const all=$$('#volumes input'),checked=all.some(n=>!n.checked);all.forEach(n=>n.checked=checked);$('#sale-controls').hidden=true;updateSelection();};
+$$('[data-set-status]').forEach(button=>button.onclick=()=>{
+  if(button.dataset.setStatus==='거래완료'){$('#sale-controls').hidden=false;$('#sold-on').focus();}
+  else{$('#sale-controls').hidden=true;applyStatus(button.dataset.setStatus);}
+});
+$('#cancel-sale').onclick=()=>$('#sale-controls').hidden=true;
+$('#apply').onclick=()=>applyStatus('거래완료');
+async function applyStatus(status){
+  if(saveBusy)return;
   const selected=new Set($$('#volumes input:checked').map(n=>Number(n.value)));if(!selected.size){toast('상태를 변경할 권을 먼저 선택해 주세요.');return;}
-  try{const status=$('#bulk-status').value,next=books.map(b=>b.id===currentId?{...b,volumes:b.volumes.map(v=>selected.has(v.number)?changeStatus(v,status,$('#sold-on').value,$('#replace-sold-date').checked):v)}:b);
-    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);updateDetailDates(b);$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
-  }catch(err){toast(err.message);}
-};
+  try{$$('[data-set-status]').forEach(b=>b.disabled=true);$('#apply').disabled=true;const next=books.map(b=>b.id===currentId?{...b,volumes:b.volumes.map(v=>selected.has(v.number)?changeStatus(v,status,$('#sold-on').value,$('#replace-sold-date').checked):v)}:b);
+    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);$('#sale-controls').hidden=true;updateDetailDates(b);$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
+  }catch(err){toast(err.message);}finally{updateSelection();}
+}
 $('#save-note').onclick=async()=>{if(photoRequest?.target==='detail'){toast('사진을 처리 중이에요. 잠시 기다려 주세요.');return;}if(await persist(books.map(b=>b.id===currentId?{...b,note:$('#detail-note').value,photo:draftPhotos.detail}:b))){$('#detail').close();toast('사진과 메모를 저장했어요.');}};
 $('#delete').onclick=async()=>{const b=books.find(b=>b.id===currentId);if(confirm(`「${b.title}」 ${b.volumes.length}권을 삭제할까요? 삭제 전 백업을 권장해요.`)&&await persist(books.filter(b=>b.id!==currentId))){$('#detail').close();toast('시리즈를 삭제했어요.');}};
 async function shrinkPhoto(file){
