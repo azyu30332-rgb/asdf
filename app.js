@@ -59,8 +59,14 @@ function render(){
     const r=el('div','range',range(b.volumes));r.append(el('b','',volumeSummary(b.volumes)));info.append(r);top.append(makeCover(b),info);
     const note=el('p','card-note','✎ '+(b.note||'남겨진 메모가 없어요.'));note.title=b.note;
     const dates=el('div','card-dates');dates.append(el('span','',`등록 ${dateLabel(localDay(new Date(b.createdAt)))}`));if(saleSummary(b))dates.append(el('span','',saleSummary(b)));
-    const trading=b.volumes.filter(v=>v.status==='거래중').length,sold=b.volumes.filter(v=>v.status==='거래완료').length,bottom=el('div','card-bottom');
-    bottom.append(el('span','',trading?`${trading}권 거래중${sold?` · ${sold}권 판매`:''}`:sold?`${sold}권 거래완료`:status==='미보유'?'구매 후 보유중으로 변경하세요':'소중히 보관중'),el('span','','상세 보기 →'));card.append(top,note,dates,bottom);
+    const trading=b.volumes.filter(v=>v.status==='거래중').length,sold=b.volumes.filter(v=>v.status==='거래완료').length,owned=b.volumes.filter(v=>v.status==='보유중').length;
+    const partial=sold>0&&(owned>0||trading>0),bottom=el('div','card-bottom'),summary=el('div','card-status-summary');
+    if(sold)summary.append(el('span','status-count '+(partial?'partial':'sold'),partial?`일부 판매 · ${sold}권 완료`:`판매 완료 · ${sold}권`));
+    if(trading)summary.append(el('span','status-count trading',`거래중 ${trading}권`));
+    if(owned)summary.append(el('span','status-count owned',`보유중 ${owned}권`));
+    if(!sold&&!trading&&!owned)summary.append(el('span','status-count missing','미보유'));
+    if(partial)info.insertBefore(el('span','badge partial','일부 판매'),info.querySelector('h3'));
+    bottom.append(summary,el('span','detail-link','상세 보기 →'));card.append(top,note,dates,bottom);
     card.onclick=()=>openDetail(b.id);card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDetail(b.id);}};$('#list').append(card);
   });
   $('#empty').hidden=!!matches.length||!ready||storageBlocked;
@@ -107,7 +113,6 @@ function updateSelection(){
 }
 $('#volumes').onchange=()=>{$('#sale-controls').hidden=true;updateSelection();};
 $('#clear-selection').onclick=()=>{$$('#volumes input').forEach(n=>n.checked=false);$('#sale-controls').hidden=true;updateSelection();};
-$$('[data-select-status]').forEach(button=>button.onclick=()=>{const book=books.find(b=>b.id===currentId);const numbers=new Set(book.volumes.filter(v=>v.status===button.dataset.selectStatus).map(v=>v.number));$$('#volumes input').forEach(n=>n.checked=numbers.has(Number(n.value)));$('#sale-controls').hidden=true;updateSelection();});
 $('#select-all').onclick=()=>{const all=$$('#volumes input'),checked=all.some(n=>!n.checked);all.forEach(n=>n.checked=checked);$('#sale-controls').hidden=true;updateSelection();};
 $$('[data-set-status]').forEach(button=>button.onclick=()=>{
   if(button.dataset.setStatus==='거래완료'){$('#sale-controls').hidden=false;$('#sold-on').focus();}

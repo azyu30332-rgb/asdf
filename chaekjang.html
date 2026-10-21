@@ -21,11 +21,18 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
 .add-book-row{display:flex;justify-content:center;margin:16px 0}.add-book-row .primary{width:min(100%,360px);min-height:56px;font-size:20px}.volume.missing span,.badge.missing{background:var(--bg);color:var(--muted);border:1px dashed var(--line)}
 @media(max-width:760px){.heading{display:block}.stats article{padding:14px 13px;min-height:96px}.stats strong{font-size:30px}.add-book-row{margin:12px 0 16px}.add-book-row .primary{width:100%;max-width:360px;min-height:56px;font-size:20px}}
 
-.selection-shortcuts,.quick-status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.selection-shortcuts{margin:8px 0}.selection-shortcuts button{font-size:13px;min-height:40px;padding:5px 2px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--muted)}.quick-status-panel{margin:12px 0 18px;border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:10px}.selection-summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:15px}.selection-summary button{color:var(--green);min-height:36px}.quick-status button{min-height:48px;padding:8px 2px;border:1px solid var(--line);border-radius:6px;background:var(--soft);font-size:15px;font-weight:700}.quick-status button[data-set-status="거래중"]{background:var(--trading-bg);border-color:var(--trading-border)}.quick-status button[data-set-status="거래완료"]{background:var(--sold-bg);color:var(--sold-text)}.quick-status button[data-set-status="미보유"]{background:var(--bg);color:var(--muted)}.quick-status button:disabled{opacity:.45;cursor:default}.sale-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}#detail .volume-toolbar{margin-top:14px}#detail .range b{white-space:normal}
+.quick-status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.quick-status-panel{margin:12px 0 18px;border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:10px}.selection-summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:15px}.selection-summary button{color:var(--green);min-height:36px}.quick-status button{min-height:48px;padding:8px 2px;border:1px solid var(--line);border-radius:6px;background:var(--soft);font-size:15px;font-weight:700}.quick-status button[data-set-status="거래중"]{background:var(--trading-bg);border-color:var(--trading-border)}.quick-status button[data-set-status="거래완료"]{background:var(--sold-bg);color:var(--sold-text)}.quick-status button[data-set-status="미보유"]{background:var(--bg);color:var(--muted)}.quick-status button:disabled{opacity:.45;cursor:default}.sale-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}#detail .volume-toolbar{margin-top:14px}#detail .range b{white-space:normal}
+
+/* Status colors stay distinct from the selected decorative theme. */
+:root{--owned-badge-bg:#dcf4e8;--owned-badge-text:#146647;--trade-badge-bg:#ffebc2;--trade-badge-text:#894100;--sold-badge-bg:#eee5ff;--sold-badge-text:#5934a6;--partial-badge-bg:#ffe2eb;--partial-badge-text:#9f2247;--missing-badge-bg:#e4e9f0;--missing-badge-text:#465365}
+body[data-theme=dark]{--owned-badge-bg:#1d4a3b;--owned-badge-text:#b9f6d5;--trade-badge-bg:#563c14;--trade-badge-text:#ffdf99;--sold-badge-bg:#3d2b60;--sold-badge-text:#e1caff;--partial-badge-bg:#59283e;--partial-badge-text:#ffd1e0;--missing-badge-bg:#33404e;--missing-badge-text:#dfebf5}
+.badge,.status-count{background:var(--owned-badge-bg);color:var(--owned-badge-text);font-size:16px;font-weight:800;border-radius:6px;padding:5px 10px;line-height:1.4;border:1px solid currentColor;display:inline-block}.badge{margin:0 4px 4px 0}.badge.trading,.status-count.trading{background:var(--trade-badge-bg);color:var(--trade-badge-text)}.badge.sold,.status-count.sold{background:var(--sold-badge-bg);color:var(--sold-badge-text)}.badge.partial,.status-count.partial{background:var(--partial-badge-bg);color:var(--partial-badge-text)}.badge.missing,.status-count.missing{background:var(--missing-badge-bg);color:var(--missing-badge-text)}.card-status-summary{display:flex;gap:6px;flex-wrap:wrap;min-width:0}.card-bottom{align-items:flex-end;gap:10px;margin-top:12px}.detail-link{flex-shrink:0;font-size:14px;white-space:nowrap;padding:5px 0}.status-count.partial{font-size:17px;border-width:2px}.card-bottom .status-count{max-width:100%;overflow-wrap:anywhere}
+#volumes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;max-height:min(55dvh,560px);padding:3px;align-content:start}.volume{min-width:0}.volume span{font-size:15px;padding:8px 5px;text-align:center;align-items:center;justify-content:center;height:100%;letter-spacing:-.3px}.volume small{letter-spacing:-.4px;white-space:nowrap;font-size:12px}.volume.trading span{color:var(--trade-badge-text);background:var(--trade-badge-bg)}.volume.sold span{color:var(--sold-badge-text);background:var(--sold-badge-bg)}.volume.sold small{color:inherit}#detail .hint{margin:8px 0 10px}
+@media(max-width:360px){#volumes{grid-template-columns:repeat(2,minmax(0,1fr))}.card-bottom{flex-wrap:wrap}.detail-link{margin-left:auto}}
 </style></head>
 <body>
 <aside>
-  <a class="brand" href="./"><span>冊</span> 책장<span class="brand-dot">.</span></a>
+  <a class="brand" href="./"><span>冊</span> 책장</a>
   <div class="sidebar-label">MY COLLECTION</div>
   <button class="nav active" data-filter="all">▤ <span>전체 컬렉션</span><b id="side-count">0</b></button>
   <button class="nav" data-filter="거래중">↗ <span>거래중인 책</span><i></i></button>
@@ -34,12 +41,12 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
 </aside>
 <main>
 <header>
-  <span class="mobile-brand">冊 책장<span>.</span></span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.3.1</span><span class="header-context">나만의 작은 도서관</span>
+  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.4.0</span><span class="header-context">나만의 작은 도서관</span>
   <div class="header-actions"><button id="theme-settings" aria-label="색깔 테마 설정" title="색깔 테마">◐</button><button id="backup">백업</button><button id="restore">복원</button></div>
   <input type="file" id="file" accept="application/json,.json" hidden>
 </header>
 <section class="page">
-  <div class="heading"><div><div class="eyebrow">YOUR PERSONAL BOOK LIBRARY</div><h1>나의 책장 컬렉션<span>.</span></h1><p>좋아하는 이야기를 모으고, 다음 독자에게 이어주세요.</p></div></div>
+  <div class="heading"><div><div class="eyebrow">YOUR PERSONAL BOOK LIBRARY</div><h1>나의 책장 컬렉션</h1><p>좋아하는 이야기를 모으고, 다음 독자에게 이어주세요.</p></div></div>
   <div class="stats">
     <article><span>전체 소장</span><strong id="total">0<small>권</small></strong><p id="series-count">0개의 시리즈</p></article>
     <article><span>보유중</span><strong id="owned">0<small>권</small></strong><p>책장에서 기다리는 이야기</p></article>
@@ -58,7 +65,7 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
   <div id="list" class="book-grid"></div>
   <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 책 등록하기</button></div>
   <div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div>
-  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.3.1</span></footer>
+  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.4.0</span></footer>
 </section>
 </main>
 <dialog id="editor"><form id="book-form">
@@ -80,7 +87,6 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
   <p class="muted" id="detail-author"></p><p class="date-info" id="detail-dates"></p>
 
   <div class="volume-toolbar"><strong>권별 거래 상태</strong><button id="select-all">전체 선택</button></div>
-  <div class="selection-shortcuts" aria-label="같은 상태의 권 선택"><button data-select-status="거래중">거래중만</button><button data-select-status="거래완료">거래완료만</button><button data-select-status="보유중">보유중만</button><button data-select-status="미보유">미보유만</button></div>
   <p class="hint">변경할 권을 선택하고 아래 상태 버튼을 누르세요. 회색은 미보유예요.</p>
   <div id="volumes"></div>
   <div class="quick-status-panel">
@@ -278,8 +284,14 @@ function render(){
     const r=el('div','range',range(b.volumes));r.append(el('b','',volumeSummary(b.volumes)));info.append(r);top.append(makeCover(b),info);
     const note=el('p','card-note','✎ '+(b.note||'남겨진 메모가 없어요.'));note.title=b.note;
     const dates=el('div','card-dates');dates.append(el('span','',`등록 ${dateLabel(localDay(new Date(b.createdAt)))}`));if(saleSummary(b))dates.append(el('span','',saleSummary(b)));
-    const trading=b.volumes.filter(v=>v.status==='거래중').length,sold=b.volumes.filter(v=>v.status==='거래완료').length,bottom=el('div','card-bottom');
-    bottom.append(el('span','',trading?`${trading}권 거래중${sold?` · ${sold}권 판매`:''}`:sold?`${sold}권 거래완료`:status==='미보유'?'구매 후 보유중으로 변경하세요':'소중히 보관중'),el('span','','상세 보기 →'));card.append(top,note,dates,bottom);
+    const trading=b.volumes.filter(v=>v.status==='거래중').length,sold=b.volumes.filter(v=>v.status==='거래완료').length,owned=b.volumes.filter(v=>v.status==='보유중').length;
+    const partial=sold>0&&(owned>0||trading>0),bottom=el('div','card-bottom'),summary=el('div','card-status-summary');
+    if(sold)summary.append(el('span','status-count '+(partial?'partial':'sold'),partial?`일부 판매 · ${sold}권 완료`:`판매 완료 · ${sold}권`));
+    if(trading)summary.append(el('span','status-count trading',`거래중 ${trading}권`));
+    if(owned)summary.append(el('span','status-count owned',`보유중 ${owned}권`));
+    if(!sold&&!trading&&!owned)summary.append(el('span','status-count missing','미보유'));
+    if(partial)info.insertBefore(el('span','badge partial','일부 판매'),info.querySelector('h3'));
+    bottom.append(summary,el('span','detail-link','상세 보기 →'));card.append(top,note,dates,bottom);
     card.onclick=()=>openDetail(b.id);card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDetail(b.id);}};$('#list').append(card);
   });
   $('#empty').hidden=!!matches.length||!ready||storageBlocked;
@@ -326,7 +338,6 @@ function updateSelection(){
 }
 $('#volumes').onchange=()=>{$('#sale-controls').hidden=true;updateSelection();};
 $('#clear-selection').onclick=()=>{$$('#volumes input').forEach(n=>n.checked=false);$('#sale-controls').hidden=true;updateSelection();};
-$$('[data-select-status]').forEach(button=>button.onclick=()=>{const book=books.find(b=>b.id===currentId);const numbers=new Set(book.volumes.filter(v=>v.status===button.dataset.selectStatus).map(v=>v.number));$$('#volumes input').forEach(n=>n.checked=numbers.has(Number(n.value)));$('#sale-controls').hidden=true;updateSelection();});
 $('#select-all').onclick=()=>{const all=$$('#volumes input'),checked=all.some(n=>!n.checked);all.forEach(n=>n.checked=checked);$('#sale-controls').hidden=true;updateSelection();};
 $$('[data-set-status]').forEach(button=>button.onclick=()=>{
   if(button.dataset.setStatus==='거래완료'){$('#sale-controls').hidden=false;$('#sold-on').focus();}

@@ -11,7 +11,7 @@ async def main():
   legacy={'version':1,'books':[{'id':'legacy','title':'기존 만화','author':'작가','note':'기존 메모','createdAt':1700000000000,'volumes':[{'number':1,'status':'거래완료'},{'number':2,'status':'보유중'}]}]}
   await page.add_init_script('if(!localStorage.getItem("seeded")){localStorage.setItem("chaekjang.collection.v1",'+json.dumps(json.dumps(legacy,ensure_ascii=False))+');localStorage.setItem("seeded","yes");}')
   await page.goto(os.environ.get('TEST_BASE_URL','http://127.0.0.1:3010')+'/chaekjang.html');await page.locator('.book-card').wait_for()
-  assert await page.locator('#app-version').inner_text()=='v1.3.1'
+  assert await page.locator('#app-version').inner_text()=='v1.4.0'
   assert await page.locator('#app-version').is_visible()
   assert '판매일 미기록' in await page.locator('.card-dates').inner_text()
   assert await page.evaluate('books[0].createdAt')==1700000000000
@@ -51,6 +51,7 @@ async def main():
   await page.locator('#book-form button[type=submit]').click();await page.wait_for_function('books.length===2 && !saveBusy')
   assert (await page.locator('#total').inner_text()).replace('권','')=='8'
   await page.locator('.book-card').filter(has=page.locator('h3',has_text='빠진 권 테스트')).click()
+  assert await page.locator('[data-select-status]').count()==0
   assert await page.locator('#volumes label').count()==10
   assert await page.locator('#volumes .missing').count()==4
   assert await page.locator('#volumes input[value="3"]').is_enabled()
@@ -60,10 +61,13 @@ async def main():
   assert await page.locator('[data-set-status]').all_text_contents()==['거래중','거래완료','보유중','미보유']
   assert await page.evaluate("document.querySelector('#volumes').compareDocumentPosition(document.querySelector('.note-label')) & Node.DOCUMENT_POSITION_FOLLOWING")
   assert await page.evaluate("document.querySelector('.note-label').compareDocumentPosition(document.querySelector('#detail .photo-field')) & Node.DOCUMENT_POSITION_FOLLOWING")
-  await page.locator('[data-select-status=보유중]').click()
+
+  for checkbox in await page.locator('#volumes input[aria-label$=보유중]').all():await checkbox.check(force=True)
   assert await page.locator('#selected-count').inner_text()=='7권 선택'
   await page.locator('[data-set-status=거래중]').click();await page.wait_for_function("!saveBusy && books.find(b=>b.title==='빠진 권 테스트').volumes.filter(v=>v.status==='거래중').length===7")
-  await page.locator('[data-select-status=거래중]').click();await page.locator('[data-set-status=거래완료]').click()
+
+  for checkbox in await page.locator('#volumes input[aria-label$=거래중]').all():await checkbox.check(force=True)
+  await page.locator('[data-set-status=거래완료]').click()
   await page.locator('#sold-on').fill('2025-03-04');await page.locator('#cancel-sale').click()
   assert await page.evaluate("books.find(b=>b.title==='빠진 권 테스트').volumes.filter(v=>v.status==='거래중').length")==7
   await page.locator('[data-set-status=보유중]').click();await page.wait_for_function('!saveBusy')
@@ -74,7 +78,7 @@ async def main():
   await page.locator('#detail .close').click();await page.reload();await page.locator('.book-card').first.wait_for()
   assert await page.evaluate("books.find(b=>b.title==='빠진 권 테스트').volumes[2].status")=='보유중'
   assert '9' in await page.locator('#total').inner_text()
-  assert await page.locator('h1').inner_text()=='나의 책장 컬렉션.'
+  assert await page.locator('h1').inner_text()=='나의 책장 컬렉션'
   await page.locator('#demo').click();await page.screenshot(path='/tmp/chaekjang-v110-dark-mobile.png',full_page=True)
   await page.locator('#theme-settings').click();await page.locator('[data-theme-option=forest]').click();await page.locator('#themes-dialog .close').click();await page.screenshot(path='/tmp/chaekjang-v110-forest-mobile.png',full_page=True)
   await page.set_viewport_size({'width':1440,'height':1000});await page.screenshot(path='/tmp/chaekjang-v110-desktop.png',full_page=True)
