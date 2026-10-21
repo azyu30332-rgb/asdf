@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @RunWith(AndroidJUnit4.class)
 public class NativeFilesTest {
     @Rule public ActivityScenarioRule<MainActivity> activity=new ActivityScenarioRule<>(MainActivity.class);
+    private boolean intentsInitialized=false;
     private Context context(){return InstrumentationRegistry.getInstrumentation().getTargetContext();}
     private String js(String script) throws Exception{
         CountDownLatch done=new CountDownLatch(1);AtomicReference<String> value=new AtomicReference<>();
@@ -71,17 +72,26 @@ public class NativeFilesTest {
         shell("settings put system screen_off_timeout 1800000");
         activity.getScenario().onActivity(a->a.startActivity(new Intent(a,MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT|Intent.FLAG_ACTIVITY_SINGLE_TOP)));
-        long focusDeadline=System.currentTimeMillis()+10000;boolean focused=false;
+        long focusDeadline=System.currentTimeMillis()+30000;boolean focused=false;long nextResume=0;
         while(System.currentTimeMillis()<focusDeadline){
             AtomicReference<Boolean> focus=new AtomicReference<>(false);
             activity.getScenario().onActivity(a->focus.set(a.hasWindowFocus()));
-            if(focus.get()){focused=true;break;}Thread.sleep(100);
+            if(focus.get()){focused=true;break;}
+            if(System.currentTimeMillis()>=nextResume){
+                activity.getScenario().onActivity(a->{
+                    a.getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                    if(android.os.Build.VERSION.SDK_INT>=27){a.setTurnScreenOn(true);a.setShowWhenLocked(true);}
+                    a.startActivity(new Intent(a,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT|Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                });
+                nextResume=System.currentTimeMillis()+1000;
+            }
+            Thread.sleep(100);
         }
         assertTrue("Emulator window must be awake, unlocked and focused before UI tests",focused);
         waitJs("document.querySelector('#loading').hidden");
-        fire("saveCollection([]).then(()=>{books=[];render();window.__resetDone=true;})");waitJs("window.__resetDone===true");Intents.init();
+        fire("saveCollection([]).then(()=>{books=[];render();window.__resetDone=true;})");waitJs("window.__resetDone===true");Intents.init();intentsInitialized=true;
     }
-    @After public void finish(){Intents.release();}
+    @After public void finish(){if(intentsInitialized){Intents.release();intentsInitialized=false;}}
 
     @Test public void visibleVersionMatchesInstalledPackage() throws Exception{
         String version=context().getPackageManager().getPackageInfo(context().getPackageName(),0).versionName;
