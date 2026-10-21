@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeVolumes, seriesStatus, validateBackup, selectBooks } from './model.mjs';
+import { makeVolumes, seriesStatus, validateBackup, selectBooks, changeStatus, isDay, validPhoto } from './model.mjs';
 const book=(title,volumes=makeVolumes(1,3),note='')=>({id:title,title,author:'작가',note,createdAt:1,volumes});
 test('일괄 등록에서 빠진 권 범위를 제외한다',()=>{assert.deepEqual(makeVolumes(1,10,'3, 7-9').map(v=>v.number),[1,2,4,5,6,10]);});
 test('잘못된 범위 및 빈 시리즈는 거절한다',()=>{for(const args of [[3,1],[0,5],[1,10001],[1,3,'1-3'],[1,3,'4'],[1,3,'x'],[1,3,'3-2']]) assert.throws(()=>makeVolumes(...args));});
@@ -8,3 +8,8 @@ test('일부 권만 거래중이어도 최상단에 정렬한다',()=>{const a=b
 test('제목·메모·권수를 검색한다',()=>{const b=book('슬램덩크',makeVolumes(1,31),'거실 책장');for(const q of ['슬램','거실','31권'])assert.equal(selectBooks([b],'all',q,'recent').length,1);assert.equal(selectBooks([b],'거래완료','','recent').length,0);});
 test('백업 왕복 및 중복 ID·잘못된 상태 차단',()=>{const b=book('원피스');assert.deepEqual(validateBackup(JSON.parse(JSON.stringify({version:1,books:[b]}))),[b]);assert.throws(()=>validateBackup({version:1,books:[b,b]}));assert.throws(()=>validateBackup({version:1,books:[book('불량',[{number:1,status:'오류'}])]}));});
 test('3,000권 검색·상태 집계용 데이터 유지',()=>{const books=Array.from({length:100},(_,i)=>book(`시리즈 ${i}`,makeVolumes(1,30)));const output=selectBooks(books,'all','30권','count');assert.equal(output.length,100);assert.equal(output.reduce((s,b)=>s+b.volumes.length,0),3000);});
+
+test('이전 백업의 등록일은 그대로 보존하고 없는 판매일을 만들지 않는다',()=>{const legacy=book('기존', [{number:1,status:'거래완료'}]);const restored=validateBackup({version:1,books:[legacy]});assert.equal(restored[0].createdAt,1);assert.equal(restored[0].volumes[0].soldAt,undefined);});
+test('권별 판매일 기록·유지·수정 및 판매 취소를 구분한다',()=>{let v=changeStatus({number:1,status:'보유중'},'거래완료','2025-01-02');assert.equal(v.soldAt,'2025-01-02');v=changeStatus(v,'거래완료','2025-02-03');assert.equal(v.soldAt,'2025-01-02');v=changeStatus(v,'거래완료','2025-02-03',true);assert.equal(v.soldAt,'2025-02-03');assert.equal(changeStatus(v,'보유중','').soldAt,null);});
+test('불가능한 날짜와 실행 가능한 사진 형식을 차단한다',()=>{assert.equal(isDay('2025-02-29'),false);assert.equal(isDay('2024-02-29'),true);assert.equal(validPhoto('data:image/svg+xml;base64,AAAA'),false);assert.equal(validPhoto('https://example.com/photo.jpg'),false);assert.throws(()=>changeStatus({number:1,status:'보유중'},'거래완료','2025-02-30'));});
+test('버전 2 백업은 썸네일과 권별 판매일을 보존한다',()=>{const b={...book('사진'),photo:'data:image/jpeg;base64,/9j/2Q==',volumes:[{number:1,status:'거래완료',soldAt:'2025-01-02'}]};assert.deepEqual(validateBackup({version:2,books:[b]}),[b]);assert.equal(selectBooks([b],'all','2025-01-02','recent').length,1);});

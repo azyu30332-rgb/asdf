@@ -1,14 +1,114 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>책장 — 나의 만화 컬렉션</title><style>:root{--bg:#f7f8fa;--ink:#202a37;--muted:#89909d;--green:#16816a;--line:#e9ecf0}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR',system-ui,sans-serif;font-size:14px}button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;background:none;color:inherit}button:hover{filter:brightness(.94)}button:focus-visible,a:focus-visible{outline:3px solid #75c4b1;outline-offset:3px}aside{width:238px;position:fixed;inset:0 auto 0 0;background:white;border-right:1px solid var(--line);padding:38px 23px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:10px;color:#25362e;text-decoration:none;font-size:30px;font-weight:900;letter-spacing:-2px}.brand>span:first-child{font-size:24px;background:#e7f1ec;border-radius:10px;padding:3px 9px;color:var(--green)}.brand-dot{color:var(--green);margin-left:-9px}.sidebar-label{font-size:10px;color:#a0a7af;letter-spacing:1.6px;margin:48px 12px 16px}.nav{display:flex;align-items:center;gap:12px;padding:15px 12px;border-radius:8px;text-align:left;width:100%;color:#7a8490;margin-bottom:7px}.nav.active{background:#eaf4ef;color:var(--green);font-weight:700}.nav b{font-size:11px;margin-left:auto;background:white;padding:2px 7px;border-radius:5px}.nav i{width:6px;height:6px;background:#e6a45b;border-radius:50%;margin-left:auto}.sidebar-bottom{margin-top:auto;padding:20px 8px}.shelf-art{font-size:34px;letter-spacing:2px;color:#a8bfb0;margin-bottom:22px}.sidebar-bottom strong{font-size:12px}.sidebar-bottom p{font-size:11px;color:var(--muted);line-height:1.8}.sidebar-bottom small{display:block;font-size:10px;color:#a0a5ac;line-height:1.8;margin-top:30px}main{margin-left:238px}header{height:83px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 44px;background:#ffffff90;color:#8c939c;font-size:12px}.header-actions{display:flex;align-items:center;gap:16px}.header-actions button{font-size:12px}.avatar{background:#e9ede7;color:#62745f;border:4px solid white;border-radius:50%;width:35px;height:35px;display:grid;place-items:center;margin-left:8px}.page{max-width:1530px;margin:auto;padding:44px}.heading{display:flex;align-items:center;justify-content:space-between;gap:20px}.eyebrow{font-size:10px;letter-spacing:2px;color:var(--green);font-weight:700}h1{font-size:32px;letter-spacing:-1.5px;margin:12px 0}h1>span{color:var(--green)}.heading p{color:var(--muted);font-size:13px;margin:0}.primary{background:var(--green);color:white;border-radius:7px;padding:12px 20px;font-weight:600;font-size:13px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:32px 0 40px}.stats article{background:white;border:1px solid var(--line);border-radius:10px;padding:22px;position:relative}.stats article>span{font-size:12px;color:#6c7480}.stats strong{display:block;font-size:32px;font-weight:800;letter-spacing:-1px;margin:10px 0 9px}.stats strong small{font-size:13px;font-weight:400;margin-left:6px;color:#9aa0aa}.stats p{font-size:10px;color:#9299a3;margin:0;line-height:1.8}.stat-icon{position:absolute;top:20px;right:20px;font-size:25px;color:#d1ded5}.stats .trading-stat{background:#fffcf6;border-color:#efe4d1}.trading-stat strong{color:#c18a41}.dot{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:5px;vertical-align:middle}.green{background:var(--green)}.orange{background:#c18a41}.collection-head{display:flex;align-items:center;justify-content:space-between}h2{font-size:18px;letter-spacing:-.5px}.collection-head h2 span{font-size:12px;background:#e9eeeb;color:#6c7f70;border-radius:5px;padding:2px 7px;margin-left:6px}.collection-head>button{color:#849188;font-size:11px;text-decoration:underline}.toolbar{display:flex;align-items:center;gap:12px;margin:14px 0 16px}.tabs{display:flex;gap:4px;flex-shrink:0;background:#eceef1;padding:4px;border-radius:7px}.tabs button{padding:7px 13px;font-size:12px;color:#818994;border-radius:5px}.tabs .selected{background:white;color:#263d32;box-shadow:0 1px 4px #00000009;font-weight:700}.search{display:flex;align-items:center;background:white;border:1px solid var(--line);border-radius:7px;padding:8px 12px;gap:8px;margin-left:auto;width:290px}.search>span{font-size:24px;color:#8c96a1;line-height:1}.search input{border:0;outline:0;width:100%;font-size:11px;background:none}.search kbd{background:#f6f7f8;padding:1px 5px;color:#adb3bb;border:1px solid #e9ebed;border-radius:3px}.toolbar select{padding:11px 8px;background:transparent;border:0;font-size:11px;color:#78818a}.notice{font-size:11px;color:#949ca6;margin:15px 0 22px;display:flex;align-items:center;gap:7px}.notice>span:first-child{color:#bf9b60}.notice #demo-label{margin-left:auto;color:#bf8240}.book-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.book-card{background:white;border:1px solid var(--line);border-radius:10px;padding:20px;transition:transform .18s,box-shadow .18s;cursor:pointer}.book-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px #23362d0b}.book-card.is-trading{border-color:#e8d2ac}.card-top{display:flex;gap:17px}.cover{height:128px;width:86px;flex-shrink:0;box-shadow:2px 4px 8px #0002;border-radius:2px 5px 5px 2px;position:relative;overflow:hidden;padding:12px 9px;color:white;display:flex;flex-direction:column;justify-content:space-between;border-left:5px solid #ffffff25}.cover:after{content:'冊';position:absolute;right:-3px;bottom:-17px;font-size:90px;opacity:.09;font-weight:900}.cover span{font-size:8px;letter-spacing:2px;opacity:.7}.cover b{font-size:19px;line-height:1.25;word-break:keep-all;z-index:1;letter-spacing:-1px}.cover small{font-size:7px;letter-spacing:1px;opacity:.75}.card-info{min-width:0;flex:1}.badge{display:inline-block;border-radius:4px;font-size:10px;padding:3px 6px;background:#edf5ef;color:#4f8a68}.badge.trading{background:#fff2de;color:#bb893f}.badge.sold{background:#edf0f3;color:#88919c}.card-info h3{font-size:16px;letter-spacing:-.6px;margin:12px 0 5px;overflow-wrap:anywhere}.author{font-size:11px;color:#929aa5;margin:0}.range{font-size:11px;color:#677581;margin-top:13px}.range b{color:#486859;margin-left:5px;font-weight:500}.card-note{margin:18px 0 0;border-top:1px solid #f0f2f4;padding-top:12px;color:#939ba4;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:15px;color:#9aa2aa;font-size:10px}.card-bottom button{font-size:11px;color:#697e70}.empty{text-align:center;padding:70px 20px;background:white;border:1px dashed #dce4de;border-radius:12px}.empty>div{font-size:46px;color:#9ab6a5}.empty p{color:#929ca5;font-size:13px;margin-bottom:25px}.pagination{display:flex;justify-content:space-between;align-items:center;margin:24px 0;font-size:11px;color:#969fa7}.pagination button{padding:7px 12px;border:1px solid var(--line);background:white;border-radius:5px;margin-left:5px}.pagination button:disabled{opacity:.3;cursor:default}footer{border-top:1px solid var(--line);padding-top:23px;margin-top:32px;display:flex;justify-content:space-between;font-size:10px;color:#a6adb4}footer span:last-child{letter-spacing:2px;font-size:8px}dialog{border:0;border-radius:14px;padding:28px;width:510px;max-width:94vw;max-height:90vh;color:var(--ink);box-shadow:0 20px 100px #15271e33}dialog::backdrop{background:#17291e70;backdrop-filter:blur(3px)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.modal-head h2{margin:7px 0 0;font-size:22px}.modal-head .close{font-size:27px;color:#939ca3}form>label,.form-row label,.note-label{display:flex;flex-direction:column;gap:8px;margin:16px 0;font-size:12px;font-weight:600}input,textarea,select{border:1px solid #dde3df;border-radius:6px;padding:10px;background:white;color:var(--ink)}textarea{resize:vertical}label small{font-weight:400;font-size:10px;color:#909a94}em{color:#cc754e}label em{display:none}.form-row{display:flex;gap:15px}.form-row label{flex:1;min-width:0}.form-row input{width:100%}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}.secondary{background:#f2f4f3;border-radius:7px;padding:10px 20px}.error{color:#bc503e;font-size:12px}.muted,.hint{color:#939ba3;font-size:12px}.volume-toolbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-top:26px}.volume-toolbar button{color:var(--green);font-size:12px}#volumes{display:flex;flex-wrap:wrap;gap:7px;max-height:240px;overflow:auto;padding:8px 0}.volume{position:relative;cursor:pointer}.volume input{position:absolute;opacity:0}.volume span{display:block;padding:8px 10px;border:1px solid #dae7dd;border-radius:5px;background:#f1f7f2;font-size:11px}.volume input:checked+span{outline:2px solid var(--green);outline-offset:1px}.volume input:focus-visible+span{outline:3px solid #274f93}.volume.trading span{background:#fff4df;border-color:#e5d2b3}.volume.sold span{background:#eef0f3;border-color:#dfe2e7;color:#9ca3ab}.bulk{display:flex;gap:8px;margin-top:15px}.bulk select{flex:1}.danger{color:#bd6357;margin-right:auto;font-size:12px}#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#263f32;color:white;padding:13px 24px;border-radius:8px;box-shadow:0 4px 30px #0002;display:none;z-index:10;font-size:13px}[hidden]{display:none!important}@media(min-width:1600px){.book-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:1200px){aside{width:195px;padding:30px 16px}main{margin-left:195px}.page{padding:30px}.book-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{gap:10px}.stats article{padding:16px}.stats p{font-size:9px}.toolbar{flex-wrap:wrap}.search{width:260px}.tabs{margin-right:auto}}@media(max-width:760px){aside{position:static;width:100%;padding:18px 20px;border-bottom:1px solid var(--line);border-right:0;display:block}.brand{font-size:25px}.sidebar-label,.nav,.sidebar-bottom{display:none}main{margin:0}header{height:54px;padding:0 20px}.page{padding:25px 18px}.heading{align-items:flex-start;flex-direction:column}h1{font-size:27px}.heading .primary{align-self:flex-end}.stats{grid-template-columns:repeat(2,1fr);margin:22px 0}.stats strong{font-size:28px}.stats p{font-size:10px}.toolbar{gap:9px}.tabs{width:100%;justify-content:space-between}.tabs button{flex:1}.search{width:auto;flex:1;min-width:180px}.book-grid{grid-template-columns:1fr}.card-top{gap:20px}.cover{width:90px;height:130px}footer span:last-child{display:none}.eyebrow{font-size:9px}.stats article>span{font-size:11px}.bulk .primary{padding:10px}.notice{font-size:10px;flex-wrap:wrap}}
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>책장 — 나의 만화 컬렉션</title><style>:root{color-scheme:light;--bg:#f5f8f6;--surface:#fff;--ink:#24372e;--muted:#64746b;--green:#167c60;--accent-text:#fff;--line:#dce5df;--soft:#e8f2ec;--tab:#e7ece8;--sold-bg:#edf0f2;--sold-text:#64727f;--trading-bg:#fff6e7;--trading-text:#98621f;--trading-border:#e8d2b2;--danger:#a83932;--shadow:#14332215}
+body[data-theme=cream]{--bg:#f8f2e8;--surface:#fffdf7;--ink:#473a2d;--muted:#796957;--green:#91613d;--line:#e7dac7;--soft:#f5e6cf;--tab:#ede3d4;--trading-bg:#fff0da;--trading-text:#96601b;--trading-border:#e5c99f;--shadow:#4c311e15}
+body[data-theme=blue]{--bg:#f1f6fc;--surface:#fff;--ink:#243a53;--muted:#60738a;--green:#336ca6;--line:#d7e2ef;--soft:#e5effb;--tab:#e3ebf5;--trading-bg:#fff5e6;--trading-text:#98621f;--trading-border:#e8d2b2;--shadow:#203e6115}
+body[data-theme=dark]{color-scheme:dark;--bg:#161d24;--surface:#222d37;--ink:#edf3f8;--muted:#bdcbd6;--green:#82d3b7;--accent-text:#122c23;--line:#40505d;--soft:#29453d;--tab:#2b3946;--sold-bg:#34434f;--sold-text:#c3d0db;--trading-bg:#3d3325;--trading-text:#f1cb8a;--trading-border:#7f6540;--danger:#ffb4a9;--shadow:#0004}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,'Noto Sans KR',sans-serif;font-size:16px;line-height:1.5}button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;background:none;color:inherit;touch-action:manipulation}button:hover{filter:brightness(.96)}button:focus-visible,a:focus-visible{outline:3px solid var(--green);outline-offset:3px}button:disabled{opacity:.5;cursor:wait}input,textarea,select{max-width:100%;border:1px solid var(--line);border-radius:7px;padding:11px;background:var(--surface);color:var(--ink);min-width:0;font-size:16px}textarea{resize:vertical}input[type=checkbox]{accent-color:var(--green)}[hidden]{display:none!important}
+aside{width:220px;position:fixed;inset:0 auto 0 0;background:var(--surface);border-right:1px solid var(--line);padding:28px 18px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:9px;color:var(--ink);text-decoration:none;font-size:30px;font-weight:900;letter-spacing:-1.5px}.brand>span:first-child{font-size:24px;background:var(--soft);border-radius:10px;padding:3px 9px;color:var(--green)}.brand-dot{color:var(--green);margin-left:-7px}.sidebar-label{font-size:11px;color:var(--muted);letter-spacing:1.5px;margin:36px 10px 14px}.nav{display:flex;align-items:center;gap:10px;padding:13px 10px;border-radius:8px;text-align:left;width:100%;color:var(--muted);margin-bottom:7px;font-size:15px}.nav.active{background:var(--soft);color:var(--green);font-weight:700}.nav b{font-size:12px;margin-left:auto;padding:2px 6px}.nav i{width:6px;height:6px;background:var(--trading-text);border-radius:50%;margin-left:auto}.sidebar-bottom{margin-top:auto;padding:20px 8px}.shelf-art{font-size:34px;color:var(--green);margin-bottom:15px}.sidebar-bottom strong{font-size:13px}.sidebar-bottom p,.sidebar-bottom small{font-size:12px;color:var(--muted);line-height:1.8}.sidebar-bottom small{display:block;margin-top:22px}
+main{margin-left:220px}header{height:66px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 28px;background:var(--surface);color:var(--muted);font-size:15px}.header-actions{display:flex;align-items:center;gap:8px}.header-actions button{font-size:15px;min-height:42px;min-width:48px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}#theme-settings{font-size:22px;min-width:42px;padding:4px 10px}.mobile-brand{display:none}.page{max-width:1530px;margin:auto;padding:26px 28px}.heading{display:flex;align-items:center;justify-content:space-between;gap:16px}.eyebrow{font-size:11px;letter-spacing:1.7px;color:var(--green);font-weight:700}h1{font-size:30px;letter-spacing:-1.3px;margin:7px 0}h1>span{color:var(--green)}.heading p{color:var(--muted);font-size:15px;margin:0}.primary{background:var(--green);color:var(--accent-text);border-radius:8px;padding:12px 18px;font-weight:700;font-size:16px;min-height:46px}.heading>.primary{font-size:18px;min-height:54px;padding:12px 20px;white-space:nowrap}.secondary{background:var(--soft);color:var(--ink);border-radius:8px;padding:10px 16px;min-height:44px}.text-button{color:var(--green);padding:8px;min-height:40px;text-decoration:underline;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:20px 0 24px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}.stats article{background:var(--surface);padding:14px 18px;position:relative;border-right:1px solid var(--line)}.stats article:last-child{border-right:0}.stats article>span{font-size:15px;color:var(--muted)}.stats strong{display:block;font-size:30px;font-weight:800;letter-spacing:-.6px;margin:3px 0}.stats strong small{font-size:15px;font-weight:400;margin-left:5px;color:var(--muted)}.stats p{font-size:13px;color:var(--muted);margin:0}.stats .trading-stat{background:var(--trading-bg)}.trading-stat strong{color:var(--trading-text)}.collection-head{display:flex;align-items:center;justify-content:space-between;gap:8px}h2{font-size:21px;letter-spacing:-.6px;margin:10px 0}.collection-head h2 span{font-size:14px;background:var(--soft);color:var(--green);border-radius:5px;padding:2px 7px;margin-left:5px}.collection-head>button{color:var(--green);font-size:14px;text-decoration:underline;min-height:40px}.toolbar{display:flex;align-items:center;gap:10px;margin:8px 0 10px;flex-wrap:wrap}.tabs{display:flex;gap:2px;flex-shrink:0;background:var(--tab);padding:4px;border-radius:8px}.tabs button{min-height:40px;padding:7px 13px;font-size:15px;color:var(--muted);border-radius:6px}.tabs .selected{background:var(--surface);color:var(--green);box-shadow:0 1px 4px var(--shadow);font-weight:700}.search{display:flex;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 11px;gap:8px;margin-left:auto;flex:1;min-width:240px;max-width:420px}.search>span{font-size:26px;color:var(--muted);line-height:1}.search input{border:0;outline:0;width:100%;font-size:15px;background:none;padding:4px 0;min-height:30px}.search kbd{background:var(--bg);padding:1px 5px;color:var(--muted);border:1px solid var(--line);border-radius:3px}.toolbar>select{padding:10px 6px;background:var(--surface);border:1px solid var(--line);font-size:14px;color:var(--ink);min-height:44px}.notice{font-size:13px;color:var(--muted);margin:10px 0 14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}.notice>span:first-child{color:var(--trading-text)}#demo-label{color:var(--trading-text);font-weight:600}
+.book-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.book-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:15px;transition:transform .15s,box-shadow .15s;cursor:pointer}.book-card:hover{transform:translateY(-2px);box-shadow:0 5px 18px var(--shadow)}.book-card.is-trading{border-color:var(--trading-border)}.card-top{display:flex;gap:14px}.cover{height:130px;width:88px;flex-shrink:0;box-shadow:2px 4px 8px #0002;border-radius:2px 5px 5px 2px;position:relative;overflow:hidden;padding:11px 8px;color:white;display:flex;flex-direction:column;justify-content:space-between;border-left:4px solid #ffffff25}.cover:after{content:'冊';position:absolute;right:-3px;bottom:-17px;font-size:90px;opacity:.09;font-weight:900}.cover span{font-size:8px;letter-spacing:2px;opacity:.7}.cover b{font-size:20px;line-height:1.25;word-break:keep-all;z-index:1;letter-spacing:-1px}.cover small{font-size:7px;letter-spacing:1px;opacity:.75}.cover.has-photo{padding:0;border-left:0}.cover.has-photo:after{display:none}.cover img{height:100%;width:100%;object-fit:cover}.card-info{min-width:0;flex:1}.badge{display:inline-block;border-radius:4px;font-size:13px;padding:2px 7px;background:var(--soft);color:var(--green)}.badge.trading{background:var(--trading-bg);color:var(--trading-text)}.badge.sold{background:var(--sold-bg);color:var(--sold-text)}.card-info h3{font-size:19px;letter-spacing:-.6px;margin:9px 0 3px;overflow-wrap:anywhere}.author{font-size:14px;color:var(--muted);margin:0}.range{font-size:14px;color:var(--muted);margin-top:10px}.range b{color:var(--green);margin-left:6px;font-weight:600;white-space:nowrap}.card-note{margin:12px 0 0;border-top:1px solid var(--line);padding-top:9px;color:var(--muted);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-dates{font-size:13px;color:var(--muted);display:flex;gap:4px 12px;flex-wrap:wrap;margin-top:8px}.card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;color:var(--green);font-size:13px}.empty{text-align:center;padding:28px 16px;background:var(--surface);border:1px dashed var(--line);border-radius:10px}.empty>div{font-size:40px;color:var(--green)}.empty p{color:var(--muted);font-size:15px;margin-bottom:18px}.pagination{display:flex;justify-content:space-between;align-items:center;gap:6px;margin:18px 0;font-size:13px;color:var(--muted)}.pagination button{padding:7px 13px;border:1px solid var(--line);background:var(--surface);border-radius:6px;margin-left:5px;min-height:40px}.pagination button:disabled{opacity:.35;cursor:default}footer{border-top:1px solid var(--line);padding-top:15px;margin-top:24px;display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
+dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px;padding:22px;width:530px;max-width:calc(100vw - 20px);max-height:92dvh;color:var(--ink);box-shadow:0 15px 80px #0004}dialog::backdrop{background:#111b2680}.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.modal-head h2{margin:0;font-size:22px;overflow-wrap:anywhere}.modal-head .close{font-size:28px;min-width:42px;min-height:42px;color:var(--muted);flex-shrink:0}form>label,.form-row label,.note-label,#sale-controls>label{display:flex;flex-direction:column;gap:6px;margin:14px 0;font-size:16px;font-weight:600}label small,.photo-field small,#sale-controls>small{font-weight:400;font-size:13px;color:var(--muted);line-height:1.6}.optional,.photo-field legend>span{font-size:13px;font-weight:400;color:var(--muted)}.form-row{display:flex;gap:12px}.form-row label{flex:1;min-width:0}.form-row input{width:100%}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;align-items:center}.error{color:var(--danger);font-size:15px}.muted,.hint{color:var(--muted);font-size:14px}.date-info{color:var(--muted);font-size:14px}.volume-toolbar{display:flex;justify-content:space-between;align-items:center;font-size:16px;margin-top:22px}.volume-toolbar button{color:var(--green);font-size:15px;min-height:42px}#volumes{display:flex;flex-wrap:wrap;gap:8px;max-height:260px;overflow:auto;padding:5px}.volume{position:relative;cursor:pointer}.volume input{position:absolute;opacity:0}.volume span{display:flex;flex-direction:column;padding:9px 11px;border:1px solid var(--line);border-radius:6px;background:var(--soft);font-size:15px;min-height:44px}.volume small{font-size:12px;margin-top:3px;color:var(--muted)}.volume input:checked+span{outline:2px solid var(--green);outline-offset:1px}.volume input:focus-visible+span{outline:3px solid var(--green)}.volume.trading span{background:var(--trading-bg);border-color:var(--trading-border)}.volume.sold span{background:var(--sold-bg);color:var(--sold-text)}.bulk{display:flex;gap:8px;margin-top:14px}.bulk select{flex:1;min-width:0}#sale-controls{padding:0 12px 12px;background:var(--bg);border:1px solid var(--line);border-radius:8px;margin-top:12px}#sale-controls>.checkline{flex-direction:row;align-items:center;font-size:14px;font-weight:400}.checkline input{width:20px;height:20px}.danger{color:var(--danger);margin-right:auto;font-size:14px;min-height:44px}.photo-field{border:1px solid var(--line);border-radius:9px;padding:12px;margin:16px 0}.photo-field legend{font-size:16px;font-weight:600;padding:0 5px}.photo-layout{display:flex;align-items:center;gap:16px;margin-bottom:8px}.photo-preview{position:relative;width:84px;height:112px;border-radius:6px;overflow:hidden;background:var(--soft);display:grid;place-items:center;flex-shrink:0;color:var(--green)}.photo-preview>span{font-size:35px}.photo-preview img{position:absolute;width:100%;height:100%;object-fit:cover}.photo-actions{display:flex;flex-wrap:wrap;gap:8px}.backup-actions{display:flex;flex-direction:column;gap:12px;margin:20px 0}.theme-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.theme-choice{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:2px solid var(--line);border-radius:10px;padding:12px;gap:5px;background:var(--bg)}.theme-choice[aria-pressed=true]{border-color:var(--green)}.theme-choice strong{font-size:16px}.theme-choice small{font-size:13px;color:var(--muted)}.swatch{width:100%;height:38px;border-radius:5px;border:1px solid #65746b50}.swatch.forest{background:linear-gradient(110deg,#f5f8f6 60%,#167c60 60%)}.swatch.cream{background:linear-gradient(110deg,#f8f2e8 60%,#91613d 60%)}.swatch.blue{background:linear-gradient(110deg,#f1f6fc 60%,#336ca6 60%)}.swatch.dark{background:linear-gradient(110deg,#161d24 60%,#82d3b7 60%)}#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:12px 18px;border:1px solid var(--line);border-radius:8px;box-shadow:0 4px 25px var(--shadow);display:none;z-index:100;font-size:15px;max-width:calc(100vw - 24px);width:max-content;pointer-events:none}
+@media(min-width:1600px){.book-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:1200px){aside{width:190px;padding:25px 14px}main{margin-left:190px}.page{padding:22px}.book-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats article{padding:12px}.stats p{font-size:12px}.tabs{margin-right:auto}.search{max-width:none}}
+@media(max-width:760px){aside{display:none}main{margin:0}header{height:58px;padding:0 12px;gap:4px}.mobile-brand{display:block;font-size:22px;font-weight:900;letter-spacing:-1px;color:var(--green);white-space:nowrap}.header-context{display:none}.header-actions{gap:5px}.header-actions button{padding:6px 10px;min-width:44px;font-size:16px}.page{padding:12px}.heading{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center}.heading .eyebrow,.heading p{display:none}h1{font-size:23px;letter-spacing:-1.3px;margin:5px 0;line-height:1.3}.heading>.primary{font-size:17px;padding:12px;min-height:52px;border-radius:8px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));margin:12px 0 14px;border-radius:8px}.stats article{padding:9px 13px;border-bottom:1px solid var(--line)}.stats article:nth-child(2){border-right:0}.stats article:nth-child(n+3){border-bottom:0}.stats article>span{font-size:15px}.stats strong{font-size:27px;line-height:1.15;margin:4px 0}.stats p{display:none}.collection-head h2{font-size:21px;margin:4px 0}.collection-head>button{font-size:14px}.toolbar{gap:8px;margin:4px 0}.tabs{width:100%;justify-content:space-between}.tabs button{flex:1;padding:7px 6px;font-size:15px;min-height:40px}.search{min-width:0;max-width:none;flex:1;padding:6px 9px}.search input{font-size:15px;min-width:0}.search kbd{display:none}.toolbar>select{width:111px;font-size:14px;padding:8px 4px}.notice{font-size:13px;margin:9px 0 12px}.book-grid{grid-template-columns:1fr;gap:10px}.book-card{padding:13px}.card-top{gap:14px}.cover{width:88px;height:125px}.card-info h3{font-size:20px}.card-note{font-size:14px;margin-top:10px;padding-top:8px}.card-dates{font-size:13px}.empty{padding:22px 12px}.empty h2{font-size:20px}.empty p{font-size:15px}.pagination{font-size:12px;margin:14px 0}footer{margin-top:16px;padding-top:12px;font-size:12px;flex-wrap:wrap}dialog{padding:16px;max-height:94dvh}.modal-head h2{font-size:22px}.photo-actions{gap:6px}.photo-actions>.secondary{font-size:15px;padding:9px 12px}.bulk .primary{padding:10px 12px;font-size:15px}.modal-actions>.primary{font-size:16px}.theme-options{gap:9px}}
+@media(max-width:360px){h1{font-size:21px}.heading>.primary{font-size:16px;padding:11px 9px}.header-actions button{font-size:15px}.mobile-brand{font-size:20px}.theme-choice small{font-size:12px}}
 </style></head>
-<body><aside><a class="brand" href="./"><span>冊</span> 책장<span class="brand-dot">.</span></a><div class="sidebar-label">MY COLLECTION</div><button class="nav active" data-filter="all">▤ <span>전체 컬렉션</span><b id="side-count">0</b></button><button class="nav" data-filter="거래중">↗ <span>거래중인 책</span><i></i></button><button class="nav" data-filter="거래완료">✓ <span>거래 기록</span></button><div class="sidebar-bottom"><div class="shelf-art">▥ ▤ ▥ ▥</div><strong>책마다 이야기가 있으니까.</strong><p>소중한 컬렉션을 한곳에 담아보세요.</p><small>데이터는 이 브라우저에 저장됩니다.<br>정기적으로 백업 파일을 보관해 주세요.</small></div></aside>
-<main><header><span>나만의 작은 도서관</span><div class="header-actions"><button id="backup">↥ 백업</button><button id="restore">↧ 복원</button><input type="file" id="file" accept="application/json" hidden><div class="avatar">나</div></div></header><section class="page"><div class="heading"><div><div class="eyebrow">YOUR PERSONAL MANGA LIBRARY</div><h1>나의 만화 컬렉션<span>.</span></h1><p>좋아하는 이야기를 모으고, 다음 독자에게 이어주세요.</p></div><button class="primary" id="add">＋ 만화책 등록</button></div><div class="stats"><article><span>전체 소장</span><strong id="total">0<small>권</small></strong><p id="series-count">0개의 시리즈와 함께하고 있어요</p><div class="stat-icon">▥</div></article><article><span>보유중</span><strong id="owned">0<small>권</small></strong><p><i class="dot green"></i> 책장에서 다음 이야기를 기다리는 중</p></article><article class="trading-stat"><span>거래중</span><strong id="trading">0<small>권</small></strong><p><i class="dot orange"></i> 잊지 말고 거래를 확인해 주세요</p></article><article><span>거래완료</span><strong id="sold">0<small>권</small></strong><p>새로운 독자에게 이어진 이야기</p></article></div>
-<div class="collection-head"><h2>컬렉션 <span id="result-count">0</span></h2><button id="demo">샘플 둘러보기</button></div><div class="toolbar"><div class="tabs"><button class="selected" data-filter="all">전체</button><button data-filter="보유중">보유중</button><button data-filter="거래중">거래중</button><button data-filter="거래완료">거래완료</button></div><label class="search"><span>⌕</span><input id="search" placeholder="제목, 작가, 권수, 메모 검색" aria-label="컬렉션 검색"><kbd>/</kbd></label><select id="sort" aria-label="정렬"><option value="recent">최근 등록순</option><option value="title">제목순</option><option value="count">권수 많은순</option></select></div><div class="notice"><span>↗</span> 거래중인 시리즈는 항상 맨 위에 표시돼요.<span id="demo-label"></span></div><div id="list" class="book-grid"></div><div id="empty" class="empty"><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>시리즈 제목과 권수만 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 만화책 등록</button></div><div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div><footer><span>책장에 쌓이는, 나만의 이야기.</span><span>MY MANGA COLLECTION</span></footer></section></main>
-<dialog id="editor"><form id="book-form"><div class="modal-head"><div><div class="eyebrow">MY COLLECTION</div><h2 id="modal-title">새로운 이야기 등록</h2></div><button type="button" class="close" aria-label="닫기">×</button></div><label>시리즈 제목 <em>*</em><input name="title" required maxlength="150" placeholder="예: 슬램덩크"></label><label>작가<input name="author" maxlength="100" placeholder="예: 이노우에 다케히코"></label><div class="form-row"><label>시작 권<input name="from" type="number" min="1" max="10000" value="1" required></label><label>마지막 권<input name="to" type="number" min="1" max="10000" value="1" required></label></div><label>빠진 권 (선택)<input name="missing" placeholder="예: 3, 7-9"><small>여러 권은 쉼표로, 연속된 권은 하이픈으로 입력하세요.</small></label><label>등록 상태<select name="status"><option>보유중</option><option>거래중</option><option>거래완료</option></select></label><label>나만의 메모<textarea name="note" rows="3" maxlength="5000" placeholder="책 상태, 보관 위치, 판매 가격 등을 자유롭게 남겨보세요."></textarea></label><p id="form-error" class="error" role="alert"></p><div class="modal-actions"><button type="button" class="close secondary">취소</button><button class="primary" type="submit">컬렉션에 등록</button></div></form></dialog>
-<dialog id="detail"><div class="modal-head"><div><div class="eyebrow">SERIES DETAILS</div><h2 id="detail-title"></h2></div><button class="close" aria-label="닫기">×</button></div><p class="muted" id="detail-author"></p><div class="volume-toolbar"><strong>권별 거래 상태</strong><button id="select-all">전체 선택</button></div><p class="hint">변경할 권을 선택한 뒤 상태를 적용하세요.</p><div id="volumes"></div><div class="bulk"><select id="bulk-status" aria-label="변경할 상태"><option>보유중</option><option>거래중</option><option>거래완료</option></select><button class="primary" id="apply">선택한 권에 적용</button></div><label class="note-label">나만의 메모<textarea id="detail-note" rows="4" maxlength="5000"></textarea></label><div class="modal-actions"><button id="delete" class="danger">시리즈 삭제</button><button id="save-note" class="primary">메모 저장</button></div></dialog><div id="toast" role="status"></div><script>const STATUSES = ['보유중', '거래중', '거래완료'];
-function makeVolumes(from, to, missing = '', status = '보유중') {
+<body>
+<aside>
+  <a class="brand" href="./"><span>冊</span> 책장<span class="brand-dot">.</span></a>
+  <div class="sidebar-label">MY COLLECTION</div>
+  <button class="nav active" data-filter="all">▤ <span>전체 컬렉션</span><b id="side-count">0</b></button>
+  <button class="nav" data-filter="거래중">↗ <span>거래중인 책</span><i></i></button>
+  <button class="nav" data-filter="거래완료">✓ <span>거래 기록</span></button>
+  <div class="sidebar-bottom"><div class="shelf-art">▥ ▤ ▥</div><strong>책마다 이야기가 있으니까.</strong><p>소중한 컬렉션을 한곳에 담아보세요.</p><small>데이터는 이 기기에 저장됩니다.<br>정기적으로 백업 파일을 보관해 주세요.</small></div>
+</aside>
+<main>
+<header>
+  <span class="mobile-brand">冊 책장<span>.</span></span><span class="header-context">나만의 작은 도서관</span>
+  <div class="header-actions"><button id="theme-settings" aria-label="색깔 테마 설정" title="색깔 테마">◐</button><button id="backup">백업</button><button id="restore">복원</button></div>
+  <input type="file" id="file" accept="application/json,.json" hidden>
+</header>
+<section class="page">
+  <div class="heading"><div><div class="eyebrow">YOUR PERSONAL MANGA LIBRARY</div><h1>나의 만화 컬렉션<span>.</span></h1><p>좋아하는 이야기를 모으고, 다음 독자에게 이어주세요.</p></div><button class="primary" id="add">＋ 만화책 등록</button></div>
+  <div class="stats">
+    <article><span>전체 소장</span><strong id="total">0<small>권</small></strong><p id="series-count">0개의 시리즈</p></article>
+    <article><span>보유중</span><strong id="owned">0<small>권</small></strong><p>책장에서 기다리는 이야기</p></article>
+    <article class="trading-stat"><span>거래중</span><strong id="trading">0<small>권</small></strong><p>진행 중인 거래를 확인하세요</p></article>
+    <article><span>거래완료</span><strong id="sold">0<small>권</small></strong><p>새로운 독자에게 이어진 이야기</p></article>
+  </div>
+  <div class="collection-head"><h2>컬렉션 <span id="result-count">0</span></h2><button id="demo">샘플 둘러보기</button></div>
+  <div class="toolbar">
+    <div class="tabs"><button class="selected" data-filter="all">전체</button><button data-filter="보유중">보유중</button><button data-filter="거래중">거래중</button><button data-filter="거래완료">거래완료</button></div>
+    <label class="search"><span>⌕</span><input id="search" placeholder="제목, 작가, 메모, 날짜 검색" aria-label="컬렉션 검색"><kbd>/</kbd></label>
+    <select id="sort" aria-label="정렬"><option value="recent">최근 등록순</option><option value="title">제목순</option><option value="count">권수 많은순</option></select>
+  </div>
+  <div class="notice"><span>↗</span> 거래중인 시리즈가 맨 위에 표시돼요.<span id="demo-label"></span></div>
+  <p id="loading" role="status">컬렉션을 불러오는 중이에요…</p>
+  <div id="list" class="book-grid"></div>
+  <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 만화책 등록</button></div>
+  <div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div>
+  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.1.0</span></footer>
+</section>
+</main>
+<dialog id="editor"><form id="book-form">
+  <div class="modal-head"><h2>새로운 이야기 등록</h2><button type="button" class="close" aria-label="닫기">×</button></div>
+  <label>시리즈 제목 <input name="title" required maxlength="150" placeholder="예: 슬램덩크"></label>
+  <label>작가<input name="author" maxlength="100" placeholder="예: 이노우에 다케히코"></label>
+  <fieldset class="photo-field"><legend>표지 사진 <span>(선택)</span></legend><div class="photo-layout"><div class="photo-preview" id="editor-preview"><span>冊</span><img hidden alt="등록할 표지 사진"></div><div class="photo-actions"><button type="button" class="secondary" data-photo="editor" data-source="camera">사진 찍기</button><button type="button" class="secondary" data-photo="editor" data-source="gallery">사진 선택</button><button type="button" class="text-button" data-photo-remove="editor">사진 지우기</button></div></div><small>사진은 작은 썸네일로 저장되며 백업에도 포함돼요.</small></fieldset>
+  <div class="form-row"><label>시작 권<input name="from" type="number" min="1" max="10000" value="1" required></label><label>마지막 권<input name="to" type="number" min="1" max="10000" value="1" required></label></div>
+  <label>빠진 권 <span class="optional">선택</span><input name="missing" placeholder="예: 3, 7-9"><small>쉼표로 여러 권을, 하이픈으로 연속된 권을 지정해요.</small></label>
+  <label>등록일<input type="date" name="registeredOn" required></label>
+  <label>등록 상태<select name="status"><option>보유중</option><option>거래중</option><option>거래완료</option></select></label>
+  <label id="initial-sale" hidden>거래완료일<input type="date" name="soldOn"></label>
+  <label>나만의 메모<textarea name="note" rows="3" maxlength="5000" placeholder="책 상태, 보관 위치, 판매 가격 등을 남겨보세요."></textarea></label>
+  <p id="form-error" class="error" role="alert"></p>
+  <div class="modal-actions"><button type="button" class="close secondary">취소</button><button class="primary" type="submit">컬렉션에 등록</button></div>
+</form></dialog>
+<dialog id="detail">
+  <div class="modal-head"><h2 id="detail-title"></h2><button class="close" aria-label="닫기">×</button></div>
+  <p class="muted" id="detail-author"></p><p class="date-info" id="detail-dates"></p>
+  <fieldset class="photo-field"><legend>표지 사진</legend><div class="photo-layout"><div class="photo-preview" id="detail-preview"><span>冊</span><img hidden alt="시리즈 표지 사진"></div><div class="photo-actions"><button class="secondary" data-photo="detail" data-source="camera">사진 찍기</button><button class="secondary" data-photo="detail" data-source="gallery">사진 변경</button><button class="text-button" data-photo-remove="detail">사진 지우기</button></div></div></fieldset>
+  <div class="volume-toolbar"><strong>권별 거래 상태</strong><button id="select-all">전체 선택</button></div><p class="hint">변경할 권을 선택한 뒤 상태를 적용하세요.</p>
+  <div id="volumes"></div>
+  <div class="bulk"><select id="bulk-status" aria-label="변경할 상태"><option>보유중</option><option>거래중</option><option>거래완료</option></select><button class="primary" id="apply">선택한 권에 적용</button></div>
+  <div id="sale-controls" hidden><label>거래완료일<input id="sold-on" type="date"></label><label class="checkline"><input type="checkbox" id="replace-sold-date">이미 완료된 권의 판매일도 수정</label><small>체크하지 않으면 기록된 판매일을 유지해요.</small></div>
+  <label class="note-label">나만의 메모<textarea id="detail-note" rows="3" maxlength="5000"></textarea></label>
+  <div class="modal-actions"><button id="delete" class="danger">시리즈 삭제</button><button id="save-note" class="primary">사진·메모 저장</button></div>
+</dialog>
+<dialog id="backup-dialog">
+  <div class="modal-head"><h2>내 컬렉션 백업</h2><button class="close" aria-label="닫기">×</button></div>
+  <p id="backup-summary"></p><p class="hint">목록, 사진, 메모, 등록일과 거래완료일을 한 파일에 담아요.</p>
+  <div class="backup-actions"><button id="save-backup" class="primary">휴대폰·Drive에 파일 저장</button><button id="share-backup" class="secondary" hidden>Google Drive 등에 공유</button></div>
+  <p class="hint">저장 창에서 내 휴대폰이나 Google Drive를 선택하세요. Drive 앱 설치와 로그인이 필요할 수 있어요. 자동 동기화는 아니에요.</p>
+  <p class="hint" id="backup-demo-note" hidden>샘플 보기 중에도 실제 내 컬렉션만 백업해요.</p>
+</dialog>
+<dialog id="themes-dialog"><div class="modal-head"><h2>책장의 색깔 테마</h2><button class="close" aria-label="닫기">×</button></div><p class="hint">내 눈에 편한 색을 골라보세요. 다음에 열어도 유지돼요.</p><div class="theme-options">
+  <button data-theme-option="forest" class="theme-choice"><span class="swatch forest"></span><strong>숲빛</strong><small>싱그러운 그린</small></button>
+  <button data-theme-option="cream" class="theme-choice"><span class="swatch cream"></span><strong>따뜻한 크림</strong><small>포근한 종이빛</small></button>
+  <button data-theme-option="blue" class="theme-choice"><span class="swatch blue"></span><strong>차분한 블루</strong><small>맑고 편안한 파랑</small></button>
+  <button data-theme-option="dark" class="theme-choice"><span class="swatch dark"></span><strong>다크</strong><small>어두운 곳에서도 편하게</small></button>
+</div></dialog>
+<input type="file" id="photo-file" accept="image/*" hidden><input type="file" id="camera-file" accept="image/*" capture="environment" hidden>
+<div id="toast" role="status"></div><script>const STATUSES = ['보유중', '거래중', '거래완료'];
+const MAX_BACKUP_BYTES = 128 * 1024 * 1024;
+const MAX_PHOTO_LENGTH = 33000;
+function localDay(date = new Date()) {
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+function isDay(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const d = new Date(`${value}T12:00:00`);
+  return Number.isFinite(d.getTime()) && localDay(d) === value;
+}
+function validPhoto(value) {
+  return value == null || (typeof value === 'string' && value.length <= MAX_PHOTO_LENGTH && /^data:image\/jpeg;base64,\/9j\/[A-Za-z0-9+/]*={0,2}$/.test(value) && (value.length-23)%4 === 0);
+}
+function makeVolumes(from, to, missing = '', status = '보유중', soldOn = localDay()) {
   if (!Number.isInteger(from) || !Number.isInteger(to) || from < 1 || to > 10000 || to < from || to - from > 4999) throw Error('권수는 1~10,000 사이이며, 한 번에 최대 5,000권까지 등록할 수 있어요.');
   if (!STATUSES.includes(status)) throw Error('올바른 상태를 선택해 주세요.');
+  if (status === '거래완료' && !isDay(soldOn)) throw Error('올바른 거래완료일을 입력해 주세요.');
   const excluded = new Set();
   for (const chunk of missing.split(',').map(x => x.trim()).filter(Boolean)) {
     if (!/^\d+(\s*-\s*\d+)?$/.test(chunk)) throw Error('빠진 권은 3, 7-9 형태로 입력해 주세요.');
@@ -16,114 +116,258 @@ function makeVolumes(from, to, missing = '', status = '보유중') {
     if (a < from || b > to || a > b) throw Error('빠진 권은 등록할 권수 범위 안에서 입력해 주세요.');
     for (let n = a; n <= b; n++) excluded.add(n);
   }
-  const result = Array.from({length: to - from + 1}, (_, i) => ({number: from + i, status})).filter(v => !excluded.has(v.number));
+  const result = Array.from({length: to - from + 1}, (_, i) => ({number: from + i, status, ...(status === '거래완료' ? {soldAt:soldOn}: {})})).filter(v => !excluded.has(v.number));
   if (!result.length) throw Error('최소 한 권은 등록해 주세요.');
   return result;
 }
+function changeStatus(volume, status, soldOn, replaceDate = false) {
+  if (!STATUSES.includes(status)) throw Error('올바른 상태를 선택해 주세요.');
+  if (status === '거래완료' && !isDay(soldOn)) throw Error('거래완료일을 입력해 주세요.');
+  return {...volume, status, soldAt:status === '거래완료' ? (!replaceDate && volume.status === status && volume.soldAt ? volume.soldAt : soldOn) : null};
+}
 function seriesStatus(book) { return book.volumes.some(v => v.status === '거래중') ? '거래중' : book.volumes.some(v => v.status === '보유중') ? '보유중' : '거래완료'; }
 function validateBackup(data) {
-  if (!data || data.version !== 1 || !Array.isArray(data.books) || data.books.length > 10000) throw Error('책장 백업 파일이 아니거나 지원하지 않는 형식이에요.');
+  if (!data || ![1,2].includes(data.version) || !Array.isArray(data.books) || data.books.length > 10000) throw Error('책장 백업 파일이 아니거나 지원하지 않는 형식이에요.');
   const ids = new Set(); let total = 0;
   for (const b of data.books) {
-    if (!b || typeof b.id !== 'string' || ids.has(b.id) || typeof b.title !== 'string' || !b.title.trim() || b.title.length > 150 || typeof b.author !== 'string' || b.author.length > 100 || typeof b.note !== 'string' || b.note.length > 5000 || !Number.isFinite(b.createdAt) || !Array.isArray(b.volumes) || !b.volumes.length || b.volumes.length > 5000) throw Error('백업에 올바르지 않은 시리즈가 있어요.');
+    if (!b || typeof b.id !== 'string' || !b.id || ids.has(b.id) || typeof b.title !== 'string' || !b.title.trim() || b.title.length > 150 || typeof b.author !== 'string' || b.author.length > 100 || typeof b.note !== 'string' || b.note.length > 5000 || !Number.isFinite(b.createdAt) || b.createdAt < 0 || !Number.isFinite(new Date(b.createdAt).getTime()) || !Array.isArray(b.volumes) || !b.volumes.length || b.volumes.length > 5000 || !validPhoto(b.photo)) throw Error('백업에 올바르지 않은 시리즈 또는 사진이 있어요.');
     ids.add(b.id); const nums = new Set();
-    for (const v of b.volumes) { if (!v || !Number.isInteger(v.number) || v.number < 1 || v.number > 10000 || nums.has(v.number) || !STATUSES.includes(v.status)) throw Error('백업에 올바르지 않은 권수 또는 상태가 있어요.'); nums.add(v.number); }
+    for (const v of b.volumes) {
+      if (!v || !Number.isInteger(v.number) || v.number < 1 || v.number > 10000 || nums.has(v.number) || !STATUSES.includes(v.status) || (v.soldAt != null && (!isDay(v.soldAt) || v.status !== '거래완료'))) throw Error('백업에 올바르지 않은 권수, 상태 또는 판매일이 있어요.');
+      nums.add(v.number);
+    }
     total += b.volumes.length; if (total > 100000) throw Error('백업은 최대 100,000권까지 지원해요.');
   }
-  return data.books.map(b => ({id:b.id,title:b.title.trim(),author:b.author,note:b.note,createdAt:b.createdAt,volumes:b.volumes.map(v=>({number:v.number,status:v.status})).sort((a,b)=>a.number-b.number)}));
+  return data.books.map(b => ({id:b.id,title:b.title.trim(),author:b.author,note:b.note,createdAt:b.createdAt,...(b.photo !== undefined ? {photo:b.photo}:{}),volumes:b.volumes.map(v=>({number:v.number,status:v.status,...(v.soldAt !== undefined ? {soldAt:v.soldAt}:{})})).sort((a,b)=>a.number-b.number)}));
 }
 function selectBooks(books, filter, query, sort) {
   const q = query.trim().toLocaleLowerCase();
-  return books.filter(b => (filter === 'all' || b.volumes.some(v => v.status === filter)) && (!q || [b.title,b.author,b.note,...b.volumes.map(v=>`${v.number}권`)].some(s=>s.toLocaleLowerCase().includes(q)))).sort((a,b) => Number(seriesStatus(b)==='거래중') - Number(seriesStatus(a)==='거래중') || (sort === 'title' ? a.title.localeCompare(b.title,'ko') : sort === 'count' ? b.volumes.length-a.volumes.length : b.createdAt-a.createdAt));
+  return books.filter(b => (filter === 'all' || b.volumes.some(v => v.status === filter)) && (!q || [b.title,b.author,b.note,localDay(new Date(b.createdAt)),...b.volumes.flatMap(v=>[`${v.number}권`,v.soldAt||''])].some(s=>s.toLocaleLowerCase().includes(q)))).sort((a,b) => Number(seriesStatus(b)==='거래중') - Number(seriesStatus(a)==='거래중') || (sort === 'title' ? a.title.localeCompare(b.title,'ko') : sort === 'count' ? b.volumes.length-a.volumes.length : b.createdAt-a.createdAt));
+}
+
+// Photo thumbnails live in IndexedDB, which does not share localStorage's small quota.
+// The legacy snapshot is kept intact until an explicit successful restore replaces it.
+const DB_NAME = 'chaekjang-library';
+const LEGACY_KEY = 'chaekjang.collection.v1';
+let database;
+function openDatabase() {
+  if (database) return database;
+  database = new Promise((resolve,reject) => {
+    const request = indexedDB.open(DB_NAME,1);
+    request.onupgradeneeded = () => request.result.createObjectStore('library');
+    request.onsuccess = () => {request.result.onversionchange = () => {request.result.close();database=undefined;};resolve(request.result);};
+    request.onerror = () => {database=undefined;reject(request.error);};
+    request.onblocked = () => {database=undefined;reject(Error('다른 책장 창을 닫고 다시 시도해 주세요.'));};
+  });
+  return database;
+}
+async function loadCollection(validate) {
+  const db = await openDatabase();
+  const data = await new Promise((resolve,reject) => {
+    const tx=db.transaction('library','readonly');const request=tx.objectStore('library').get('collection');
+    tx.oncomplete=()=>resolve(request.result);tx.onabort=()=>reject(tx.error||Error('저장 목록을 읽지 못했어요.'));
+  });
+  if(data !== undefined) return validate(data);
+  let legacy;
+  try {legacy=localStorage.getItem(LEGACY_KEY);} catch {throw Error('기존 저장 공간을 읽지 못했어요.');}
+  if(!legacy) return [];
+  const books=validate(JSON.parse(legacy));
+  await saveCollection(books);
+  return books;
+}
+async function saveCollection(books) {
+  const db = await openDatabase();
+  return new Promise((resolve,reject) => {
+    const tx = db.transaction('library','readwrite');
+    tx.objectStore('library').put({version:2,books},'collection');
+    tx.oncomplete=()=>resolve();
+    tx.onabort=()=>reject(tx.error||Error('기기 저장에 실패했어요.'));
+    tx.onerror=()=>{}; // onabort reports the final transaction outcome.
+  });
 }
 
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
-const KEY = 'chaekjang.collection.v1';
-let books = [], demo = false, filter = 'all', page = 1, currentId = null, storageBlocked = false;
-let toastTimer;
-function toast(message) { $('#toast').textContent=message; $('#toast').style.display='block'; clearTimeout(toastTimer); toastTimer=setTimeout(()=>$('#toast').style.display='none',3500); }
-try { const saved=localStorage.getItem(KEY); if(saved) books=validateBackup(JSON.parse(saved)); } catch { storageBlocked=true; setTimeout(()=>toast('저장 데이터를 읽지 못했어요. 백업 파일을 확인하거나 복원해 주세요.'),300); }
-function persist(next) {
-  if(demo){books=next;render();return true;}
-  if(storageBlocked){toast('기존 데이터를 보호하기 위해 저장을 중단했어요. 백업 복원 후 다시 시도해 주세요.');return false;}
-  try{ localStorage.setItem(KEY,JSON.stringify({version:1,books:next})); books=next;render();return true;}catch{toast('저장 공간이 부족하거나 브라우저 저장이 차단되어 있어요. 백업 후 확인해 주세요.');return false;}
+let books=[], demo=false, realBooks=[], filter='all', page=1, currentId=null, ready=false, storageBlocked=false, saveBusy=false;
+let toastTimer, photoRequest=null;
+const draftPhotos={editor:null,detail:null};
+const themes=['forest','cream','blue','dark'];
+const android = () => !!window.ChaekjangNative;
+function toast(message){$('#toast').textContent=message;$('#toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').style.display='none',5000);}
+function setTheme(theme,persistChoice=false){
+  if(!themes.includes(theme))theme='forest';
+  document.body.dataset.theme=theme;
+  try{if(typeof window.ChaekjangNative?.setTheme==='function')window.ChaekjangNative.setTheme(theme);}catch{}
+  $$('[data-theme-option]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.themeOption===theme)));
+  if(persistChoice)try{localStorage.setItem('chaekjang.theme',theme);}catch{toast('테마는 적용했지만 기기에 저장하지 못했어요.');}
 }
-function el(tag, cls, text) { const n=document.createElement(tag); if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n; }
+try{setTheme(localStorage.getItem('chaekjang.theme')||'forest');}catch{setTheme('forest');}
+$('#theme-settings').onclick=()=>$('#themes-dialog').showModal();
+$$('[data-theme-option]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeOption,true));
+function canUse(){if(!ready){toast('목록을 불러오는 중이에요. 잠시 후 다시 눌러 주세요.');return false;}if(storageBlocked){toast('목록을 읽지 못했어요. 기존 데이터를 보호하고 있으니 앱을 다시 열거나 백업을 복원해 주세요.');return false;}return true;}
+async function persist(next){
+  if(saveBusy){toast('저장 중이에요. 잠시 기다려 주세요.');return false;}
+  if(demo){books=next;render();return true;}
+  if(!canUse())return false;
+  saveBusy=true;
+  try{await saveCollection(next);books=next;render();return true;}
+  catch{toast('기기에 저장하지 못했어요. 저장 공간을 확인해 주세요. 기존 목록은 유지했어요.');return false;}
+  finally{saveBusy=false;}
+}
+function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
 const colors=['#225c51','#d17b47','#3f5574','#b05b58','#78643f','#51515e','#55807e','#777646'];
 function color(title){return colors[Array.from(title).reduce((s,c)=>s+c.codePointAt(0),0)%colors.length];}
 function badge(status){return el('span','badge '+(status==='거래중'?'trading':status==='거래완료'?'sold':''),status);}
-function range(volumes){ const ns=volumes.map(v=>v.number).sort((a,b)=>a-b);return ns.length===1?`${ns[0]}권`:`${ns[0]}–${ns.at(-1)}권${ns.length!==ns.at(-1)-ns[0]+1?' · 일부 권 제외':''}`; }
+function range(volumes){const ns=volumes.map(v=>v.number).sort((a,b)=>a-b);return ns.length===1?`${ns[0]}권`:`${ns[0]}–${ns.at(-1)}권${ns.length!==ns.at(-1)-ns[0]+1?' · 일부 제외':''}`;}
+function dateLabel(day){return day.replaceAll('-','.');}
+function saleSummary(b){
+  const sold=b.volumes.filter(v=>v.status==='거래완료');if(!sold.length)return '';
+  const dates=sold.map(v=>v.soldAt).filter(Boolean).sort();
+  const unknown=sold.some(v=>!v.soldAt);
+  return dates.length?`${dates[0]===dates.at(-1)?'판매':'최근 판매'} ${dateLabel(dates.at(-1))}${unknown?' · 일부 판매일 미기록':''}`:'판매일 미기록';
+}
+function makeCover(b){
+  const cover=el('div','cover');cover.style.background=color(b.title);cover.setAttribute('aria-hidden','true');
+  if(b.photo){cover.classList.add('has-photo');const img=el('img');img.src=b.photo;img.alt='';img.loading='lazy';cover.append(img);}
+  else cover.append(el('span','','MANGA'),el('b','',b.title),el('small','','MY COLLECTION'));
+  return cover;
+}
 function render(){
-  const counts={'보유중':0,'거래중':0,'거래완료':0}; books.forEach(b=>b.volumes.forEach(v=>counts[v.status]++));
+  const counts={'보유중':0,'거래중':0,'거래완료':0};books.forEach(b=>b.volumes.forEach(v=>counts[v.status]++));
   const total=Object.values(counts).reduce((a,b)=>a+b,0);
-  for(const [id,n] of Object.entries({total,owned:counts['보유중'],trading:counts['거래중'],sold:counts['거래완료']})){const nEl=$('#'+id);nEl.replaceChildren(document.createTextNode(n.toLocaleString()),el('small','', '권'));}
-  $('#side-count').textContent=books.length;$('#series-count').textContent=`${books.length.toLocaleString()}개의 시리즈와 함께하고 있어요`;
+  for(const [id,n] of Object.entries({total,owned:counts['보유중'],trading:counts['거래중'],sold:counts['거래완료']}))$('#'+id).replaceChildren(document.createTextNode(n.toLocaleString()),el('small','','권'));
+  $('#side-count').textContent=books.length;$('#series-count').textContent=`${books.length.toLocaleString()}개의 시리즈`;
   const matches=selectBooks(books,filter,$('#search').value,$('#sort').value);$('#result-count').textContent=matches.length;
-  const pages=Math.max(1,Math.ceil(matches.length/12));page=Math.min(page,pages);$('#list').replaceChildren();
+  const pages=Math.max(1,Math.ceil(matches.length/12));page=Math.max(1,Math.min(page,pages));$('#list').replaceChildren();
   matches.slice((page-1)*12,page*12).forEach(b=>{
     const status=seriesStatus(b),card=el('article','book-card'+(status==='거래중'?' is-trading':''));
     card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label',`${b.title} 상세 및 권별 상태 관리`);
-    const top=el('div','card-top'),cover=el('div','cover'); cover.style.background=color(b.title);cover.setAttribute('aria-hidden','true');cover.append(el('span','','MANGA'),el('b','',b.title),el('small','','MY COLLECTION'));
-    const info=el('div','card-info');info.append(badge(status),el('h3','',b.title),el('p','author',b.author||'작가 미등록'));
-    const r=el('div','range',range(b.volumes));r.append(el('b','',`총 ${b.volumes.length}권`));info.append(r);top.append(cover,info);
-    const note=el('p','card-note','✎  '+(b.note||'남겨진 메모가 없어요.'));note.title=b.note;
-    const bottom=el('div','card-bottom');const trading=b.volumes.filter(v=>v.status==='거래중').length; const sold=b.volumes.filter(v=>v.status==='거래완료').length;
-    bottom.append(el('span','',trading?`${trading}권 거래중${sold?` · ${sold}권 거래완료`:''}`:sold?`${sold}권 거래완료`:'소중히 보관중'),el('span','','상세 보기 →'));card.append(top,note,bottom);
-    card.addEventListener('click',()=>openDetail(b.id));card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDetail(b.id);}});$('#list').append(card);
+    const top=el('div','card-top'),info=el('div','card-info');info.append(badge(status),el('h3','',b.title),el('p','author',b.author||'작가 미등록'));
+    const r=el('div','range',range(b.volumes));r.append(el('b','',`총 ${b.volumes.length}권`));info.append(r);top.append(makeCover(b),info);
+    const note=el('p','card-note','✎ '+(b.note||'남겨진 메모가 없어요.'));note.title=b.note;
+    const dates=el('div','card-dates');dates.append(el('span','',`등록 ${dateLabel(localDay(new Date(b.createdAt)))}`));if(saleSummary(b))dates.append(el('span','',saleSummary(b)));
+    const trading=b.volumes.filter(v=>v.status==='거래중').length,sold=b.volumes.filter(v=>v.status==='거래완료').length,bottom=el('div','card-bottom');
+    bottom.append(el('span','',trading?`${trading}권 거래중${sold?` · ${sold}권 판매`:''}`:sold?`${sold}권 거래완료`:'소중히 보관중'),el('span','','상세 보기 →'));card.append(top,note,dates,bottom);
+    card.onclick=()=>openDetail(b.id);card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDetail(b.id);}};$('#list').append(card);
   });
-  $('#empty').hidden=!!matches.length;
-  if(!matches.length){$('#empty h2').textContent=books.length?'검색 결과가 없어요':'첫 번째 이야기를 꽂아보세요';$('#empty p').textContent=books.length?'다른 검색어나 상태 필터를 사용해 보세요.':'시리즈 제목과 권수만 입력하면 한 번에 등록할 수 있어요.';$('#empty-add').hidden=!!books.length;}
-  $('#page-info').textContent=matches.length?`총 ${matches.length}개 시리즈 중 ${(page-1)*12+1}–${Math.min(page*12,matches.length)} · ${page} / ${pages} 페이지`:'';
+  $('#empty').hidden=!!matches.length||!ready||storageBlocked;
+  if(!matches.length){$('#empty h2').textContent=books.length?'검색 결과가 없어요':'첫 번째 이야기를 꽂아보세요';$('#empty p').textContent=books.length?'다른 검색어나 상태 필터를 사용해 보세요.':'제목과 권수를 입력하면 한 번에 등록할 수 있어요.';$('#empty-add').hidden=!!books.length;}
+  $('#page-info').textContent=matches.length?`총 ${matches.length}개 · ${page}/${pages} 페이지`:'';
   $('#prev').disabled=page<=1;$('#next').disabled=page>=pages;
-  $$('#demo-label').forEach(n=>n.textContent=demo?'샘플 보기 · 실제 데이터와 별도':'' );$('#demo').textContent=demo?'내 컬렉션으로 돌아가기':'샘플 둘러보기';$('#backup').disabled=demo;$('#restore').disabled=demo;
+  $('#demo-label').textContent=demo?'샘플 보기 · 실제 목록과 별도':'';$('#demo').textContent=demo?'내 컬렉션으로 돌아가기':'샘플 둘러보기';
   $$('[data-filter]').forEach(b=>{const active=b.dataset.filter===filter;b.classList.toggle(b.classList.contains('nav')?'active':'selected',active);b.setAttribute('aria-pressed',String(active));});
 }
-function add(){ $('#book-form').reset();$('#form-error').textContent='';$('#editor').showModal(); }
+function showPhoto(target,photo){draftPhotos[target]=photo;const img=$(`#${target}-preview img`);img.hidden=!photo;if(photo)img.src=photo;else img.removeAttribute('src');}
+function add(){if(!canUse())return;$('#book-form').reset();$('#form-error').textContent='';$('#book-form [name=registeredOn]').value=localDay();$('#book-form [name=registeredOn]').max=localDay();$('#book-form [name=soldOn]').value=localDay();$('#initial-sale').hidden=true;showPhoto('editor',null);$('#editor').showModal();}
 $('#add').onclick=add;$('#empty-add').onclick=add;
 $$('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
-$('#book-form').onsubmit=e=>{
-  e.preventDefault(); const f=new FormData(e.currentTarget);
-  try{const title=f.get('title').trim();if(!title)throw Error('시리즈 제목을 입력해 주세요.');const volumes=makeVolumes(Number(f.get('from')),Number(f.get('to')),f.get('missing'),f.get('status'));
-    if(books.some(b=>b.title.toLocaleLowerCase()===title.toLocaleLowerCase()&&b.volumes.some(v=>volumes.some(n=>n.number===v.number))))throw Error('같은 제목에 중복되는 권이 있어요. 기존 시리즈를 확인해 주세요.');
-    const b={id:crypto.randomUUID(),title,author:f.get('author').trim(),volumes,note:f.get('note').trim(),createdAt:Date.now()};
-    if(persist([...books,b])){$('#editor').close();toast(`${volumes.length}권을 등록했어요.${demo?' (샘플 모드)':''}`);}
-  }catch(err){$('#form-error').textContent=err.message;}
+$('#book-form [name=status]').onchange=e=>$('#initial-sale').hidden=e.target.value!=='거래완료';
+$('#book-form').onsubmit=async e=>{
+  e.preventDefault();const f=new FormData(e.currentTarget),submit=$('#book-form button[type=submit]');
+  try{
+    if(photoRequest?.target==='editor')throw Error('사진을 처리 중이에요. 잠시 기다려 주세요.');
+    const title=f.get('title').trim();if(!title)throw Error('시리즈 제목을 입력해 주세요.');
+    const volumes=makeVolumes(Number(f.get('from')),Number(f.get('to')),f.get('missing'),f.get('status'),f.get('soldOn'));
+    const numbers=new Set(volumes.map(v=>v.number));if(books.some(b=>b.title.toLocaleLowerCase()===title.toLocaleLowerCase()&&b.volumes.some(v=>numbers.has(v.number))))throw Error('같은 제목에 중복되는 권이 있어요. 기존 시리즈를 확인해 주세요.');
+    const registeredOn=f.get('registeredOn');if(!isDay(registeredOn)||registeredOn>localDay())throw Error('등록일을 오늘 또는 이전 날짜로 입력해 주세요.');
+    const b={id:crypto.randomUUID(),title,author:f.get('author').trim(),volumes,note:f.get('note').trim(),createdAt:registeredOn===localDay()?Date.now():new Date(`${registeredOn}T12:00:00`).getTime(),photo:draftPhotos.editor};
+    submit.disabled=true;if(await persist([...books,b])){$('#editor').close();toast(`${volumes.length}권을 등록했어요.${demo?' (샘플)':''}`);}
+  }catch(err){$('#form-error').textContent=err.message;}finally{submit.disabled=false;}
 };
 $$('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;page=1;render();});
-$('#search').oninput=()=>{page=1;render();};$('#sort').onchange=()=>{page=1;render();};
-$('#prev').onclick=()=>{page--;render();};$('#next').onclick=()=>{page++;render();};
+$('#search').oninput=()=>{page=1;render();};$('#sort').onchange=()=>{page=1;render();};$('#prev').onclick=()=>{page--;render();};$('#next').onclick=()=>{page++;render();};
 document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&!$$('dialog').some(d=>d.open)){e.preventDefault();$('#search').focus();}});
-function openDetail(id){currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · 총 ${b.volumes.length}권`;$('#detail-note').value=b.note;renderVolumes(b);$('#detail').showModal();}
-function renderVolumes(b){$('#volumes').replaceChildren();b.volumes.forEach(v=>{const l=el('label','volume '+(v.status==='거래중'?'trading':v.status==='거래완료'?'sold':''));const input=el('input');input.type='checkbox';input.value=v.number;input.setAttribute('aria-label',`${v.number}권 · ${v.status}`);l.append(input,el('span','',`${v.number}권 · ${v.status}`));$('#volumes').append(l);});}
-$('#select-all').onclick=()=>{const all=$$('#volumes input');const checked=all.some(n=>!n.checked);all.forEach(n=>n.checked=checked);};
-$('#apply').onclick=()=>{const selected=new Set($$('#volumes input:checked').map(n=>Number(n.value)));if(!selected.size){toast('상태를 변경할 권을 먼저 선택해 주세요.');return;}
- const status=$('#bulk-status').value;const next=books.map(b=>b.id===currentId?{...b,volumes:b.volumes.map(v=>selected.has(v.number)?{...v,status}:v)}:b);
- if(persist(next)){renderVolumes(books.find(b=>b.id===currentId));toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
+function updateDetailDates(b){$('#detail-dates').textContent=`등록일 ${dateLabel(localDay(new Date(b.createdAt)))}${saleSummary(b)?' · '+saleSummary(b):''}`;}
+function openDetail(id){
+  currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · 총 ${b.volumes.length}권`;
+  updateDetailDates(b);$('#detail-note').value=b.note;showPhoto('detail',b.photo||null);$('#bulk-status').value='보유중';$('#sale-controls').hidden=true;$('#sold-on').value=localDay();$('#replace-sold-date').checked=false;renderVolumes(b);$('#detail').showModal();
+}
+function renderVolumes(b){$('#volumes').replaceChildren();b.volumes.forEach(v=>{
+  const l=el('label','volume '+(v.status==='거래중'?'trading':v.status==='거래완료'?'sold':'')),input=el('input');input.type='checkbox';input.value=v.number;input.setAttribute('aria-label',`${v.number}권 · ${v.status}`);
+  const span=el('span','',`${v.number}권 · ${v.status}`);if(v.status==='거래완료')span.append(el('small','',v.soldAt?`판매 ${dateLabel(v.soldAt)}`:'판매일 미기록'));l.append(input,span);$('#volumes').append(l);
+});}
+$('#select-all').onclick=()=>{const all=$$('#volumes input'),checked=all.some(n=>!n.checked);all.forEach(n=>n.checked=checked);};
+$('#bulk-status').onchange=e=>$('#sale-controls').hidden=e.target.value!=='거래완료';
+$('#apply').onclick=async()=>{
+  const selected=new Set($$('#volumes input:checked').map(n=>Number(n.value)));if(!selected.size){toast('상태를 변경할 권을 먼저 선택해 주세요.');return;}
+  try{const status=$('#bulk-status').value,next=books.map(b=>b.id===currentId?{...b,volumes:b.volumes.map(v=>selected.has(v.number)?changeStatus(v,status,$('#sold-on').value,$('#replace-sold-date').checked):v)}:b);
+    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);updateDetailDates(b);toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
+  }catch(err){toast(err.message);}
 };
-$('#save-note').onclick=()=>{if(persist(books.map(b=>b.id===currentId?{...b,note:$('#detail-note').value}:b))){$('#detail').close();toast('메모를 저장했어요.');}};
-$('#delete').onclick=()=>{const b=books.find(b=>b.id===currentId);if(confirm(`「${b.title}」 ${b.volumes.length}권을 삭제할까요? 삭제 전 백업을 권장해요.`)&&persist(books.filter(b=>b.id!==currentId))){$('#detail').close();toast('시리즈를 삭제했어요.');}};
-$('#backup').onclick=()=>{if(window.ChaekjangNative){window.ChaekjangNative.exportBackup(JSON.stringify({version:1,exportedAt:new Date().toISOString(),books}),'');return;}const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),books},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=el('a');a.href=url;a.download=`책장-백업-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('백업 파일을 다운로드했어요. 안전하게 보관해 주세요.');};
-function restoreText(text) {
-  try {
-    const restored=validateBackup(JSON.parse(text));
-    if(!confirm(`현재 목록을 백업의 ${restored.length}개 시리즈로 교체할까요? 기존 데이터는 덮어씁니다.`))return;
-    try{localStorage.setItem(KEY,JSON.stringify({version:1,books:restored}));}catch{throw Error('기기 저장에 실패했어요. 기존 데이터는 변경하지 않았어요.');}
-    books=restored;storageBlocked=false;page=1;render();toast('백업을 복원했어요.');
-  }catch(err){toast(err instanceof SyntaxError?'올바른 JSON 백업 파일을 선택해 주세요.':err.message);}
+$('#save-note').onclick=async()=>{if(photoRequest?.target==='detail'){toast('사진을 처리 중이에요. 잠시 기다려 주세요.');return;}if(await persist(books.map(b=>b.id===currentId?{...b,note:$('#detail-note').value,photo:draftPhotos.detail}:b))){$('#detail').close();toast('사진과 메모를 저장했어요.');}};
+$('#delete').onclick=async()=>{const b=books.find(b=>b.id===currentId);if(confirm(`「${b.title}」 ${b.volumes.length}권을 삭제할까요? 삭제 전 백업을 권장해요.`)&&await persist(books.filter(b=>b.id!==currentId))){$('#detail').close();toast('시리즈를 삭제했어요.');}};
+async function shrinkPhoto(file){
+  if(file.size>32*1024*1024)throw Error('32MB 이하의 사진을 선택해 주세요.');
+  if(!file.type.startsWith('image/'))throw Error('사진 파일을 선택해 주세요.');
+  const url=URL.createObjectURL(file);let image;
+  try{image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(Error('읽을 수 없는 사진이에요. JPG 또는 PNG 사진으로 다시 선택해 주세요.'));img.src=url;});}
+  finally{URL.revokeObjectURL(url);}
+  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+  for(const edge of [320,240,160]){
+    const ratio=Math.min(1,edge/Math.max(image.naturalWidth,image.naturalHeight));canvas.width=Math.max(1,Math.round(image.naturalWidth*ratio));canvas.height=Math.max(1,Math.round(image.naturalHeight*ratio));ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);
+    for(const quality of [.8,.65,.5,.35]){const photo=canvas.toDataURL('image/jpeg',quality);if(photo.length<=MAX_PHOTO_LENGTH&&validPhoto(photo))return photo;}
+  }
+  throw Error('사진을 썸네일로 만들지 못했어요. 다른 사진을 선택해 주세요.');
 }
-$('#restore').onclick=()=>{if(window.ChaekjangNative){window.ChaekjangNative.importBackup();return;}$('#file').click();};
-$('#file').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>20*1024*1024)throw Error('20MB 이하의 백업 파일을 선택해 주세요.');restoreText(await file.text());}catch(err){toast(err.message);}finally{e.target.value='';}};
-window.addEventListener('chaekjang-restore',e=>{if(!demo&&typeof e.detail==='string')restoreText(e.detail);});
+function acceptPhoto(requestId,photo,error){
+  if(!photoRequest||requestId!==photoRequest.id)return;
+  const request=photoRequest;photoRequest=null;
+  if(error){toast(error);return;}if(!photo)return;
+  if(!$(`#${request.target}`).open||(request.target==='detail'&&request.bookId!==currentId)){toast('사진을 넣을 창을 다시 열고 선택해 주세요.');return;}
+  if(!validPhoto(photo)){toast('사진 형식을 읽지 못했어요. 다시 선택해 주세요.');return;}
+  showPhoto(request.target,photo);toast('사진을 준비했어요. 저장 버튼을 눌러 반영해 주세요.');
+}
+$$('[data-photo]').forEach(b=>b.onclick=()=>{
+  if(photoRequest){toast('사진을 처리 중이에요. 잠시 기다려 주세요.');return;}
+  photoRequest={id:crypto.randomUUID(),target:b.dataset.photo,bookId:currentId};
+  try{
+    if(android()){if(b.dataset.source==='camera')window.ChaekjangNative.takePhoto(photoRequest.id);else window.ChaekjangNative.choosePhoto(photoRequest.id);}
+    else $(b.dataset.source==='camera'?'#camera-file':'#photo-file').click();
+  }catch{photoRequest=null;toast('사진 선택 창을 열지 못했어요. 앱을 다시 열고 시도해 주세요.');}
+});
+$$('[data-photo-remove]').forEach(b=>b.onclick=()=>{photoRequest=null;showPhoto(b.dataset.photoRemove,null);});
+for(const id of ['photo-file','camera-file']){
+  $('#'+id).onchange=async e=>{const request=photoRequest;if(!request)return;const file=e.target.files[0];try{if(file)acceptPhoto(request.id,await shrinkPhoto(file));else photoRequest=null;}catch(err){acceptPhoto(request.id,null,err.message);}finally{e.target.value='';}};
+  $('#'+id).addEventListener('cancel',()=>photoRequest=null);
+}
+window.addEventListener('chaekjang-photo',e=>{const d=e.detail||{};acceptPhoto(d.requestId,d.photo,d.error);});
+function actualBooks(){return demo?realBooks:books;}
+function backupText(){const text=JSON.stringify({version:2,exportedAt:new Date().toISOString(),books:actualBooks()});if(new Blob([text]).size>MAX_BACKUP_BYTES)throw Error('백업 크기가 128MB를 넘었어요. 사진을 줄인 뒤 다시 시도해 주세요.');return text;}
+$('#backup').onclick=()=>{
+  if(!canUse())return;const list=actualBooks();$('#backup-summary').textContent=`내 시리즈 ${list.length}개 · ${list.reduce((n,b)=>n+b.volumes.length,0).toLocaleString()}권`;
+  $('#backup-demo-note').hidden=!demo;$('#share-backup').hidden=!android()&&!navigator.share;
+  $('#save-backup').textContent=android()?'휴대폰·Drive에 파일 저장':'백업 파일 다운로드';$('#backup-dialog').showModal();
+};
+async function exportFile(mode){
+  try{
+    const text=backupText(),name=`책장-백업-${localDay()}.json`;
+    if(android()){window.ChaekjangNative.exportBackup(text,mode);$('#backup-dialog').close();toast(mode==='share'?'공유할 앱을 선택해 주세요.':'백업 파일을 저장할 위치를 선택해 주세요.');return;}
+    const blob=new Blob([text],{type:'application/json'});
+    if(mode==='share'&&navigator.canShare?.({files:[new File([blob],name,{type:'application/json'})]})){await navigator.share({files:[new File([blob],name,{type:'application/json'})],title:'책장 백업'});$('#backup-dialog').close();return;}
+    const url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#backup-dialog').close();toast('백업 파일을 다운로드했어요. 안전하게 보관해 주세요.');
+  }catch(err){if(err.name!=='AbortError')toast(err.message||'백업 파일을 준비하지 못했어요.');}
+}
+$('#save-backup').onclick=()=>exportFile('save');$('#share-backup').onclick=()=>exportFile('share');
+async function restoreText(text){
+  try{
+    if(saveBusy){toast('저장 중이에요. 완료 후 다시 복원해 주세요.');return;}
+    if(new Blob([text]).size>MAX_BACKUP_BYTES)throw Error('128MB 이하의 백업 파일을 선택해 주세요.');
+    const restored=validateBackup(JSON.parse(text));if(!confirm(`실제 내 컬렉션을 백업의 ${restored.length}개 시리즈로 교체할까요? 기존 목록은 덮어씁니다.`))return;
+    saveBusy=true;try{await saveCollection(restored);}finally{saveBusy=false;}
+    books=restored;realBooks=[];demo=false;ready=true;storageBlocked=false;page=1;filter='all';$('#search').value='';$('#loading').hidden=true;render();toast('사진과 날짜를 포함해 백업을 복원했어요.');
+  }catch(err){toast(err instanceof SyntaxError?'올바른 JSON 백업 파일을 선택해 주세요.':err.message||'복원에 실패했어요. 기존 목록은 유지했어요.');}
+}
+$('#restore').onclick=()=>{if(!ready){toast('목록을 불러오는 중이에요.');return;}try{if(android()){window.ChaekjangNative.importBackup();toast('내 휴대폰이나 Drive에서 백업 파일을 선택해 주세요.');}else $('#file').click();}catch{toast('파일 선택 창을 열지 못했어요. 앱을 다시 열고 시도해 주세요.');}};
+$('#file').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>MAX_BACKUP_BYTES)throw Error('128MB 이하의 백업 파일을 선택해 주세요.');await restoreText(await file.text());}catch(err){toast(err.message);}finally{e.target.value='';}};
+window.addEventListener('chaekjang-restore',e=>{if(typeof e.detail==='string')restoreText(e.detail);});
 window.addEventListener('chaekjang-message',e=>{if(typeof e.detail==='string')toast(e.detail);});
-if(window.ChaekjangNative){
-  document.body.classList.add('android-app');
-  $('.sidebar-bottom small').innerHTML='데이터는 이 휴대폰에 저장됩니다.<br>앱 삭제 전 꼭 백업해 주세요.';
-  $('header>span').textContent='나의 만화책장 · 오프라인';
-  $('footer span').textContent='이 휴대폰에 저장됩니다 · 앱 삭제 전 꼭 백업하세요.';
-}
-let realBooks;
-$('#demo').onclick=()=>{if(demo){books=realBooks;demo=false;}else{realBooks=books;demo=true;books=[['슬램덩크','이노우에 다케히코',31,'거래중','전권 세트 · 중고나라 문의 답변하기. 모서리 상태 사진 전달 예정.'],['원피스','오다 에이치로',108,'보유중','1–60권은 거실 책장, 나머지는 서재에 보관.'],['귀멸의 칼날','고토게 코요하루',23,'거래중','완결 세트 / 택배비 포함 75,000원.'],['명탐정 코난','아오야마 고쇼',105,'보유중','초판 일부 포함. 책장 두 번째 칸.'],['하이큐!!','후루다테 하루이치',45,'보유중','전권 완결 · 가장 아끼는 시리즈.'],['강철의 연금술사','아라카와 히로무',27,'거래완료','전권 판매 완료. 다음 독자에게 잘 도착!'],['진격의 거인','이사야마 하지메',34,'보유중','완결권까지 모두 소장.'],['스파이 패밀리','엔도 타츠야',13,'보유중','다음 권 구매 예정.'],['나루토','키시모토 마사시',72,'보유중','책등 햇빛 노출 주의.']].map(([title,author,to,status,note],i)=>({id:`demo-${i}`,title,author,volumes:makeVolumes(1,to,'',status),note,createdAt:Date.now()-i*1000}));}page=1;filter='all';$('#search').value='';render();};
-window.addEventListener('storage',e=>{if(e.key===KEY&&!demo){try{books=e.newValue?validateBackup(JSON.parse(e.newValue)):[];render();toast('다른 창의 변경사항을 반영했어요.');}catch{toast('다른 창의 데이터를 읽지 못했어요.');}}});
-render();
-</script></body></html>
+if(android()){$('footer span').textContent='이 휴대폰에 저장됩니다 · 앱 삭제 전 꼭 백업하세요.';$('.header-context').textContent='나의 만화책장 · 오프라인';document.body.classList.add('android-app');}
+$('#demo').onclick=()=>{
+  if(!canUse())return;
+  if(demo){books=realBooks;realBooks=[];demo=false;}
+  else{realBooks=books;demo=true;books=[['슬램덩크','이노우에 다케히코',31,'거래중','전권 세트 · 중고나라 문의 답변하기.'],['원피스','오다 에이치로',108,'보유중','1–60권은 거실 책장, 나머지는 서재에 보관.'],['귀멸의 칼날','고토게 코요하루',23,'거래중','완결 세트 / 택배비 포함 75,000원.'],['명탐정 코난','아오야마 고쇼',105,'보유중','초판 일부 포함. 책장 두 번째 칸.'],['하이큐!!','후루다테 하루이치',45,'보유중','전권 완결 · 가장 아끼는 시리즈.'],['강철의 연금술사','아라카와 히로무',27,'거래완료','전권 판매 완료. 다음 독자에게 잘 도착!']].map(([title,author,to,status,note],i)=>({id:`demo-${i}`,title,author,volumes:makeVolumes(1,to,'',status),note,createdAt:Date.now()-i*86400000,photo:null}));}
+  page=1;filter='all';$('#search').value='';render();
+};
+(async()=>{try{books=await loadCollection(validateBackup);ready=true;$('#loading').hidden=true;render();}catch{ready=true;storageBlocked=true;$('#loading').textContent='기존 목록을 읽지 못했어요. 앱을 다시 열거나 백업을 복원해 주세요. 기존 데이터는 덮어쓰지 않았어요.';toast('기기 저장 공간을 확인해 주세요. 기존 데이터는 보호하고 있어요.');}})();
+</script>
+</body></html>

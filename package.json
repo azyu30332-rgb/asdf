@@ -1,6 +1,6 @@
 {
   "name": "chaekjang-manga-library",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "개인 만화책 컬렉션과 거래 관리",
   "scripts": {

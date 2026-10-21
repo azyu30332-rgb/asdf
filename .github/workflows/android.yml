@@ -8,6 +8,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -37,6 +38,30 @@ jobs:
       - name: Build and lint APK
         working-directory: android
         run: bash ./gradlew --no-daemon assembleDebug lintDebug
+      - name: Enable emulator acceleration
+        run: |
+          test -e /dev/kvm
+          sudo chown "$USER" /dev/kvm
+      - name: Test actual Android backup, restore and photos
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+          disable-animations: true
+          working-directory: android
+          script: bash ./gradlew --no-daemon connectedDebugAndroidTest
+      - name: Report Android test outcomes
+        if: always()
+        run: python3 tests/report_android.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-device-test-results
+          path: android/app/build/reports/androidTests/connected/
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
           name: chaekjang-android-debug

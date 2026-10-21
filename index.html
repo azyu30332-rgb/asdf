@@ -1,7 +1,81 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>책장 — 나의 만화 컬렉션</title><link rel="stylesheet" href="style.css"></head>
-<body><aside><a class="brand" href="./"><span>冊</span> 책장<span class="brand-dot">.</span></a><div class="sidebar-label">MY COLLECTION</div><button class="nav active" data-filter="all">▤ <span>전체 컬렉션</span><b id="side-count">0</b></button><button class="nav" data-filter="거래중">↗ <span>거래중인 책</span><i></i></button><button class="nav" data-filter="거래완료">✓ <span>거래 기록</span></button><div class="sidebar-bottom"><div class="shelf-art">▥ ▤ ▥ ▥</div><strong>책마다 이야기가 있으니까.</strong><p>소중한 컬렉션을 한곳에 담아보세요.</p><small>데이터는 이 브라우저에 저장됩니다.<br>정기적으로 백업 파일을 보관해 주세요.</small></div></aside>
-<main><header><span>나만의 작은 도서관</span><div class="header-actions"><button id="backup">↥ 백업</button><button id="restore">↧ 복원</button><input type="file" id="file" accept="application/json" hidden><div class="avatar">나</div></div></header><section class="page"><div class="heading"><div><div class="eyebrow">YOUR PERSONAL MANGA LIBRARY</div><h1>나의 만화 컬렉션<span>.</span></h1><p>좋아하는 이야기를 모으고, 다음 독자에게 이어주세요.</p></div><button class="primary" id="add">＋ 만화책 등록</button></div><div class="stats"><article><span>전체 소장</span><strong id="total">0<small>권</small></strong><p id="series-count">0개의 시리즈와 함께하고 있어요</p><div class="stat-icon">▥</div></article><article><span>보유중</span><strong id="owned">0<small>권</small></strong><p><i class="dot green"></i> 책장에서 다음 이야기를 기다리는 중</p></article><article class="trading-stat"><span>거래중</span><strong id="trading">0<small>권</small></strong><p><i class="dot orange"></i> 잊지 말고 거래를 확인해 주세요</p></article><article><span>거래완료</span><strong id="sold">0<small>권</small></strong><p>새로운 독자에게 이어진 이야기</p></article></div>
-<div class="collection-head"><h2>컬렉션 <span id="result-count">0</span></h2><button id="demo">샘플 둘러보기</button></div><div class="toolbar"><div class="tabs"><button class="selected" data-filter="all">전체</button><button data-filter="보유중">보유중</button><button data-filter="거래중">거래중</button><button data-filter="거래완료">거래완료</button></div><label class="search"><span>⌕</span><input id="search" placeholder="제목, 작가, 권수, 메모 검색" aria-label="컬렉션 검색"><kbd>/</kbd></label><select id="sort" aria-label="정렬"><option value="recent">최근 등록순</option><option value="title">제목순</option><option value="count">권수 많은순</option></select></div><div class="notice"><span>↗</span> 거래중인 시리즈는 항상 맨 위에 표시돼요.<span id="demo-label"></span></div><div id="list" class="book-grid"></div><div id="empty" class="empty"><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>시리즈 제목과 권수만 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 만화책 등록</button></div><div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div><footer><span>책장에 쌓이는, 나만의 이야기.</span><span>MY MANGA COLLECTION</span></footer></section></main>
-<dialog id="editor"><form id="book-form"><div class="modal-head"><div><div class="eyebrow">MY COLLECTION</div><h2 id="modal-title">새로운 이야기 등록</h2></div><button type="button" class="close" aria-label="닫기">×</button></div><label>시리즈 제목 <em>*</em><input name="title" required maxlength="150" placeholder="예: 슬램덩크"></label><label>작가<input name="author" maxlength="100" placeholder="예: 이노우에 다케히코"></label><div class="form-row"><label>시작 권<input name="from" type="number" min="1" max="10000" value="1" required></label><label>마지막 권<input name="to" type="number" min="1" max="10000" value="1" required></label></div><label>빠진 권 (선택)<input name="missing" placeholder="예: 3, 7-9"><small>여러 권은 쉼표로, 연속된 권은 하이픈으로 입력하세요.</small></label><label>등록 상태<select name="status"><option>보유중</option><option>거래중</option><option>거래완료</option></select></label><label>나만의 메모<textarea name="note" rows="3" maxlength="5000" placeholder="책 상태, 보관 위치, 판매 가격 등을 자유롭게 남겨보세요."></textarea></label><p id="form-error" class="error" role="alert"></p><div class="modal-actions"><button type="button" class="close secondary">취소</button><button class="primary" type="submit">컬렉션에 등록</button></div></form></dialog>
-<dialog id="detail"><div class="modal-head"><div><div class="eyebrow">SERIES DETAILS</div><h2 id="detail-title"></h2></div><button class="close" aria-label="닫기">×</button></div><p class="muted" id="detail-author"></p><div class="volume-toolbar"><strong>권별 거래 상태</strong><button id="select-all">전체 선택</button></div><p class="hint">변경할 권을 선택한 뒤 상태를 적용하세요.</p><div id="volumes"></div><div class="bulk"><select id="bulk-status" aria-label="변경할 상태"><option>보유중</option><option>거래중</option><option>거래완료</option></select><button class="primary" id="apply">선택한 권에 적용</button></div><label class="note-label">나만의 메모<textarea id="detail-note" rows="4" maxlength="5000"></textarea></label><div class="modal-actions"><button id="delete" class="danger">시리즈 삭제</button><button id="save-note" class="primary">메모 저장</button></div></dialog><div id="toast" role="status"></div><script type="module" src="app.js"></script></body></html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>책장 — 나의 만화 컬렉션</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<aside>
+  <a class="brand" href="./"><span>冊</span> 책장<span class="brand-dot">.</span></a>
+  <div class="sidebar-label">MY COLLECTION</div>
+  <button class="nav active" data-filter="all">▤ <span>전체 컬렉션</span><b id="side-count">0</b></button>
+  <button class="nav" data-filter="거래중">↗ <span>거래중인 책</span><i></i></button>
+  <button class="nav" data-filter="거래완료">✓ <span>거래 기록</span></button>
+  <div class="sidebar-bottom"><div class="shelf-art">▥ ▤ ▥</div><strong>책마다 이야기가 있으니까.</strong><p>소중한 컬렉션을 한곳에 담아보세요.</p><small>데이터는 이 기기에 저장됩니다.<br>정기적으로 백업 파일을 보관해 주세요.</small></div>
+</aside>
+<main>
+<header>
+  <span class="mobile-brand">冊 책장<span>.</span></span><span class="header-context">나만의 작은 도서관</span>
+  <div class="header-actions"><button id="theme-settings" aria-label="색깔 테마 설정" title="색깔 테마">◐</button><button id="backup">백업</button><button id="restore">복원</button></div>
+  <input type="file" id="file" accept="application/json,.json" hidden>
+</header>
+<section class="page">
+  <div class="heading"><div><div class="eyebrow">YOUR PERSONAL MANGA LIBRARY</div><h1>나의 만화 컬렉션<span>.</span></h1><p>좋아하는 이야기를 모으고, 다음 독자에게 이어주세요.</p></div><button class="primary" id="add">＋ 만화책 등록</button></div>
+  <div class="stats">
+    <article><span>전체 소장</span><strong id="total">0<small>권</small></strong><p id="series-count">0개의 시리즈</p></article>
+    <article><span>보유중</span><strong id="owned">0<small>권</small></strong><p>책장에서 기다리는 이야기</p></article>
+    <article class="trading-stat"><span>거래중</span><strong id="trading">0<small>권</small></strong><p>진행 중인 거래를 확인하세요</p></article>
+    <article><span>거래완료</span><strong id="sold">0<small>권</small></strong><p>새로운 독자에게 이어진 이야기</p></article>
+  </div>
+  <div class="collection-head"><h2>컬렉션 <span id="result-count">0</span></h2><button id="demo">샘플 둘러보기</button></div>
+  <div class="toolbar">
+    <div class="tabs"><button class="selected" data-filter="all">전체</button><button data-filter="보유중">보유중</button><button data-filter="거래중">거래중</button><button data-filter="거래완료">거래완료</button></div>
+    <label class="search"><span>⌕</span><input id="search" placeholder="제목, 작가, 메모, 날짜 검색" aria-label="컬렉션 검색"><kbd>/</kbd></label>
+    <select id="sort" aria-label="정렬"><option value="recent">최근 등록순</option><option value="title">제목순</option><option value="count">권수 많은순</option></select>
+  </div>
+  <div class="notice"><span>↗</span> 거래중인 시리즈가 맨 위에 표시돼요.<span id="demo-label"></span></div>
+  <p id="loading" role="status">컬렉션을 불러오는 중이에요…</p>
+  <div id="list" class="book-grid"></div>
+  <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 만화책 등록</button></div>
+  <div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div>
+  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.1.0</span></footer>
+</section>
+</main>
+<dialog id="editor"><form id="book-form">
+  <div class="modal-head"><h2>새로운 이야기 등록</h2><button type="button" class="close" aria-label="닫기">×</button></div>
+  <label>시리즈 제목 <input name="title" required maxlength="150" placeholder="예: 슬램덩크"></label>
+  <label>작가<input name="author" maxlength="100" placeholder="예: 이노우에 다케히코"></label>
+  <fieldset class="photo-field"><legend>표지 사진 <span>(선택)</span></legend><div class="photo-layout"><div class="photo-preview" id="editor-preview"><span>冊</span><img hidden alt="등록할 표지 사진"></div><div class="photo-actions"><button type="button" class="secondary" data-photo="editor" data-source="camera">사진 찍기</button><button type="button" class="secondary" data-photo="editor" data-source="gallery">사진 선택</button><button type="button" class="text-button" data-photo-remove="editor">사진 지우기</button></div></div><small>사진은 작은 썸네일로 저장되며 백업에도 포함돼요.</small></fieldset>
+  <div class="form-row"><label>시작 권<input name="from" type="number" min="1" max="10000" value="1" required></label><label>마지막 권<input name="to" type="number" min="1" max="10000" value="1" required></label></div>
+  <label>빠진 권 <span class="optional">선택</span><input name="missing" placeholder="예: 3, 7-9"><small>쉼표로 여러 권을, 하이픈으로 연속된 권을 지정해요.</small></label>
+  <label>등록일<input type="date" name="registeredOn" required></label>
+  <label>등록 상태<select name="status"><option>보유중</option><option>거래중</option><option>거래완료</option></select></label>
+  <label id="initial-sale" hidden>거래완료일<input type="date" name="soldOn"></label>
+  <label>나만의 메모<textarea name="note" rows="3" maxlength="5000" placeholder="책 상태, 보관 위치, 판매 가격 등을 남겨보세요."></textarea></label>
+  <p id="form-error" class="error" role="alert"></p>
+  <div class="modal-actions"><button type="button" class="close secondary">취소</button><button class="primary" type="submit">컬렉션에 등록</button></div>
+</form></dialog>
+<dialog id="detail">
+  <div class="modal-head"><h2 id="detail-title"></h2><button class="close" aria-label="닫기">×</button></div>
+  <p class="muted" id="detail-author"></p><p class="date-info" id="detail-dates"></p>
+  <fieldset class="photo-field"><legend>표지 사진</legend><div class="photo-layout"><div class="photo-preview" id="detail-preview"><span>冊</span><img hidden alt="시리즈 표지 사진"></div><div class="photo-actions"><button class="secondary" data-photo="detail" data-source="camera">사진 찍기</button><button class="secondary" data-photo="detail" data-source="gallery">사진 변경</button><button class="text-button" data-photo-remove="detail">사진 지우기</button></div></div></fieldset>
+  <div class="volume-toolbar"><strong>권별 거래 상태</strong><button id="select-all">전체 선택</button></div><p class="hint">변경할 권을 선택한 뒤 상태를 적용하세요.</p>
+  <div id="volumes"></div>
+  <div class="bulk"><select id="bulk-status" aria-label="변경할 상태"><option>보유중</option><option>거래중</option><option>거래완료</option></select><button class="primary" id="apply">선택한 권에 적용</button></div>
+  <div id="sale-controls" hidden><label>거래완료일<input id="sold-on" type="date"></label><label class="checkline"><input type="checkbox" id="replace-sold-date">이미 완료된 권의 판매일도 수정</label><small>체크하지 않으면 기록된 판매일을 유지해요.</small></div>
+  <label class="note-label">나만의 메모<textarea id="detail-note" rows="3" maxlength="5000"></textarea></label>
+  <div class="modal-actions"><button id="delete" class="danger">시리즈 삭제</button><button id="save-note" class="primary">사진·메모 저장</button></div>
+</dialog>
+<dialog id="backup-dialog">
+  <div class="modal-head"><h2>내 컬렉션 백업</h2><button class="close" aria-label="닫기">×</button></div>
+  <p id="backup-summary"></p><p class="hint">목록, 사진, 메모, 등록일과 거래완료일을 한 파일에 담아요.</p>
+  <div class="backup-actions"><button id="save-backup" class="primary">휴대폰·Drive에 파일 저장</button><button id="share-backup" class="secondary" hidden>Google Drive 등에 공유</button></div>
+  <p class="hint">저장 창에서 내 휴대폰이나 Google Drive를 선택하세요. Drive 앱 설치와 로그인이 필요할 수 있어요. 자동 동기화는 아니에요.</p>
+  <p class="hint" id="backup-demo-note" hidden>샘플 보기 중에도 실제 내 컬렉션만 백업해요.</p>
+</dialog>
+<dialog id="themes-dialog"><div class="modal-head"><h2>책장의 색깔 테마</h2><button class="close" aria-label="닫기">×</button></div><p class="hint">내 눈에 편한 색을 골라보세요. 다음에 열어도 유지돼요.</p><div class="theme-options">
+  <button data-theme-option="forest" class="theme-choice"><span class="swatch forest"></span><strong>숲빛</strong><small>싱그러운 그린</small></button>
+  <button data-theme-option="cream" class="theme-choice"><span class="swatch cream"></span><strong>따뜻한 크림</strong><small>포근한 종이빛</small></button>
+  <button data-theme-option="blue" class="theme-choice"><span class="swatch blue"></span><strong>차분한 블루</strong><small>맑고 편안한 파랑</small></button>
+  <button data-theme-option="dark" class="theme-choice"><span class="swatch dark"></span><strong>다크</strong><small>어두운 곳에서도 편하게</small></button>
+</div></dialog>
+<input type="file" id="photo-file" accept="image/*" hidden><input type="file" id="camera-file" accept="image/*" capture="environment" hidden>
+<div id="toast" role="status"></div><script type="module" src="app.js"></script>
+</body></html>
