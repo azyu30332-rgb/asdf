@@ -57,7 +57,22 @@ public class NativeFilesTest {
     }
     private File fixture(String name) throws Exception{File dir=new File(context().getCacheDir(),"backups");assertTrue(dir.isDirectory()||dir.mkdirs());return new File(dir,name);}
     private Uri uri(File file){return FileProvider.getUriForFile(context(),context().getPackageName()+".files",file);}
+    private void shell(String command) throws Exception{
+        try(java.io.InputStream in=new android.os.ParcelFileDescriptor.AutoCloseInputStream(InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(command))){
+            byte[] buffer=new byte[1024];while(in.read(buffer)!=-1){}
+        }
+    }
     @Before public void prepare() throws Exception{
+        shell("input keyevent KEYCODE_WAKEUP");
+        shell("wm dismiss-keyguard");
+        shell("settings put system screen_off_timeout 1800000");
+        long focusDeadline=System.currentTimeMillis()+10000;boolean focused=false;
+        while(System.currentTimeMillis()<focusDeadline){
+            AtomicReference<Boolean> focus=new AtomicReference<>(false);
+            activity.getScenario().onActivity(a->focus.set(a.hasWindowFocus()));
+            if(focus.get()){focused=true;break;}Thread.sleep(100);
+        }
+        assertTrue("Emulator window must be awake, unlocked and focused before UI tests",focused);
         waitJs("document.querySelector('#loading').hidden");
         fire("saveCollection([]).then(()=>{books=[];render();window.__resetDone=true;})");waitJs("window.__resetDone===true");Intents.init();
     }
