@@ -19,7 +19,7 @@ def adb(*args,required=False):
 adb('wait-for-device',required=True)
 # Android versions differ in supported power commands. The UI test separately requires
 # an awake, unlocked, focused app window, so optional setup commands do not replace it.
-for command in ['settings put system screen_off_timeout 1800000','svc power stayon true','input keyevent KEYCODE_WAKEUP','wm dismiss-keyguard']:
+for command in ['settings put system screen_off_timeout 1800000','svc power stayon true','input keyevent KEYCODE_WAKEUP','wm dismiss-keyguard','am force-stop com.google.android.apps.nexuslauncher']:
     adb('shell',command)
 print('Starting actual connectedDebugAndroidTest',flush=True)
 result=subprocess.run(['bash','./gradlew','--no-daemon','connectedDebugAndroidTest'],cwd=root/'android',stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)

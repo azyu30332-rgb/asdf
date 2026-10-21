@@ -63,9 +63,14 @@ public class NativeFilesTest {
         }
     }
     @Before public void prepare() throws Exception{
+        // The emulator's Pixel launcher can show an ANR over the test activity.
+        // Stop only that unrelated launcher, then bring our existing activity forward.
+        shell("am force-stop com.google.android.apps.nexuslauncher");
         shell("input keyevent KEYCODE_WAKEUP");
         shell("wm dismiss-keyguard");
         shell("settings put system screen_off_timeout 1800000");
+        activity.getScenario().onActivity(a->a.startActivity(new Intent(a,MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT|Intent.FLAG_ACTIVITY_SINGLE_TOP)));
         long focusDeadline=System.currentTimeMillis()+10000;boolean focused=false;
         while(System.currentTimeMillis()<focusDeadline){
             AtomicReference<Boolean> focus=new AtomicReference<>(false);
