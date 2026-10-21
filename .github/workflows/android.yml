@@ -61,6 +61,8 @@ jobs:
       - name: Report Android test outcomes
         if: always()
         run: python3 tests/report_android.py
+      - name: Verify installed version, UI assets and APK signature
+        run: python3 tests/verify_apk.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -69,6 +71,24 @@ jobs:
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
-          name: chaekjang-android-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: chaekjang-android-package
+          path: dist/android/
           if-no-files-found: error
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: chaekjang-android-package
+          path: dist/android/
+      - name: Publish uniquely named APK download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/publish-android.sh

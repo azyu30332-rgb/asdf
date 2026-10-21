@@ -1,0 +1,29 @@
+"""Verify the version and bundled UI of the APK being distributed, then name it uniquely."""
+from pathlib import Path
+import hashlib,json,os,re,shutil,subprocess,sys,zipfile
+root=Path(__file__).resolve().parents[1]
+apk=Path(sys.argv[1]) if len(sys.argv)>1 else root/'android/app/build/outputs/apk/debug/app-debug.apk'
+version=json.loads((root/'package.json').read_text())['version']
+assert re.fullmatch(r'\d+\.\d+\.\d+',version),'Invalid release version'
+config=(root/'android/app/build.gradle').read_text()
+code=int(re.search(r'versionCode\s+(\d+)',config).group(1))
+assert re.search(r"versionName\s+'([^']+)'",config).group(1)==version
+sdk=Path(os.environ.get('ANDROID_HOME','/workspace/.tools/android-sdk'))
+build_tools=sdk/'build-tools/35.0.0'
+badging=subprocess.check_output([str(build_tools/'aapt'),'dump','badging',str(apk)],text=True)
+assert f"versionCode='{code}'" in badging and f"versionName='{version}'" in badging,'APK version mismatch'
+assert "name='kr.chaekjang.app'" in badging,'Unexpected application ID'
+subprocess.run([str(build_tools/'apksigner'),'verify',str(apk)],check=True)
+with zipfile.ZipFile(apk) as archive:
+    embedded=archive.read('assets/index.html')
+assert embedded==(root/'chaekjang.html').read_bytes(),'APK contains stale web assets'
+text=embedded.decode('utf-8')
+for marker in [f'설치 버전">v{version}</span>','themes-dialog','사진 찍기','거래완료일','share-backup','restore']:
+    assert marker in text,f'APK UI is missing {marker}'
+output=root/'dist/android';output.mkdir(parents=True,exist_ok=True)
+name=f'chaekjang-{version}.apk';shutil.copyfile(apk,output/name)
+digest=hashlib.sha256(apk.read_bytes()).hexdigest()
+(output/'SHA256SUMS').write_text(f'{digest}  {name}\n')
+commit=os.environ.get('GITHUB_SHA') or subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip()
+(output/'release-metadata.json').write_text(json.dumps({'version':version,'versionCode':code,'commit':commit,'sha256':digest,'apk':name},indent=2)+'\n')
+print(f'Verified Android package {version} (code {code}), matching bundled UI and signature: {name}')

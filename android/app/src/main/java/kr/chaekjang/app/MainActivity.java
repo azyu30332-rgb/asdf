@@ -102,6 +102,10 @@ public final class MainActivity extends Activity {
         try{JSONObject result=new JSONObject();result.put("requestId",token);result.put("photo",photo==null?JSONObject.NULL:photo);result.put("error",error==null?JSONObject.NULL:error);event("chaekjang-photo",result.toString());}catch(Exception ignored){}
     }
     public final class NativeFiles {
+        @JavascriptInterface public String getAppVersion(){
+            try{return getPackageManager().getPackageInfo(getPackageName(),0).versionName;}
+            catch(android.content.pm.PackageManager.NameNotFoundException e){return "확인 불가";}
+        }
         @JavascriptInterface public void setTheme(String theme){runOnUiThread(()->{
             if(isFinishing()||isDestroyed())return;
             boolean dark="dark".equals(theme);

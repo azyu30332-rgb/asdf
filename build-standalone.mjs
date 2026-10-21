@@ -1,5 +1,7 @@
 import {readFile, writeFile} from 'node:fs/promises';
+const version = JSON.parse(await readFile(new URL('package.json', import.meta.url), 'utf8')).version;
 const html = await readFile(new URL('index.html', import.meta.url), 'utf8');
+if (!html.includes(`id="app-version" aria-label="설치 버전">v${version}</span>`)) throw Error('Visible app version does not match package.json');
 const css = (await readFile(new URL('style.css', import.meta.url), 'utf8')).replace(/^@import[^\n]*\n/gm, '');
 const model = (await readFile(new URL('model.mjs', import.meta.url), 'utf8')).replace(/^export /gm, '');
 const storage = (await readFile(new URL('storage.mjs', import.meta.url), 'utf8')).replace(/^export /gm, '');

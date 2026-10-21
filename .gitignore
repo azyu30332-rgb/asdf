@@ -9,3 +9,4 @@ android/keystore.properties
 *.apk
 *.aab
 android/app/src/main/assets/index.html
+dist/

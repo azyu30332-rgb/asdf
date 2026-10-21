@@ -78,6 +78,11 @@ public class NativeFilesTest {
     }
     @After public void finish(){Intents.release();}
 
+    @Test public void visibleVersionMatchesInstalledPackage() throws Exception{
+        String version=context().getPackageManager().getPackageInfo(context().getPackageName(),0).versionName;
+        assertEquals(JSONObject.quote("v"+version),js("document.querySelector('#app-version').textContent"));
+        assertEquals("true",js("document.querySelector('#app-version').getBoundingClientRect().top>=0"));
+    }
     @Test public void backupButtonsCreateRealFileAndRecoverAfterCancel() throws Exception{
         intending(hasAction(Intent.ACTION_CREATE_DOCUMENT)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED,null));
         fire("document.querySelector('#backup').click();document.querySelector('#save-backup').click()");

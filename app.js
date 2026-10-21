@@ -175,7 +175,7 @@ $('#restore').onclick=()=>{if(!ready){toast('목록을 불러오는 중이에요
 $('#file').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>MAX_BACKUP_BYTES)throw Error('128MB 이하의 백업 파일을 선택해 주세요.');await restoreText(await file.text());}catch(err){toast(err.message);}finally{e.target.value='';}};
 window.addEventListener('chaekjang-restore',e=>{if(typeof e.detail==='string')restoreText(e.detail);});
 window.addEventListener('chaekjang-message',e=>{if(typeof e.detail==='string')toast(e.detail);});
-if(android()){$('footer span').textContent='이 휴대폰에 저장됩니다 · 앱 삭제 전 꼭 백업하세요.';$('.header-context').textContent='나의 만화책장 · 오프라인';document.body.classList.add('android-app');}
+if(android()){try{if(typeof window.ChaekjangNative.getAppVersion==='function')$('#app-version').textContent='v'+window.ChaekjangNative.getAppVersion();}catch{}$('footer span').textContent='이 휴대폰에 저장됩니다 · 앱 삭제 전 꼭 백업하세요.';$('.header-context').textContent='나의 만화책장 · 오프라인';document.body.classList.add('android-app');}
 $('#demo').onclick=()=>{
   if(!canUse())return;
   if(demo){books=realBooks;realBooks=[];demo=false;}

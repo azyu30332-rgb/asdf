@@ -11,6 +11,8 @@ async def main():
   legacy={'version':1,'books':[{'id':'legacy','title':'기존 만화','author':'작가','note':'기존 메모','createdAt':1700000000000,'volumes':[{'number':1,'status':'거래완료'},{'number':2,'status':'보유중'}]}]}
   await page.add_init_script('if(!localStorage.getItem("seeded")){localStorage.setItem("chaekjang.collection.v1",'+json.dumps(json.dumps(legacy,ensure_ascii=False))+');localStorage.setItem("seeded","yes");}')
   await page.goto('http://127.0.0.1:3000/chaekjang.html');await page.locator('.book-card').wait_for()
+  assert await page.locator('#app-version').inner_text()=='v1.1.1'
+  assert await page.locator('#app-version').is_visible()
   assert '판매일 미기록' in await page.locator('.card-dates').inner_text()
   assert await page.evaluate('books[0].createdAt')==1700000000000
   assert await page.evaluate("parseFloat(getComputedStyle(document.querySelector('h3')).fontSize)")>=19
