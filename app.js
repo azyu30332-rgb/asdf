@@ -1,4 +1,4 @@
-import {makeVolumes, seriesStatus, validateBackup, selectBooks, changeStatus, localDay, isDay, validPhoto, MAX_BACKUP_BYTES, MAX_PHOTO_LENGTH, registrationTime} from './model.mjs';
+import {collectionCount, volumeSummary, makeVolumes, seriesStatus, validateBackup, selectBooks, changeStatus, localDay, isDay, validPhoto, MAX_BACKUP_BYTES, MAX_PHOTO_LENGTH, registrationTime} from './model.mjs';
 import {loadCollection, saveCollection} from './storage.mjs';
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 let books=[], demo=false, realBooks=[], filter='all', page=1, currentId=null, ready=false, storageBlocked=false, saveBusy=false;
@@ -30,7 +30,7 @@ async function persist(next){
 function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
 const colors=['#225c51','#d17b47','#3f5574','#b05b58','#78643f','#51515e','#55807e','#777646'];
 function color(title){return colors[Array.from(title).reduce((s,c)=>s+c.codePointAt(0),0)%colors.length];}
-function badge(status){return el('span','badge '+(status==='거래중'?'trading':status==='거래완료'?'sold':''),status);}
+function badge(status){return el('span','badge '+(status==='거래중'?'trading':status==='거래완료'?'sold':status==='미보유'?'missing':''),status);}
 function range(volumes){const ns=volumes.map(v=>v.number).sort((a,b)=>a-b);return ns.length===1?`${ns[0]}권`:`${ns[0]}–${ns.at(-1)}권${ns.length!==ns.at(-1)-ns[0]+1?' · 일부 제외':''}`;}
 function dateLabel(day){return day.replaceAll('-','.');}
 function saleSummary(b){
@@ -46,7 +46,7 @@ function makeCover(b){
   return cover;
 }
 function render(){
-  const counts={'보유중':0,'거래중':0,'거래완료':0};books.forEach(b=>b.volumes.forEach(v=>counts[v.status]++));
+  const counts={'보유중':0,'거래중':0,'거래완료':0};books.forEach(b=>b.volumes.forEach(v=>{if(v.status!=='미보유')counts[v.status]++;}));
   const total=Object.values(counts).reduce((a,b)=>a+b,0);
   for(const [id,n] of Object.entries({total,owned:counts['보유중'],trading:counts['거래중'],sold:counts['거래완료']}))$('#'+id).replaceChildren(document.createTextNode(n.toLocaleString()),el('small','','권'));
   $('#side-count').textContent=books.length;$('#series-count').textContent=`${books.length.toLocaleString()}개의 시리즈`;
@@ -56,11 +56,11 @@ function render(){
     const status=seriesStatus(b),card=el('article','book-card'+(status==='거래중'?' is-trading':''));
     card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label',`${b.title} 상세 및 권별 상태 관리`);
     const top=el('div','card-top'),info=el('div','card-info');info.append(badge(status),el('h3','',b.title),el('p','author',b.author||'작가 미등록'));
-    const r=el('div','range',range(b.volumes));r.append(el('b','',`총 ${b.volumes.length}권`));info.append(r);top.append(makeCover(b),info);
+    const r=el('div','range',range(b.volumes));r.append(el('b','',volumeSummary(b.volumes)));info.append(r);top.append(makeCover(b),info);
     const note=el('p','card-note','✎ '+(b.note||'남겨진 메모가 없어요.'));note.title=b.note;
     const dates=el('div','card-dates');dates.append(el('span','',`등록 ${dateLabel(localDay(new Date(b.createdAt)))}`));if(saleSummary(b))dates.append(el('span','',saleSummary(b)));
     const trading=b.volumes.filter(v=>v.status==='거래중').length,sold=b.volumes.filter(v=>v.status==='거래완료').length,bottom=el('div','card-bottom');
-    bottom.append(el('span','',trading?`${trading}권 거래중${sold?` · ${sold}권 판매`:''}`:sold?`${sold}권 거래완료`:'소중히 보관중'),el('span','','상세 보기 →'));card.append(top,note,dates,bottom);
+    bottom.append(el('span','',trading?`${trading}권 거래중${sold?` · ${sold}권 판매`:''}`:sold?`${sold}권 거래완료`:status==='미보유'?'구매 후 보유중으로 변경하세요':'소중히 보관중'),el('span','','상세 보기 →'));card.append(top,note,dates,bottom);
     card.onclick=()=>openDetail(b.id);card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDetail(b.id);}};$('#list').append(card);
   });
   $('#empty').hidden=!!matches.length||!ready||storageBlocked;
@@ -85,7 +85,7 @@ $('#book-form').onsubmit=async e=>{
     const numbers=new Set(volumes.map(v=>v.number));if(books.some(b=>b.title.toLocaleLowerCase()===title.toLocaleLowerCase()&&b.volumes.some(v=>numbers.has(v.number))))throw Error('같은 제목에 중복되는 권이 있어요. 기존 시리즈를 확인해 주세요.');
     const registeredOn=f.get('registeredOn'),createdAt=registrationTime(registeredOn);
     const b={id:crypto.randomUUID(),title,author:f.get('author').trim(),volumes,note:f.get('note').trim(),createdAt,photo:draftPhotos.editor};
-    submit.disabled=true;if(await persist([...books,b])){$('#editor').close();toast(`${volumes.length}권을 등록했어요.${demo?' (샘플)':''}`);}
+    submit.disabled=true;if(await persist([...books,b])){$('#editor').close();toast(`${volumeSummary(volumes)}을 등록했어요.${demo?' (샘플)':''}`);}
   }catch(err){$('#form-error').textContent=err.message;}finally{submit.disabled=false;}
 };
 $$('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;page=1;render();});
@@ -93,11 +93,11 @@ $('#search').oninput=()=>{page=1;render();};$('#sort').onchange=()=>{page=1;rend
 document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&!$$('dialog').some(d=>d.open)){e.preventDefault();$('#search').focus();}});
 function updateDetailDates(b){$('#detail-dates').textContent=`등록일 ${dateLabel(localDay(new Date(b.createdAt)))}${saleSummary(b)?' · '+saleSummary(b):''}`;}
 function openDetail(id){
-  currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · 총 ${b.volumes.length}권`;
+  currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;
   updateDetailDates(b);$('#detail-note').value=b.note;showPhoto('detail',b.photo||null);$('#bulk-status').value='보유중';$('#sale-controls').hidden=true;$('#sold-on').value=localDay();$('#replace-sold-date').checked=false;renderVolumes(b);$('#detail').showModal();
 }
 function renderVolumes(b){$('#volumes').replaceChildren();b.volumes.forEach(v=>{
-  const l=el('label','volume '+(v.status==='거래중'?'trading':v.status==='거래완료'?'sold':'')),input=el('input');input.type='checkbox';input.value=v.number;input.setAttribute('aria-label',`${v.number}권 · ${v.status}`);
+  const l=el('label','volume '+(v.status==='거래중'?'trading':v.status==='거래완료'?'sold':v.status==='미보유'?'missing':'')),input=el('input');input.type='checkbox';input.value=v.number;input.setAttribute('aria-label',`${v.number}권 · ${v.status}`);
   const span=el('span','',`${v.number}권 · ${v.status}`);if(v.status==='거래완료')span.append(el('small','',v.soldAt?`판매 ${dateLabel(v.soldAt)}`:'판매일 미기록'));l.append(input,span);$('#volumes').append(l);
 });}
 $('#select-all').onclick=()=>{const all=$$('#volumes input'),checked=all.some(n=>!n.checked);all.forEach(n=>n.checked=checked);};
@@ -105,7 +105,7 @@ $('#bulk-status').onchange=e=>$('#sale-controls').hidden=e.target.value!=='거�
 $('#apply').onclick=async()=>{
   const selected=new Set($$('#volumes input:checked').map(n=>Number(n.value)));if(!selected.size){toast('상태를 변경할 권을 먼저 선택해 주세요.');return;}
   try{const status=$('#bulk-status').value,next=books.map(b=>b.id===currentId?{...b,volumes:b.volumes.map(v=>selected.has(v.number)?changeStatus(v,status,$('#sold-on').value,$('#replace-sold-date').checked):v)}:b);
-    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);updateDetailDates(b);toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
+    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);updateDetailDates(b);$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
   }catch(err){toast(err.message);}
 };
 $('#save-note').onclick=async()=>{if(photoRequest?.target==='detail'){toast('사진을 처리 중이에요. 잠시 기다려 주세요.');return;}if(await persist(books.map(b=>b.id===currentId?{...b,note:$('#detail-note').value,photo:draftPhotos.detail}:b))){$('#detail').close();toast('사진과 메모를 저장했어요.');}};
@@ -148,7 +148,7 @@ window.addEventListener('chaekjang-photo',e=>{const d=e.detail||{};acceptPhoto(d
 function actualBooks(){return demo?realBooks:books;}
 function backupText(){const text=JSON.stringify({version:2,exportedAt:new Date().toISOString(),books:actualBooks()});if(new Blob([text]).size>MAX_BACKUP_BYTES)throw Error('백업 크기가 128MB를 넘었어요. 사진을 줄인 뒤 다시 시도해 주세요.');return text;}
 $('#backup').onclick=()=>{
-  if(!canUse())return;const list=actualBooks();$('#backup-summary').textContent=`내 시리즈 ${list.length}개 · ${list.reduce((n,b)=>n+b.volumes.length,0).toLocaleString()}권`;
+  if(!canUse())return;const list=actualBooks();$('#backup-summary').textContent=`내 시리즈 ${list.length}개 · ${list.reduce((n,b)=>n+collectionCount(b.volumes),0).toLocaleString()}권`;
   $('#backup-demo-note').hidden=!demo;$('#share-backup').hidden=!android()&&!navigator.share;
   $('#save-backup').textContent=android()?'휴대폰·Drive에 파일 저장':'백업 파일 다운로드';$('#backup-dialog').showModal();
 };
@@ -175,7 +175,7 @@ $('#restore').onclick=()=>{if(!ready){toast('목록을 불러오는 중이에요
 $('#file').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>MAX_BACKUP_BYTES)throw Error('128MB 이하의 백업 파일을 선택해 주세요.');await restoreText(await file.text());}catch(err){toast(err.message);}finally{e.target.value='';}};
 window.addEventListener('chaekjang-restore',e=>{if(typeof e.detail==='string')restoreText(e.detail);});
 window.addEventListener('chaekjang-message',e=>{if(typeof e.detail==='string')toast(e.detail);});
-if(android()){try{if(typeof window.ChaekjangNative.getAppVersion==='function')$('#app-version').textContent='v'+window.ChaekjangNative.getAppVersion();}catch{}$('footer span').textContent='이 휴대폰에 저장됩니다 · 앱 삭제 전 꼭 백업하세요.';$('.header-context').textContent='나의 만화책장 · 오프라인';document.body.classList.add('android-app');}
+if(android()){try{if(typeof window.ChaekjangNative.getAppVersion==='function')$('#app-version').textContent='v'+window.ChaekjangNative.getAppVersion();}catch{}$('footer span').textContent='이 휴대폰에 저장됩니다 · 앱 삭제 전 꼭 백업하세요.';$('.header-context').textContent='나의 책장 · 오프라인';document.body.classList.add('android-app');}
 $('#demo').onclick=()=>{
   if(!canUse())return;
   if(demo){books=realBooks;realBooks=[];demo=false;}

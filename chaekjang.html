@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ko">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>책장 — 나의 만화 컬렉션</title><style>:root{color-scheme:light;--bg:#f5f8f6;--surface:#fff;--ink:#24372e;--muted:#64746b;--green:#167c60;--accent-text:#fff;--line:#dce5df;--soft:#e8f2ec;--tab:#e7ece8;--sold-bg:#edf0f2;--sold-text:#64727f;--trading-bg:#fff6e7;--trading-text:#98621f;--trading-border:#e8d2b2;--danger:#a83932;--shadow:#14332215}
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>책장 — 나의 책장 컬렉션</title><style>:root{color-scheme:light;--bg:#f5f8f6;--surface:#fff;--ink:#24372e;--muted:#64746b;--green:#167c60;--accent-text:#fff;--line:#dce5df;--soft:#e8f2ec;--tab:#e7ece8;--sold-bg:#edf0f2;--sold-text:#64727f;--trading-bg:#fff6e7;--trading-text:#98621f;--trading-border:#e8d2b2;--danger:#a83932;--shadow:#14332215}
 body[data-theme=cream]{--bg:#f8f2e8;--surface:#fffdf7;--ink:#473a2d;--muted:#796957;--green:#91613d;--line:#e7dac7;--soft:#f5e6cf;--tab:#ede3d4;--trading-bg:#fff0da;--trading-text:#96601b;--trading-border:#e5c99f;--shadow:#4c311e15}
 body[data-theme=blue]{--bg:#f1f6fc;--surface:#fff;--ink:#243a53;--muted:#60738a;--green:#336ca6;--line:#d7e2ef;--soft:#e5effb;--tab:#e3ebf5;--trading-bg:#fff5e6;--trading-text:#98621f;--trading-border:#e8d2b2;--shadow:#203e6115}
 body[data-theme=dark]{color-scheme:dark;--bg:#161d24;--surface:#222d37;--ink:#edf3f8;--muted:#bdcbd6;--green:#82d3b7;--accent-text:#122c23;--line:#40505d;--soft:#29453d;--tab:#2b3946;--sold-bg:#34434f;--sold-text:#c3d0db;--trading-bg:#3d3325;--trading-text:#f1cb8a;--trading-border:#7f6540;--danger:#ffb4a9;--shadow:#0004}
@@ -17,6 +17,9 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
 
 .version-badge{font-size:12px;font-weight:700;line-height:1.4;padding:3px 6px;border:1px solid var(--line);border-radius:5px;color:var(--green);background:var(--soft);white-space:nowrap}.header-context{margin-right:auto}header .header-actions{margin-left:auto}
 @media(max-width:760px){.version-badge{font-size:11px;padding:3px 5px}.header-actions{margin-left:auto}.header-actions button{padding:6px 8px}.mobile-brand{font-size:21px}}
+
+.add-book-row{display:flex;justify-content:center;margin:16px 0}.add-book-row .primary{width:min(100%,360px);min-height:56px;font-size:20px}.volume.missing span,.badge.missing{background:var(--bg);color:var(--muted);border:1px dashed var(--line)}
+@media(max-width:760px){.heading{display:block}.stats article{padding:14px 13px;min-height:96px}.stats strong{font-size:30px}.add-book-row{margin:12px 0 16px}.add-book-row .primary{width:100%;max-width:360px;min-height:56px;font-size:20px}}
 </style></head>
 <body>
 <aside>
@@ -29,18 +32,19 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
 </aside>
 <main>
 <header>
-  <span class="mobile-brand">冊 책장<span>.</span></span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.1.1</span><span class="header-context">나만의 작은 도서관</span>
+  <span class="mobile-brand">冊 책장<span>.</span></span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.2.0</span><span class="header-context">나만의 작은 도서관</span>
   <div class="header-actions"><button id="theme-settings" aria-label="색깔 테마 설정" title="색깔 테마">◐</button><button id="backup">백업</button><button id="restore">복원</button></div>
   <input type="file" id="file" accept="application/json,.json" hidden>
 </header>
 <section class="page">
-  <div class="heading"><div><div class="eyebrow">YOUR PERSONAL MANGA LIBRARY</div><h1>나의 만화 컬렉션<span>.</span></h1><p>좋아하는 이야기를 모으고, 다음 독자에게 이어주세요.</p></div><button class="primary" id="add">＋ 만화책 등록</button></div>
+  <div class="heading"><div><div class="eyebrow">YOUR PERSONAL BOOK LIBRARY</div><h1>나의 책장 컬렉션<span>.</span></h1><p>좋아하는 이야기를 모으고, 다음 독자에게 이어주세요.</p></div></div>
   <div class="stats">
     <article><span>전체 소장</span><strong id="total">0<small>권</small></strong><p id="series-count">0개의 시리즈</p></article>
     <article><span>보유중</span><strong id="owned">0<small>권</small></strong><p>책장에서 기다리는 이야기</p></article>
     <article class="trading-stat"><span>거래중</span><strong id="trading">0<small>권</small></strong><p>진행 중인 거래를 확인하세요</p></article>
     <article><span>거래완료</span><strong id="sold">0<small>권</small></strong><p>새로운 독자에게 이어진 이야기</p></article>
   </div>
+  <div class="add-book-row"><button class="primary" id="add">＋ 책 등록하기</button></div>
   <div class="collection-head"><h2>컬렉션 <span id="result-count">0</span></h2><button id="demo">샘플 둘러보기</button></div>
   <div class="toolbar">
     <div class="tabs"><button class="selected" data-filter="all">전체</button><button data-filter="보유중">보유중</button><button data-filter="거래중">거래중</button><button data-filter="거래완료">거래완료</button></div>
@@ -50,20 +54,20 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
   <div class="notice"><span>↗</span> 거래중인 시리즈가 맨 위에 표시돼요.<span id="demo-label"></span></div>
   <p id="loading" role="status">컬렉션을 불러오는 중이에요…</p>
   <div id="list" class="book-grid"></div>
-  <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 만화책 등록</button></div>
+  <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 책 등록하기</button></div>
   <div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div>
-  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.1.1</span></footer>
+  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.2.0</span></footer>
 </section>
 </main>
 <dialog id="editor"><form id="book-form">
-  <div class="modal-head"><h2>새로운 이야기 등록</h2><button type="button" class="close" aria-label="닫기">×</button></div>
+  <div class="modal-head"><h2>책 등록하기</h2><button type="button" class="close" aria-label="닫기">×</button></div>
   <label>시리즈 제목 <input name="title" required maxlength="150" placeholder="예: 슬램덩크"></label>
   <label>작가<input name="author" maxlength="100" placeholder="예: 이노우에 다케히코"></label>
   <fieldset class="photo-field"><legend>표지 사진 <span>(선택)</span></legend><div class="photo-layout"><div class="photo-preview" id="editor-preview"><span>冊</span><img hidden alt="등록할 표지 사진"></div><div class="photo-actions"><button type="button" class="secondary" data-photo="editor" data-source="camera">사진 찍기</button><button type="button" class="secondary" data-photo="editor" data-source="gallery">사진 선택</button><button type="button" class="text-button" data-photo-remove="editor">사진 지우기</button></div></div><small>사진은 작은 썸네일로 저장되며 백업에도 포함돼요.</small></fieldset>
   <div class="form-row"><label>시작 권<input name="from" type="number" min="1" max="10000" value="1" required></label><label>마지막 권<input name="to" type="number" min="1" max="10000" value="1" required></label></div>
-  <label>빠진 권 <span class="optional">선택</span><input name="missing" placeholder="예: 3, 7-9"><small>쉼표로 여러 권을, 하이픈으로 연속된 권을 지정해요.</small></label>
+  <label>빠진 권 <span class="optional">선택</span><input name="missing" placeholder="예: 3, 7-9"><small>예: 3, 7-9. 빠진 권도 회색 미보유로 표시돼요.</small></label>
   <label>등록일<input type="date" name="registeredOn" min="1970-01-01" required></label>
-  <label>등록 상태<select name="status"><option>보유중</option><option>거래중</option><option>거래완료</option></select></label>
+  <label>등록 상태<select name="status"><option>보유중</option><option>거래중</option><option>거래완료</option><option>미보유</option></select></label>
   <label id="initial-sale" hidden>거래완료일<input type="date" name="soldOn"></label>
   <label>나만의 메모<textarea name="note" rows="3" maxlength="5000" placeholder="책 상태, 보관 위치, 판매 가격 등을 남겨보세요."></textarea></label>
   <p id="form-error" class="error" role="alert"></p>
@@ -73,9 +77,9 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
   <div class="modal-head"><h2 id="detail-title"></h2><button class="close" aria-label="닫기">×</button></div>
   <p class="muted" id="detail-author"></p><p class="date-info" id="detail-dates"></p>
   <fieldset class="photo-field"><legend>표지 사진</legend><div class="photo-layout"><div class="photo-preview" id="detail-preview"><span>冊</span><img hidden alt="시리즈 표지 사진"></div><div class="photo-actions"><button class="secondary" data-photo="detail" data-source="camera">사진 찍기</button><button class="secondary" data-photo="detail" data-source="gallery">사진 변경</button><button class="text-button" data-photo-remove="detail">사진 지우기</button></div></div></fieldset>
-  <div class="volume-toolbar"><strong>권별 거래 상태</strong><button id="select-all">전체 선택</button></div><p class="hint">변경할 권을 선택한 뒤 상태를 적용하세요.</p>
+  <div class="volume-toolbar"><strong>권별 거래 상태</strong><button id="select-all">전체 선택</button></div><p class="hint">회색은 미보유예요. 구매한 권을 선택하고 보유중을 적용하면 활성화돼요.</p>
   <div id="volumes"></div>
-  <div class="bulk"><select id="bulk-status" aria-label="변경할 상태"><option>보유중</option><option>거래중</option><option>거래완료</option></select><button class="primary" id="apply">선택한 권에 적용</button></div>
+  <div class="bulk"><select id="bulk-status" aria-label="변경할 상태"><option>보유중</option><option>거래중</option><option>거래완료</option><option>미보유</option></select><button class="primary" id="apply">선택한 권에 적용</button></div>
   <div id="sale-controls" hidden><label>거래완료일<input id="sold-on" type="date"></label><label class="checkline"><input type="checkbox" id="replace-sold-date">이미 완료된 권의 판매일도 수정</label><small>체크하지 않으면 기록된 판매일을 유지해요.</small></div>
   <label class="note-label">나만의 메모<textarea id="detail-note" rows="3" maxlength="5000"></textarea></label>
   <div class="modal-actions"><button id="delete" class="danger">시리즈 삭제</button><button id="save-note" class="primary">사진·메모 저장</button></div>
@@ -94,7 +98,7 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
   <button data-theme-option="dark" class="theme-choice"><span class="swatch dark"></span><strong>다크</strong><small>어두운 곳에서도 편하게</small></button>
 </div></dialog>
 <input type="file" id="photo-file" accept="image/*" hidden><input type="file" id="camera-file" accept="image/*" capture="environment" hidden>
-<div id="toast" role="status"></div><script>const STATUSES = ['보유중', '거래중', '거래완료'];
+<div id="toast" role="status"></div><script>const STATUSES = ['보유중', '거래중', '거래완료', '미보유'];
 const MAX_BACKUP_BYTES = 128 * 1024 * 1024;
 const MAX_PHOTO_LENGTH = 33000;
 function localDay(date = new Date()) {
@@ -125,33 +129,45 @@ function makeVolumes(from, to, missing = '', status = '보유중', soldOn = loca
     if (a < from || b > to || a > b) throw Error('빠진 권은 등록할 권수 범위 안에서 입력해 주세요.');
     for (let n = a; n <= b; n++) excluded.add(n);
   }
-  const result = Array.from({length: to - from + 1}, (_, i) => ({number: from + i, status, ...(status === '거래완료' ? {soldAt:soldOn}: {})})).filter(v => !excluded.has(v.number));
-  if (!result.length) throw Error('최소 한 권은 등록해 주세요.');
-  return result;
+  return Array.from({length: to - from + 1}, (_, i) => {
+    const number=from+i, state=excluded.has(number)?'미보유':status;
+    return {number,status:state,...(state==='거래완료'?{soldAt:soldOn}:{})};
+  });
 }
 function changeStatus(volume, status, soldOn, replaceDate = false) {
   if (!STATUSES.includes(status)) throw Error('올바른 상태를 선택해 주세요.');
   if (status === '거래완료' && !isDay(soldOn)) throw Error('거래완료일을 입력해 주세요.');
   return {...volume, status, soldAt:status === '거래완료' ? (!replaceDate && volume.status === status && volume.soldAt ? volume.soldAt : soldOn) : null};
 }
-function seriesStatus(book) { return book.volumes.some(v => v.status === '거래중') ? '거래중' : book.volumes.some(v => v.status === '보유중') ? '보유중' : '거래완료'; }
+function seriesStatus(book) { return book.volumes.some(v => v.status === '거래중') ? '거래중' : book.volumes.some(v => v.status === '보유중') ? '보유중' : book.volumes.some(v => v.status === '거래완료') ? '거래완료' : '미보유'; }
 function validateBackup(data) {
   if (!data || ![1,2].includes(data.version) || !Array.isArray(data.books) || data.books.length > 10000) throw Error('책장 백업 파일이 아니거나 지원하지 않는 형식이에요.');
   const ids = new Set(); let total = 0;
   for (const b of data.books) {
-    if (!b || typeof b.id !== 'string' || !b.id || ids.has(b.id) || typeof b.title !== 'string' || !b.title.trim() || b.title.length > 150 || typeof b.author !== 'string' || b.author.length > 100 || typeof b.note !== 'string' || b.note.length > 5000 || !Number.isFinite(b.createdAt) || b.createdAt < 0 || !Number.isFinite(new Date(b.createdAt).getTime()) || !Array.isArray(b.volumes) || !b.volumes.length || b.volumes.length > 5000 || !validPhoto(b.photo)) throw Error('백업에 올바르지 않은 시리즈 또는 사진이 있어요.');
+    if (!b || typeof b.id !== 'string' || !b.id || ids.has(b.id) || typeof b.title !== 'string' || !b.title.trim() || b.title.length > 150 || typeof b.author !== 'string' || b.author.length > 100 || typeof b.note !== 'string' || b.note.length > 5000 || !Number.isFinite(b.createdAt) || b.createdAt < 0 || !Number.isFinite(new Date(b.createdAt).getTime()) || !Array.isArray(b.volumes) || !b.volumes.length || b.volumes.length > 10000 || !validPhoto(b.photo)) throw Error('백업에 올바르지 않은 시리즈 또는 사진이 있어요.');
     ids.add(b.id); const nums = new Set();
     for (const v of b.volumes) {
       if (!v || !Number.isInteger(v.number) || v.number < 1 || v.number > 10000 || nums.has(v.number) || !STATUSES.includes(v.status) || (v.soldAt != null && (!isDay(v.soldAt) || v.status !== '거래완료'))) throw Error('백업에 올바르지 않은 권수, 상태 또는 판매일이 있어요.');
       nums.add(v.number);
     }
-    total += b.volumes.length; if (total > 100000) throw Error('백업은 최대 100,000권까지 지원해요.');
+    total += Math.max(...nums)-Math.min(...nums)+1; if (total > 100000) throw Error('백업은 최대 100,000권까지 지원해요.');
   }
-  return data.books.map(b => ({id:b.id,title:b.title.trim(),author:b.author,note:b.note,createdAt:b.createdAt,...(b.photo !== undefined ? {photo:b.photo}:{}),volumes:b.volumes.map(v=>({number:v.number,status:v.status,...(v.soldAt !== undefined ? {soldAt:v.soldAt}:{})})).sort((a,b)=>a.number-b.number)}));
+  return data.books.map(b => ({id:b.id,title:b.title.trim(),author:b.author,note:b.note,createdAt:b.createdAt,...(b.photo !== undefined ? {photo:b.photo}:{}),volumes:fillMissing(b.volumes)}));
 }
+// Older versions omitted missing numbers. Recover interior gaps without inventing endpoints.
+function fillMissing(volumes) {
+  const known=new Map(volumes.map(v=>[v.number,v]));
+  const first=Math.min(...known.keys()),last=Math.max(...known.keys());
+  return Array.from({length:last-first+1},(_,i)=>{
+    const number=first+i,v=known.get(number);
+    return v?{number,status:v.status,...(v.soldAt!==undefined?{soldAt:v.soldAt}:{})}:{number,status:'미보유'};
+  });
+}
+function collectionCount(volumes){return volumes.filter(v=>v.status!=='미보유').length;}
+function volumeSummary(volumes){const missing=volumes.length-collectionCount(volumes);return `소장 ${collectionCount(volumes)}권${missing?` · 미보유 ${missing}권`:''}`;}
 function selectBooks(books, filter, query, sort) {
   const q = query.trim().toLocaleLowerCase();
-  return books.filter(b => (filter === 'all' || b.volumes.some(v => v.status === filter)) && (!q || [b.title,b.author,b.note,localDay(new Date(b.createdAt)),...b.volumes.flatMap(v=>[`${v.number}권`,v.soldAt||''])].some(s=>s.toLocaleLowerCase().includes(q)))).sort((a,b) => Number(seriesStatus(b)==='거래중') - Number(seriesStatus(a)==='거래중') || (sort === 'title' ? a.title.localeCompare(b.title,'ko') : sort === 'count' ? b.volumes.length-a.volumes.length : b.createdAt-a.createdAt));
+  return books.filter(b => (filter === 'all' || b.volumes.some(v => v.status === filter)) && (!q || [b.title,b.author,b.note,localDay(new Date(b.createdAt)),...b.volumes.flatMap(v=>[`${v.number}권`,v.soldAt||''])].some(s=>s.toLocaleLowerCase().includes(q)))).sort((a,b) => Number(seriesStatus(b)==='거래중') - Number(seriesStatus(a)==='거래중') || (sort === 'title' ? a.title.localeCompare(b.title,'ko') : sort === 'count' ? collectionCount(b.volumes)-collectionCount(a.volumes) : b.createdAt-a.createdAt));
 }
 
 // Photo thumbnails live in IndexedDB, which does not share localStorage's small quota.
@@ -225,7 +241,7 @@ async function persist(next){
 function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
 const colors=['#225c51','#d17b47','#3f5574','#b05b58','#78643f','#51515e','#55807e','#777646'];
 function color(title){return colors[Array.from(title).reduce((s,c)=>s+c.codePointAt(0),0)%colors.length];}
-function badge(status){return el('span','badge '+(status==='거래중'?'trading':status==='거래완료'?'sold':''),status);}
+function badge(status){return el('span','badge '+(status==='거래중'?'trading':status==='거래완료'?'sold':status==='미보유'?'missing':''),status);}
 function range(volumes){const ns=volumes.map(v=>v.number).sort((a,b)=>a-b);return ns.length===1?`${ns[0]}권`:`${ns[0]}–${ns.at(-1)}권${ns.length!==ns.at(-1)-ns[0]+1?' · 일부 제외':''}`;}
 function dateLabel(day){return day.replaceAll('-','.');}
 function saleSummary(b){
@@ -241,7 +257,7 @@ function makeCover(b){
   return cover;
 }
 function render(){
-  const counts={'보유중':0,'거래중':0,'거래완료':0};books.forEach(b=>b.volumes.forEach(v=>counts[v.status]++));
+  const counts={'보유중':0,'거래중':0,'거래완료':0};books.forEach(b=>b.volumes.forEach(v=>{if(v.status!=='미보유')counts[v.status]++;}));
   const total=Object.values(counts).reduce((a,b)=>a+b,0);
   for(const [id,n] of Object.entries({total,owned:counts['보유중'],trading:counts['거래중'],sold:counts['거래완료']}))$('#'+id).replaceChildren(document.createTextNode(n.toLocaleString()),el('small','','권'));
   $('#side-count').textContent=books.length;$('#series-count').textContent=`${books.length.toLocaleString()}개의 시리즈`;
@@ -251,11 +267,11 @@ function render(){
     const status=seriesStatus(b),card=el('article','book-card'+(status==='거래중'?' is-trading':''));
     card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label',`${b.title} 상세 및 권별 상태 관리`);
     const top=el('div','card-top'),info=el('div','card-info');info.append(badge(status),el('h3','',b.title),el('p','author',b.author||'작가 미등록'));
-    const r=el('div','range',range(b.volumes));r.append(el('b','',`총 ${b.volumes.length}권`));info.append(r);top.append(makeCover(b),info);
+    const r=el('div','range',range(b.volumes));r.append(el('b','',volumeSummary(b.volumes)));info.append(r);top.append(makeCover(b),info);
     const note=el('p','card-note','✎ '+(b.note||'남겨진 메모가 없어요.'));note.title=b.note;
     const dates=el('div','card-dates');dates.append(el('span','',`등록 ${dateLabel(localDay(new Date(b.createdAt)))}`));if(saleSummary(b))dates.append(el('span','',saleSummary(b)));
     const trading=b.volumes.filter(v=>v.status==='거래중').length,sold=b.volumes.filter(v=>v.status==='거래완료').length,bottom=el('div','card-bottom');
-    bottom.append(el('span','',trading?`${trading}권 거래중${sold?` · ${sold}권 판매`:''}`:sold?`${sold}권 거래완료`:'소중히 보관중'),el('span','','상세 보기 →'));card.append(top,note,dates,bottom);
+    bottom.append(el('span','',trading?`${trading}권 거래중${sold?` · ${sold}권 판매`:''}`:sold?`${sold}권 거래완료`:status==='미보유'?'구매 후 보유중으로 변경하세요':'소중히 보관중'),el('span','','상세 보기 →'));card.append(top,note,dates,bottom);
     card.onclick=()=>openDetail(b.id);card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDetail(b.id);}};$('#list').append(card);
   });
   $('#empty').hidden=!!matches.length||!ready||storageBlocked;
@@ -280,7 +296,7 @@ $('#book-form').onsubmit=async e=>{
     const numbers=new Set(volumes.map(v=>v.number));if(books.some(b=>b.title.toLocaleLowerCase()===title.toLocaleLowerCase()&&b.volumes.some(v=>numbers.has(v.number))))throw Error('같은 제목에 중복되는 권이 있어요. 기존 시리즈를 확인해 주세요.');
     const registeredOn=f.get('registeredOn'),createdAt=registrationTime(registeredOn);
     const b={id:crypto.randomUUID(),title,author:f.get('author').trim(),volumes,note:f.get('note').trim(),createdAt,photo:draftPhotos.editor};
-    submit.disabled=true;if(await persist([...books,b])){$('#editor').close();toast(`${volumes.length}권을 등록했어요.${demo?' (샘플)':''}`);}
+    submit.disabled=true;if(await persist([...books,b])){$('#editor').close();toast(`${volumeSummary(volumes)}을 등록했어요.${demo?' (샘플)':''}`);}
   }catch(err){$('#form-error').textContent=err.message;}finally{submit.disabled=false;}
 };
 $$('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;page=1;render();});
@@ -288,11 +304,11 @@ $('#search').oninput=()=>{page=1;render();};$('#sort').onchange=()=>{page=1;rend
 document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&!$$('dialog').some(d=>d.open)){e.preventDefault();$('#search').focus();}});
 function updateDetailDates(b){$('#detail-dates').textContent=`등록일 ${dateLabel(localDay(new Date(b.createdAt)))}${saleSummary(b)?' · '+saleSummary(b):''}`;}
 function openDetail(id){
-  currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · 총 ${b.volumes.length}권`;
+  currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;
   updateDetailDates(b);$('#detail-note').value=b.note;showPhoto('detail',b.photo||null);$('#bulk-status').value='보유중';$('#sale-controls').hidden=true;$('#sold-on').value=localDay();$('#replace-sold-date').checked=false;renderVolumes(b);$('#detail').showModal();
 }
 function renderVolumes(b){$('#volumes').replaceChildren();b.volumes.forEach(v=>{
-  const l=el('label','volume '+(v.status==='거래중'?'trading':v.status==='거래완료'?'sold':'')),input=el('input');input.type='checkbox';input.value=v.number;input.setAttribute('aria-label',`${v.number}권 · ${v.status}`);
+  const l=el('label','volume '+(v.status==='거래중'?'trading':v.status==='거래완료'?'sold':v.status==='미보유'?'missing':'')),input=el('input');input.type='checkbox';input.value=v.number;input.setAttribute('aria-label',`${v.number}권 · ${v.status}`);
   const span=el('span','',`${v.number}권 · ${v.status}`);if(v.status==='거래완료')span.append(el('small','',v.soldAt?`판매 ${dateLabel(v.soldAt)}`:'판매일 미기록'));l.append(input,span);$('#volumes').append(l);
 });}
 $('#select-all').onclick=()=>{const all=$$('#volumes input'),checked=all.some(n=>!n.checked);all.forEach(n=>n.checked=checked);};
@@ -300,7 +316,7 @@ $('#bulk-status').onchange=e=>$('#sale-controls').hidden=e.target.value!=='거�
 $('#apply').onclick=async()=>{
   const selected=new Set($$('#volumes input:checked').map(n=>Number(n.value)));if(!selected.size){toast('상태를 변경할 권을 먼저 선택해 주세요.');return;}
   try{const status=$('#bulk-status').value,next=books.map(b=>b.id===currentId?{...b,volumes:b.volumes.map(v=>selected.has(v.number)?changeStatus(v,status,$('#sold-on').value,$('#replace-sold-date').checked):v)}:b);
-    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);updateDetailDates(b);toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
+    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);updateDetailDates(b);$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
   }catch(err){toast(err.message);}
 };
 $('#save-note').onclick=async()=>{if(photoRequest?.target==='detail'){toast('사진을 처리 중이에요. 잠시 기다려 주세요.');return;}if(await persist(books.map(b=>b.id===currentId?{...b,note:$('#detail-note').value,photo:draftPhotos.detail}:b))){$('#detail').close();toast('사진과 메모를 저장했어요.');}};
@@ -343,7 +359,7 @@ window.addEventListener('chaekjang-photo',e=>{const d=e.detail||{};acceptPhoto(d
 function actualBooks(){return demo?realBooks:books;}
 function backupText(){const text=JSON.stringify({version:2,exportedAt:new Date().toISOString(),books:actualBooks()});if(new Blob([text]).size>MAX_BACKUP_BYTES)throw Error('백업 크기가 128MB를 넘었어요. 사진을 줄인 뒤 다시 시도해 주세요.');return text;}
 $('#backup').onclick=()=>{
-  if(!canUse())return;const list=actualBooks();$('#backup-summary').textContent=`내 시리즈 ${list.length}개 · ${list.reduce((n,b)=>n+b.volumes.length,0).toLocaleString()}권`;
+  if(!canUse())return;const list=actualBooks();$('#backup-summary').textContent=`내 시리즈 ${list.length}개 · ${list.reduce((n,b)=>n+collectionCount(b.volumes),0).toLocaleString()}권`;
   $('#backup-demo-note').hidden=!demo;$('#share-backup').hidden=!android()&&!navigator.share;
   $('#save-backup').textContent=android()?'휴대폰·Drive에 파일 저장':'백업 파일 다운로드';$('#backup-dialog').showModal();
 };
@@ -370,7 +386,7 @@ $('#restore').onclick=()=>{if(!ready){toast('목록을 불러오는 중이에요
 $('#file').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>MAX_BACKUP_BYTES)throw Error('128MB 이하의 백업 파일을 선택해 주세요.');await restoreText(await file.text());}catch(err){toast(err.message);}finally{e.target.value='';}};
 window.addEventListener('chaekjang-restore',e=>{if(typeof e.detail==='string')restoreText(e.detail);});
 window.addEventListener('chaekjang-message',e=>{if(typeof e.detail==='string')toast(e.detail);});
-if(android()){try{if(typeof window.ChaekjangNative.getAppVersion==='function')$('#app-version').textContent='v'+window.ChaekjangNative.getAppVersion();}catch{}$('footer span').textContent='이 휴대폰에 저장됩니다 · 앱 삭제 전 꼭 백업하세요.';$('.header-context').textContent='나의 만화책장 · 오프라인';document.body.classList.add('android-app');}
+if(android()){try{if(typeof window.ChaekjangNative.getAppVersion==='function')$('#app-version').textContent='v'+window.ChaekjangNative.getAppVersion();}catch{}$('footer span').textContent='이 휴대폰에 저장됩니다 · 앱 삭제 전 꼭 백업하세요.';$('.header-context').textContent='나의 책장 · 오프라인';document.body.classList.add('android-app');}
 $('#demo').onclick=()=>{
   if(!canUse())return;
   if(demo){books=realBooks;realBooks=[];demo=false;}

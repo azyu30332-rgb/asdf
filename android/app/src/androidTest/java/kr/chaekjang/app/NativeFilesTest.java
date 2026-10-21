@@ -83,6 +83,20 @@ public class NativeFilesTest {
         assertEquals(JSONObject.quote("v"+version),js("document.querySelector('#app-version').textContent"));
         assertEquals("true",js("document.querySelector('#app-version').getBoundingClientRect().top>=0"));
     }
+    @Test public void missingVolumesRemainSelectableAndPurchasePersists() throws Exception{
+        fire("document.querySelector('#add').click();document.querySelector('[name=title]').value='권별 테스트';document.querySelector('[name=to]').value='10';document.querySelector('[name=missing]').value='3,7-9';document.querySelector('#book-form').requestSubmit()");
+        waitJs("books.length===1 && !saveBusy");
+        fire("document.querySelector('.book-card').click()");
+        assertEquals("10",js("document.querySelectorAll('#volumes label').length"));
+        assertEquals("4",js("document.querySelectorAll('#volumes .missing').length"));
+        assertEquals("false",js("document.querySelector('#volumes input[value=\"3\"]').disabled"));
+        fire("document.querySelector('#volumes input[value=\"3\"]').click();document.querySelector('#apply').click()");
+        waitJs("books[0].volumes[2].status==='보유중' && !saveBusy");
+        activity.getScenario().recreate();
+        waitJs("document.querySelector('#loading').hidden && books.length===1");
+        assertEquals(JSONObject.quote("보유중"),js("books[0].volumes[2].status"));
+        assertEquals("3",js("books[0].volumes.filter(v=>v.status==='미보유').length"));
+    }
     @Test public void backupButtonsCreateRealFileAndRecoverAfterCancel() throws Exception{
         intending(hasAction(Intent.ACTION_CREATE_DOCUMENT)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED,null));
         fire("document.querySelector('#backup').click();document.querySelector('#save-backup').click()");

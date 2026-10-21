@@ -15,3 +15,6 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
 
 .version-badge{font-size:12px;font-weight:700;line-height:1.4;padding:3px 6px;border:1px solid var(--line);border-radius:5px;color:var(--green);background:var(--soft);white-space:nowrap}.header-context{margin-right:auto}header .header-actions{margin-left:auto}
 @media(max-width:760px){.version-badge{font-size:11px;padding:3px 5px}.header-actions{margin-left:auto}.header-actions button{padding:6px 8px}.mobile-brand{font-size:21px}}
+
+.add-book-row{display:flex;justify-content:center;margin:16px 0}.add-book-row .primary{width:min(100%,360px);min-height:56px;font-size:20px}.volume.missing span,.badge.missing{background:var(--bg);color:var(--muted);border:1px dashed var(--line)}
+@media(max-width:760px){.heading{display:block}.stats article{padding:14px 13px;min-height:96px}.stats strong{font-size:30px}.add-book-row{margin:12px 0 16px}.add-book-row .primary{width:100%;max-width:360px;min-height:56px;font-size:20px}}

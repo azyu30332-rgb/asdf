@@ -1,4 +1,4 @@
-export const STATUSES = ['보유중', '거래중', '거래완료'];
+export const STATUSES = ['보유중', '거래중', '거래완료', '미보유'];
 export const MAX_BACKUP_BYTES = 128 * 1024 * 1024;
 export const MAX_PHOTO_LENGTH = 33000;
 export function localDay(date = new Date()) {
@@ -29,31 +29,43 @@ export function makeVolumes(from, to, missing = '', status = '보유중', soldOn
     if (a < from || b > to || a > b) throw Error('빠진 권은 등록할 권수 범위 안에서 입력해 주세요.');
     for (let n = a; n <= b; n++) excluded.add(n);
   }
-  const result = Array.from({length: to - from + 1}, (_, i) => ({number: from + i, status, ...(status === '거래완료' ? {soldAt:soldOn}: {})})).filter(v => !excluded.has(v.number));
-  if (!result.length) throw Error('최소 한 권은 등록해 주세요.');
-  return result;
+  return Array.from({length: to - from + 1}, (_, i) => {
+    const number=from+i, state=excluded.has(number)?'미보유':status;
+    return {number,status:state,...(state==='거래완료'?{soldAt:soldOn}:{})};
+  });
 }
 export function changeStatus(volume, status, soldOn, replaceDate = false) {
   if (!STATUSES.includes(status)) throw Error('올바른 상태를 선택해 주세요.');
   if (status === '거래완료' && !isDay(soldOn)) throw Error('거래완료일을 입력해 주세요.');
   return {...volume, status, soldAt:status === '거래완료' ? (!replaceDate && volume.status === status && volume.soldAt ? volume.soldAt : soldOn) : null};
 }
-export function seriesStatus(book) { return book.volumes.some(v => v.status === '거래중') ? '거래중' : book.volumes.some(v => v.status === '보유중') ? '보유중' : '거래완료'; }
+export function seriesStatus(book) { return book.volumes.some(v => v.status === '거래중') ? '거래중' : book.volumes.some(v => v.status === '보유중') ? '보유중' : book.volumes.some(v => v.status === '거래완료') ? '거래완료' : '미보유'; }
 export function validateBackup(data) {
   if (!data || ![1,2].includes(data.version) || !Array.isArray(data.books) || data.books.length > 10000) throw Error('책장 백업 파일이 아니거나 지원하지 않는 형식이에요.');
   const ids = new Set(); let total = 0;
   for (const b of data.books) {
-    if (!b || typeof b.id !== 'string' || !b.id || ids.has(b.id) || typeof b.title !== 'string' || !b.title.trim() || b.title.length > 150 || typeof b.author !== 'string' || b.author.length > 100 || typeof b.note !== 'string' || b.note.length > 5000 || !Number.isFinite(b.createdAt) || b.createdAt < 0 || !Number.isFinite(new Date(b.createdAt).getTime()) || !Array.isArray(b.volumes) || !b.volumes.length || b.volumes.length > 5000 || !validPhoto(b.photo)) throw Error('백업에 올바르지 않은 시리즈 또는 사진이 있어요.');
+    if (!b || typeof b.id !== 'string' || !b.id || ids.has(b.id) || typeof b.title !== 'string' || !b.title.trim() || b.title.length > 150 || typeof b.author !== 'string' || b.author.length > 100 || typeof b.note !== 'string' || b.note.length > 5000 || !Number.isFinite(b.createdAt) || b.createdAt < 0 || !Number.isFinite(new Date(b.createdAt).getTime()) || !Array.isArray(b.volumes) || !b.volumes.length || b.volumes.length > 10000 || !validPhoto(b.photo)) throw Error('백업에 올바르지 않은 시리즈 또는 사진이 있어요.');
     ids.add(b.id); const nums = new Set();
     for (const v of b.volumes) {
       if (!v || !Number.isInteger(v.number) || v.number < 1 || v.number > 10000 || nums.has(v.number) || !STATUSES.includes(v.status) || (v.soldAt != null && (!isDay(v.soldAt) || v.status !== '거래완료'))) throw Error('백업에 올바르지 않은 권수, 상태 또는 판매일이 있어요.');
       nums.add(v.number);
     }
-    total += b.volumes.length; if (total > 100000) throw Error('백업은 최대 100,000권까지 지원해요.');
+    total += Math.max(...nums)-Math.min(...nums)+1; if (total > 100000) throw Error('백업은 최대 100,000권까지 지원해요.');
   }
-  return data.books.map(b => ({id:b.id,title:b.title.trim(),author:b.author,note:b.note,createdAt:b.createdAt,...(b.photo !== undefined ? {photo:b.photo}:{}),volumes:b.volumes.map(v=>({number:v.number,status:v.status,...(v.soldAt !== undefined ? {soldAt:v.soldAt}:{})})).sort((a,b)=>a.number-b.number)}));
+  return data.books.map(b => ({id:b.id,title:b.title.trim(),author:b.author,note:b.note,createdAt:b.createdAt,...(b.photo !== undefined ? {photo:b.photo}:{}),volumes:fillMissing(b.volumes)}));
 }
+// Older versions omitted missing numbers. Recover interior gaps without inventing endpoints.
+function fillMissing(volumes) {
+  const known=new Map(volumes.map(v=>[v.number,v]));
+  const first=Math.min(...known.keys()),last=Math.max(...known.keys());
+  return Array.from({length:last-first+1},(_,i)=>{
+    const number=first+i,v=known.get(number);
+    return v?{number,status:v.status,...(v.soldAt!==undefined?{soldAt:v.soldAt}:{})}:{number,status:'미보유'};
+  });
+}
+export function collectionCount(volumes){return volumes.filter(v=>v.status!=='미보유').length;}
+export function volumeSummary(volumes){const missing=volumes.length-collectionCount(volumes);return `소장 ${collectionCount(volumes)}권${missing?` · 미보유 ${missing}권`:''}`;}
 export function selectBooks(books, filter, query, sort) {
   const q = query.trim().toLocaleLowerCase();
-  return books.filter(b => (filter === 'all' || b.volumes.some(v => v.status === filter)) && (!q || [b.title,b.author,b.note,localDay(new Date(b.createdAt)),...b.volumes.flatMap(v=>[`${v.number}권`,v.soldAt||''])].some(s=>s.toLocaleLowerCase().includes(q)))).sort((a,b) => Number(seriesStatus(b)==='거래중') - Number(seriesStatus(a)==='거래중') || (sort === 'title' ? a.title.localeCompare(b.title,'ko') : sort === 'count' ? b.volumes.length-a.volumes.length : b.createdAt-a.createdAt));
+  return books.filter(b => (filter === 'all' || b.volumes.some(v => v.status === filter)) && (!q || [b.title,b.author,b.note,localDay(new Date(b.createdAt)),...b.volumes.flatMap(v=>[`${v.number}권`,v.soldAt||''])].some(s=>s.toLocaleLowerCase().includes(q)))).sort((a,b) => Number(seriesStatus(b)==='거래중') - Number(seriesStatus(a)==='거래중') || (sort === 'title' ? a.title.localeCompare(b.title,'ko') : sort === 'count' ? collectionCount(b.volumes)-collectionCount(a.volumes) : b.createdAt-a.createdAt));
 }
