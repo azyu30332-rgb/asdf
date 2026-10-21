@@ -59,7 +59,7 @@ dialog{border:1px solid var(--line);background:var(--surface);border-radius:13px
   <fieldset class="photo-field"><legend>표지 사진 <span>(선택)</span></legend><div class="photo-layout"><div class="photo-preview" id="editor-preview"><span>冊</span><img hidden alt="등록할 표지 사진"></div><div class="photo-actions"><button type="button" class="secondary" data-photo="editor" data-source="camera">사진 찍기</button><button type="button" class="secondary" data-photo="editor" data-source="gallery">사진 선택</button><button type="button" class="text-button" data-photo-remove="editor">사진 지우기</button></div></div><small>사진은 작은 썸네일로 저장되며 백업에도 포함돼요.</small></fieldset>
   <div class="form-row"><label>시작 권<input name="from" type="number" min="1" max="10000" value="1" required></label><label>마지막 권<input name="to" type="number" min="1" max="10000" value="1" required></label></div>
   <label>빠진 권 <span class="optional">선택</span><input name="missing" placeholder="예: 3, 7-9"><small>쉼표로 여러 권을, 하이픈으로 연속된 권을 지정해요.</small></label>
-  <label>등록일<input type="date" name="registeredOn" required></label>
+  <label>등록일<input type="date" name="registeredOn" min="1970-01-01" required></label>
   <label>등록 상태<select name="status"><option>보유중</option><option>거래중</option><option>거래완료</option></select></label>
   <label id="initial-sale" hidden>거래완료일<input type="date" name="soldOn"></label>
   <label>나만의 메모<textarea name="note" rows="3" maxlength="5000" placeholder="책 상태, 보관 위치, 판매 가격 등을 남겨보세요."></textarea></label>
@@ -101,6 +101,12 @@ function isDay(value) {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   const d = new Date(`${value}T12:00:00`);
   return Number.isFinite(d.getTime()) && localDay(d) === value;
+}
+function registrationTime(day, now = Date.now()) {
+  if (!isDay(day) || day > localDay(new Date(now))) throw Error('등록일을 오늘 또는 이전 날짜로 입력해 주세요.');
+  const value=day===localDay(new Date(now))?now:new Date(`${day}T12:00:00`).getTime();
+  if(value<0)throw Error('등록일은 1970년 이후로 입력해 주세요.');
+  return value;
 }
 function validPhoto(value) {
   return value == null || (typeof value === 'string' && value.length <= MAX_PHOTO_LENGTH && /^data:image\/jpeg;base64,\/9j\/[A-Za-z0-9+/]*={0,2}$/.test(value) && (value.length-23)%4 === 0);
@@ -269,8 +275,8 @@ $('#book-form').onsubmit=async e=>{
     const title=f.get('title').trim();if(!title)throw Error('시리즈 제목을 입력해 주세요.');
     const volumes=makeVolumes(Number(f.get('from')),Number(f.get('to')),f.get('missing'),f.get('status'),f.get('soldOn'));
     const numbers=new Set(volumes.map(v=>v.number));if(books.some(b=>b.title.toLocaleLowerCase()===title.toLocaleLowerCase()&&b.volumes.some(v=>numbers.has(v.number))))throw Error('같은 제목에 중복되는 권이 있어요. 기존 시리즈를 확인해 주세요.');
-    const registeredOn=f.get('registeredOn');if(!isDay(registeredOn)||registeredOn>localDay())throw Error('등록일을 오늘 또는 이전 날짜로 입력해 주세요.');
-    const b={id:crypto.randomUUID(),title,author:f.get('author').trim(),volumes,note:f.get('note').trim(),createdAt:registeredOn===localDay()?Date.now():new Date(`${registeredOn}T12:00:00`).getTime(),photo:draftPhotos.editor};
+    const registeredOn=f.get('registeredOn'),createdAt=registrationTime(registeredOn);
+    const b={id:crypto.randomUUID(),title,author:f.get('author').trim(),volumes,note:f.get('note').trim(),createdAt,photo:draftPhotos.editor};
     submit.disabled=true;if(await persist([...books,b])){$('#editor').close();toast(`${volumes.length}권을 등록했어요.${demo?' (샘플)':''}`);}
   }catch(err){$('#form-error').textContent=err.message;}finally{submit.disabled=false;}
 };

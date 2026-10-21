@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { makeVolumes, seriesStatus, validateBackup, selectBooks, changeStatus, isDay, validPhoto } from './model.mjs';
+import { makeVolumes, seriesStatus, validateBackup, selectBooks, changeStatus, isDay, validPhoto, registrationTime } from './model.mjs';
 const book=(title,volumes=makeVolumes(1,3),note='')=>({id:title,title,author:'작가',note,createdAt:1,volumes});
 test('일괄 등록에서 빠진 권 범위를 제외한다',()=>{assert.deepEqual(makeVolumes(1,10,'3, 7-9').map(v=>v.number),[1,2,4,5,6,10]);});
 test('잘못된 범위 및 빈 시리즈는 거절한다',()=>{for(const args of [[3,1],[0,5],[1,10001],[1,3,'1-3'],[1,3,'4'],[1,3,'x'],[1,3,'3-2']]) assert.throws(()=>makeVolumes(...args));});
@@ -13,3 +13,5 @@ test('이전 백업의 등록일은 그대로 보존하고 없는 판매일을 �
 test('권별 판매일 기록·유지·수정 및 판매 취소를 구분한다',()=>{let v=changeStatus({number:1,status:'보유중'},'거래완료','2025-01-02');assert.equal(v.soldAt,'2025-01-02');v=changeStatus(v,'거래완료','2025-02-03');assert.equal(v.soldAt,'2025-01-02');v=changeStatus(v,'거래완료','2025-02-03',true);assert.equal(v.soldAt,'2025-02-03');assert.equal(changeStatus(v,'보유중','').soldAt,null);});
 test('불가능한 날짜와 실행 가능한 사진 형식을 차단한다',()=>{assert.equal(isDay('2025-02-29'),false);assert.equal(isDay('2024-02-29'),true);assert.equal(validPhoto('data:image/svg+xml;base64,AAAA'),false);assert.equal(validPhoto('https://example.com/photo.jpg'),false);assert.throws(()=>changeStatus({number:1,status:'보유중'},'거래완료','2025-02-30'));});
 test('버전 2 백업은 썸네일과 권별 판매일을 보존한다',()=>{const b={...book('사진'),photo:'data:image/jpeg;base64,/9j/2Q==',volumes:[{number:1,status:'거래완료',soldAt:'2025-01-02'}]};assert.deepEqual(validateBackup({version:2,books:[b]}),[b]);assert.equal(selectBooks([b],'all','2025-01-02','recent').length,1);});
+
+test('등록할 수 없는 날짜가 저장 후 목록 읽기를 막지 않도록 미리 거절한다',()=>{assert.throws(()=>registrationTime('1969-12-31'));assert.throws(()=>registrationTime('9999-12-31'));const stamp=registrationTime('2025-01-02');assert.equal(Number.isFinite(stamp),true);assert.doesNotThrow(()=>validateBackup({version:2,books:[{...book('날짜'),createdAt:stamp}]}));});

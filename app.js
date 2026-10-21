@@ -1,4 +1,4 @@
-import {makeVolumes, seriesStatus, validateBackup, selectBooks, changeStatus, localDay, isDay, validPhoto, MAX_BACKUP_BYTES, MAX_PHOTO_LENGTH} from './model.mjs';
+import {makeVolumes, seriesStatus, validateBackup, selectBooks, changeStatus, localDay, isDay, validPhoto, MAX_BACKUP_BYTES, MAX_PHOTO_LENGTH, registrationTime} from './model.mjs';
 import {loadCollection, saveCollection} from './storage.mjs';
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 let books=[], demo=false, realBooks=[], filter='all', page=1, currentId=null, ready=false, storageBlocked=false, saveBusy=false;
@@ -83,8 +83,8 @@ $('#book-form').onsubmit=async e=>{
     const title=f.get('title').trim();if(!title)throw Error('시리즈 제목을 입력해 주세요.');
     const volumes=makeVolumes(Number(f.get('from')),Number(f.get('to')),f.get('missing'),f.get('status'),f.get('soldOn'));
     const numbers=new Set(volumes.map(v=>v.number));if(books.some(b=>b.title.toLocaleLowerCase()===title.toLocaleLowerCase()&&b.volumes.some(v=>numbers.has(v.number))))throw Error('같은 제목에 중복되는 권이 있어요. 기존 시리즈를 확인해 주세요.');
-    const registeredOn=f.get('registeredOn');if(!isDay(registeredOn)||registeredOn>localDay())throw Error('등록일을 오늘 또는 이전 날짜로 입력해 주세요.');
-    const b={id:crypto.randomUUID(),title,author:f.get('author').trim(),volumes,note:f.get('note').trim(),createdAt:registeredOn===localDay()?Date.now():new Date(`${registeredOn}T12:00:00`).getTime(),photo:draftPhotos.editor};
+    const registeredOn=f.get('registeredOn'),createdAt=registrationTime(registeredOn);
+    const b={id:crypto.randomUUID(),title,author:f.get('author').trim(),volumes,note:f.get('note').trim(),createdAt,photo:draftPhotos.editor};
     submit.disabled=true;if(await persist([...books,b])){$('#editor').close();toast(`${volumes.length}권을 등록했어요.${demo?' (샘플)':''}`);}
   }catch(err){$('#form-error').textContent=err.message;}finally{submit.disabled=false;}
 };

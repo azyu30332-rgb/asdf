@@ -9,6 +9,12 @@ export function isDay(value) {
   const d = new Date(`${value}T12:00:00`);
   return Number.isFinite(d.getTime()) && localDay(d) === value;
 }
+export function registrationTime(day, now = Date.now()) {
+  if (!isDay(day) || day > localDay(new Date(now))) throw Error('등록일을 오늘 또는 이전 날짜로 입력해 주세요.');
+  const value=day===localDay(new Date(now))?now:new Date(`${day}T12:00:00`).getTime();
+  if(value<0)throw Error('등록일은 1970년 이후로 입력해 주세요.');
+  return value;
+}
 export function validPhoto(value) {
   return value == null || (typeof value === 'string' && value.length <= MAX_PHOTO_LENGTH && /^data:image\/jpeg;base64,\/9j\/[A-Za-z0-9+/]*={0,2}$/.test(value) && (value.length-23)%4 === 0);
 }
