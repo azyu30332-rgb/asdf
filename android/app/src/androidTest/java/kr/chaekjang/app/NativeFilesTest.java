@@ -86,16 +86,16 @@ public class NativeFilesTest {
         long end=System.currentTimeMillis()+10000;boolean confirmed=false;
         while(System.currentTimeMillis()<end){try{onView(withText("확인")).perform(click());confirmed=true;break;}catch(androidx.test.espresso.NoMatchingViewException e){Thread.sleep(100);}}
         assertTrue("Restore confirmation should appear",confirmed);waitJs("document.querySelector('.card-dates')?.textContent.includes('2025.01.02')===true");
-        assertEquals("1",js("books[0].volumes.length"));assertEquals("1700000000000",js("books[0].createdAt"));intended(hasAction(Intent.ACTION_OPEN_DOCUMENT));
+        assertEquals("1",js("books[0].volumes.length"));assertEquals("true",js("books[0].createdAt===1700000000000"));intended(hasAction(Intent.ACTION_OPEN_DOCUMENT));
         activity.getScenario().recreate();waitJs("document.querySelector('.card-dates')?.textContent.includes('2025.01.02')===true");
     }
     @Test public void galleryPhotoIsCompressedSavedAndRestoredAfterRestart() throws Exception{
         File image=fixture("test-photo.jpg");Bitmap b=Bitmap.createBitmap(600,800,Bitmap.Config.ARGB_8888);b.eraseColor(Color.rgb(30,110,160));try(FileOutputStream out=new FileOutputStream(image)){assertTrue(b.compress(Bitmap.CompressFormat.JPEG,95,out));}b.recycle();
         intending(allOf(hasAction(Intent.ACTION_OPEN_DOCUMENT),hasType("image/*"))).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK,new Intent().setData(uri(image))));
         fire("document.querySelector('#add').click();document.querySelector('[data-photo=editor][data-source=gallery]').click()");
-        waitJs("!document.querySelector('#editor-preview img').hidden");assertTrue(Integer.parseInt(js("draftPhotos.editor.length"))<=33000);
-        fire("document.querySelector('[name=title]').value='사진 테스트';document.querySelector('#book-form').requestSubmit()");waitJs("document.querySelector('.cover img')!==null");
-        activity.getScenario().recreate();waitJs("document.querySelector('.cover img')!==null");intended(allOf(hasAction(Intent.ACTION_OPEN_DOCUMENT),hasType("image/*")));
+        waitJs("!document.querySelector('#editor-preview img').hidden && document.querySelector('#editor-preview img').naturalWidth>0");assertTrue(Integer.parseInt(js("draftPhotos.editor.length"))<=33000);
+        fire("document.querySelector('[name=title]').value='사진 테스트';document.querySelector('#book-form').requestSubmit()");waitJs("document.querySelector('.cover img')?.naturalWidth>0");
+        activity.getScenario().recreate();waitJs("document.querySelector('.cover img')?.naturalWidth>0");intended(allOf(hasAction(Intent.ACTION_OPEN_DOCUMENT),hasType("image/*")));
     }
     @Test public void cameraCancelAllowsSelectingAnotherPhoto() throws Exception{
         intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED,null));

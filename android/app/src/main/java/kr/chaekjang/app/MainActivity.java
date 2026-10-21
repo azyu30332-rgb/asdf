@@ -70,7 +70,11 @@ public final class MainActivity extends Activity {
         webView.setBackgroundColor(Color.rgb(245,248,246));webView.addJavascriptInterface(new NativeFiles(),"ChaekjangNative");
         webView.setWebViewClient(new WebViewClient(){
             @Override public WebResourceResponse shouldInterceptRequest(WebView view,WebResourceRequest request){
-                Uri uri=request.getUrl();if("https".equals(uri.getScheme())&&HOST.equals(uri.getHost())&&"/index.html".equals(uri.getPath())&&"GET".equals(request.getMethod())){try{return new WebResourceResponse("text/html","UTF-8",getAssets().open("index.html"));}catch(Exception ignored){}}
+                Uri uri=request.getUrl();
+                // Let WebView decode the small bundled JPEG thumbnails locally.
+                // These data URLs perform no network request and are also validated before storage.
+                if("data".equals(uri.getScheme())&&uri.toString().startsWith("data:image/jpeg;base64,")&&uri.toString().length()<=33000)return null;
+                if("https".equals(uri.getScheme())&&HOST.equals(uri.getHost())&&"/index.html".equals(uri.getPath())&&"GET".equals(request.getMethod())){try{return new WebResourceResponse("text/html","UTF-8",getAssets().open("index.html"));}catch(Exception ignored){}}
                 return new WebResourceResponse("text/plain","UTF-8",404,"Not Found",java.util.Collections.emptyMap(),new ByteArrayInputStream(new byte[0]));
             }
             @Override public boolean shouldOverrideUrlLoading(WebView view,WebResourceRequest request){return true;}

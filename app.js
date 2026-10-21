@@ -167,7 +167,7 @@ async function restoreText(text){
     if(saveBusy){toast('저장 중이에요. 완료 후 다시 복원해 주세요.');return;}
     if(new Blob([text]).size>MAX_BACKUP_BYTES)throw Error('128MB 이하의 백업 파일을 선택해 주세요.');
     const restored=validateBackup(JSON.parse(text));if(!confirm(`실제 내 컬렉션을 백업의 ${restored.length}개 시리즈로 교체할까요? 기존 목록은 덮어씁니다.`))return;
-    saveBusy=true;try{await saveCollection(restored);}finally{saveBusy=false;}
+    saveBusy=true;try{await saveCollection(restored);}catch{throw Error('기기에 복원하지 못했어요. 저장 공간을 확인해 주세요. 기존 목록은 유지했어요.');}finally{saveBusy=false;}
     books=restored;realBooks=[];demo=false;ready=true;storageBlocked=false;page=1;filter='all';$('#search').value='';$('#loading').hidden=true;render();toast('사진과 날짜를 포함해 백업을 복원했어요.');
   }catch(err){toast(err instanceof SyntaxError?'올바른 JSON 백업 파일을 선택해 주세요.':err.message||'복원에 실패했어요. 기존 목록은 유지했어요.');}
 }

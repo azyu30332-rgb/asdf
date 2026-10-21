@@ -1,5 +1,5 @@
 // Photo thumbnails live in IndexedDB, which does not share localStorage's small quota.
-// The legacy snapshot is kept intact until an explicit successful restore replaces it.
+// The legacy snapshot is kept intact; an existing IndexedDB snapshot always takes priority.
 const DB_NAME = 'chaekjang-library';
 const LEGACY_KEY = 'chaekjang.collection.v1';
 let database;
