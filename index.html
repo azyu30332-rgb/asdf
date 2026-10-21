@@ -12,7 +12,7 @@
 </aside>
 <main>
 <header>
-  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.4.0</span><span class="header-context">나만의 작은 도서관</span>
+  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.5.0</span><span class="header-context">나만의 작은 도서관</span>
   <div class="header-actions"><button id="theme-settings" aria-label="색깔 테마 설정" title="색깔 테마">◐</button><button id="backup">백업</button><button id="restore">복원</button></div>
   <input type="file" id="file" accept="application/json,.json" hidden>
 </header>
@@ -25,7 +25,7 @@
     <article><span>거래완료</span><strong id="sold">0<small>권</small></strong><p>새로운 독자에게 이어진 이야기</p></article>
   </div>
   <div class="add-book-row"><button class="primary" id="add">＋ 책 등록하기</button></div>
-  <div class="collection-head"><h2>컬렉션 <span id="result-count">0</span></h2><button id="demo">샘플 둘러보기</button></div>
+  <div class="collection-head"><h2>컬렉션 <span id="result-count">0</span></h2><div class="collection-actions"><button id="export-documents">엑셀 내보내기</button><button id="demo">샘플 둘러보기</button></div></div>
   <div class="toolbar">
     <div class="tabs"><button class="selected" data-filter="all">전체</button><button data-filter="보유중">보유중</button><button data-filter="거래중">거래중</button><button data-filter="거래완료">거래완료</button></div>
     <label class="search"><span>⌕</span><input id="search" placeholder="제목, 작가, 메모, 날짜 검색" aria-label="컬렉션 검색"><kbd>/</kbd></label>
@@ -36,7 +36,7 @@
   <div id="list" class="book-grid"></div>
   <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 책 등록하기</button></div>
   <div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div>
-  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.4.0</span></footer>
+  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.5.0</span></footer>
 </section>
 </main>
 <dialog id="editor"><form id="book-form">
@@ -75,6 +75,15 @@
   <div class="backup-actions"><button id="save-backup" class="primary">휴대폰·Drive에 파일 저장</button><button id="share-backup" class="secondary" hidden>Google Drive 등에 공유</button></div>
   <p class="hint">저장 창에서 내 휴대폰이나 Google Drive를 선택하세요. Drive 앱 설치와 로그인이 필요할 수 있어요. 자동 동기화는 아니에요.</p>
   <p class="hint" id="backup-demo-note" hidden>샘플 보기 중에도 실제 내 컬렉션만 백업해요.</p>
+</dialog>
+<dialog id="documents-dialog">
+  <div class="modal-head"><h2>책 목록 문서로 내보내기</h2><button class="close" aria-label="닫기">×</button></div>
+  <p id="document-summary"></p><p class="hint">제목, 작가, 권별 상태, 메모, 등록일과 판매일을 내보내요. 엑셀에는 시리즈 요약·권별 상세 시트가 함께 들어가요.</p>
+  <label class="document-label">파일 형식<select id="document-format"><option value="xlsx">엑셀 통합 문서 (.xlsx)</option><option value="csv">CSV 문서 (.csv)</option></select></label>
+  <label class="document-label" id="csv-scope-label" hidden>CSV 내용<select id="csv-scope"><option value="detail">권별 상세</option><option value="summary">시리즈 요약</option></select></label>
+  <div class="backup-actions"><button id="save-document" class="primary">휴대폰·Drive에 저장</button><button id="share-document" class="secondary" hidden>Google Drive 등에 공유</button></div>
+  <p class="hint">엑셀·CSV는 확인·편집용 문서예요. 앱에 복원하거나 표지 사진까지 보관하려면 기존 백업 기능을 사용해 주세요.</p>
+  <p class="hint" id="document-demo-note" hidden>샘플 보기 중에도 실제 내 컬렉션 전체를 내보내요.</p>
 </dialog>
 <dialog id="themes-dialog"><div class="modal-head"><h2>책장의 색깔 테마</h2><button class="close" aria-label="닫기">×</button></div><p class="hint">내 눈에 편한 색을 골라보세요. 다음에 열어도 유지돼요.</p><div class="theme-options">
   <button data-theme-option="forest" class="theme-choice"><span class="swatch forest"></span><strong>숲빛</strong><small>싱그러운 그린</small></button>

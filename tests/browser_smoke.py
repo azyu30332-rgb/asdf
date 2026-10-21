@@ -1,5 +1,6 @@
 """Run with Python Playwright while `npm start` serves the project on port 3010."""
-import asyncio, base64, json, tempfile, os
+import asyncio, base64, json, tempfile, os, csv, io, zipfile
+from xml.etree import ElementTree as ET
 from pathlib import Path
 from playwright.async_api import async_playwright
 
@@ -11,7 +12,7 @@ async def main():
   legacy={'version':1,'books':[{'id':'legacy','title':'기존 만화','author':'작가','note':'기존 메모','createdAt':1700000000000,'volumes':[{'number':1,'status':'거래완료'},{'number':2,'status':'보유중'}]}]}
   await page.add_init_script('if(!localStorage.getItem("seeded")){localStorage.setItem("chaekjang.collection.v1",'+json.dumps(json.dumps(legacy,ensure_ascii=False))+');localStorage.setItem("seeded","yes");}')
   await page.goto(os.environ.get('TEST_BASE_URL','http://127.0.0.1:3010')+'/chaekjang.html');await page.locator('.book-card').wait_for()
-  assert await page.locator('#app-version').inner_text()=='v1.4.0'
+  assert await page.locator('#app-version').inner_text()=='v1.5.0'
   assert await page.locator('#app-version').is_visible()
   assert '판매일 미기록' in await page.locator('.card-dates').inner_text()
   assert await page.evaluate('books[0].createdAt')==1700000000000
@@ -81,6 +82,22 @@ async def main():
   assert await page.locator('h1').inner_text()=='나의 책장 컬렉션'
   await page.locator('#demo').click();await page.screenshot(path='/tmp/chaekjang-v110-dark-mobile.png',full_page=True)
   await page.locator('#theme-settings').click();await page.locator('[data-theme-option=forest]').click();await page.locator('#themes-dialog .close').click();await page.screenshot(path='/tmp/chaekjang-v110-forest-mobile.png',full_page=True)
+  await page.locator('#export-documents').click()
+  assert '2개' in await page.locator('#document-summary').inner_text()
+  assert await page.locator('#document-demo-note').is_visible()
+  async with page.expect_download() as xlsx_download:await page.locator('#save-document').click()
+  xlsx_path=await (await xlsx_download.value).path()
+  with zipfile.ZipFile(xlsx_path) as archive:
+   workbook=archive.read('xl/workbook.xml').decode();assert '시리즈 요약' in workbook and '권별 상세' in workbook
+   sheet=ET.fromstring(archive.read('xl/worksheets/sheet2.xml'));ns={'s':'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
+   assert len(sheet.findall('s:sheetData/s:row',ns))==13
+   text=archive.read('xl/worksheets/sheet2.xml').decode();assert '빠진 권 테스트' in text and '미보유' in text and '2025-02-03' in text
+   assert '슬램덩크' not in text
+  await page.locator('#export-documents').click();await page.locator('#document-format').select_option('csv');await page.locator('#csv-scope').select_option('summary')
+  async with page.expect_download() as csv_download:await page.locator('#save-document').click()
+  csv_path=await (await csv_download.value).path();raw=Path(csv_path).read_bytes();assert raw.startswith(b'\xef\xbb\xbf')
+  rows=list(csv.reader(io.StringIO(raw.decode('utf-8-sig'))));assert len(rows)==3 and rows[0][0]=='제목' and rows[0][6]=='미보유'
+  assert await page.evaluate('realBooks.length')==2
   await page.set_viewport_size({'width':1440,'height':1000});await page.screenshot(path='/tmp/chaekjang-v110-desktop.png',full_page=True)
   assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth');assert not errors,errors
   print('PASS: legacy migration, larger fonts, compact spacing, four persistent themes, real photo compression/persistence, per-volume sale dates, idempotence and corrections, real-data backup in sample mode, photos/dates backup restore, invalid restore protection, responsive layout; no JavaScript errors')

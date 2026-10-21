@@ -45,7 +45,7 @@ import java.util.concurrent.Executors;
 public final class MainActivity extends Activity {
     private static final String HOST = "appassets.androidplatform.net";
     private static final String ORIGIN = "https://" + HOST;
-    static final int EXPORT=1001, IMPORT=1002, SHARE=1003, PHOTO=1004, CAMERA=1005, FILE_CHOOSER=1006;
+    static final int EXPORT=1001, IMPORT=1002, SHARE=1003, PHOTO=1004, CAMERA=1005, FILE_CHOOSER=1006, DOCUMENT_EXPORT=1007;
     private static final int MAX_BYTES=128*1024*1024, MAX_PHOTO_BYTES=32*1024*1024;
     private final ExecutorService io=Executors.newSingleThreadExecutor();
     private final List<String> pendingScripts=new ArrayList<>();
@@ -95,6 +95,7 @@ public final class MainActivity extends Activity {
     private void event(String name,String json){sendScript("window.dispatchEvent(new CustomEvent("+JSONObject.quote(name)+",{detail:"+json+"}));");}
     private void notifyUser(String message){event("chaekjang-message",JSONObject.quote(message));}
     private File backupFile(){return new File(getCacheDir(),"pending-backup.json");}
+    private File documentFile(){return new File(getCacheDir(),"pending-document");}
     private byte[] readLimited(InputStream in,int max) throws Exception{
         if(in==null)throw new Exception("No readable stream");try(InputStream stream=in;ByteArrayOutputStream out=new ByteArrayOutputStream()){byte[] buffer=new byte[8192];int size;while((size=stream.read(buffer))!=-1){if(out.size()+size>max)throw new Exception("File too large");out.write(buffer,0,size);}return out.toByteArray();}
     }
@@ -127,6 +128,24 @@ public final class MainActivity extends Activity {
                 }catch(Exception e){activePicker=0;notifyUser(code==SHARE?"공유할 앱을 찾지 못했어요. 파일 저장을 이용해 주세요.":"파일 저장 창을 열지 못했어요. 백업의 공유 버튼을 이용해 주세요.");}});
             }catch(Exception e){runOnUiThread(()->activePicker=0);notifyUser("백업을 준비하지 못했어요. 저장 공간과 파일 크기(128MB 이하)를 확인해 주세요.");}});
         });}
+        @JavascriptInterface public void exportDocument(String encoded,String format,String mode){runOnUiThread(()->{
+            int code="share".equals(mode)?SHARE:DOCUMENT_EXPORT;if(!beginPicker(code))return;
+            io.execute(()->{try{
+                if(!"xlsx".equals(format)&&!"csv".equals(format))throw new Exception("Invalid document format");
+                if(encoded.length()>((MAX_BYTES+2L)/3)*4)throw new Exception("Document too large");
+                byte[] bytes=Base64.decode(encoded,Base64.DEFAULT);if(bytes.length>MAX_BYTES||bytes.length<3)throw new Exception("Invalid document size");
+                if("xlsx".equals(format)&&(bytes[0]!='P'||bytes[1]!='K'))throw new Exception("Invalid workbook");
+                if("csv".equals(format)&&((bytes[0]&255)!=239||(bytes[1]&255)!=187||(bytes[2]&255)!=191))throw new Exception("Invalid CSV encoding");
+                final String mime="xlsx".equals(format)?"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":"text/csv";
+                final String name="책장-목록-"+java.time.LocalDate.now()+"."+format;
+                File destination=documentFile();if(code==SHARE){File dir=new File(getCacheDir(),"backups");if(!dir.isDirectory()&&!dir.mkdirs())throw new Exception("Cannot create export directory");destination=new File(dir,"책장-목록-"+java.time.LocalDate.now()+"-"+UUID.randomUUID()+"."+format);}
+                try(OutputStream out=new FileOutputStream(destination)){out.write(bytes);}final File file=destination;
+                runOnUiThread(()->{try{
+                    if(code==SHARE){Uri uri=FileProvider.getUriForFile(MainActivity.this,getPackageName()+".files",file);Intent send=new Intent(Intent.ACTION_SEND).setType(mime).putExtra(Intent.EXTRA_STREAM,uri).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);send.setClipData(ClipData.newRawUri("책장 목록 문서",uri));startActivityForResult(Intent.createChooser(send,"문서를 저장하거나 공유할 앱"),SHARE);}
+                    else{Intent intent=new Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType(mime).putExtra(Intent.EXTRA_TITLE,name);startActivityForResult(intent,DOCUMENT_EXPORT);}
+                }catch(Exception e){if(code==DOCUMENT_EXPORT)file.delete();activePicker=0;notifyUser("문서 저장 창을 열지 못했어요. 다른 저장 위치나 공유를 이용해 주세요.");}});
+            }catch(Exception|OutOfMemoryError e){documentFile().delete();runOnUiThread(()->activePicker=0);notifyUser("문서를 준비하지 못했어요. 저장 공간과 파일 크기(128MB 이하)를 확인해 주세요.");}});
+        });}
         @JavascriptInterface public void importBackup(){runOnUiThread(()->{if(!beginPicker(IMPORT))return;try{Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*");startActivityForResult(intent,IMPORT);}catch(Exception e){activePicker=0;notifyUser("파일 선택 창을 열지 못했어요. 휴대폰의 파일 앱을 확인해 주세요.");}});}
         @JavascriptInterface public void choosePhoto(String requestId){runOnUiThread(()->{if(!beginPicker(PHOTO)){reportPhoto(requestId,null,"다른 파일 선택을 마친 뒤 다시 눌러 주세요.");return;}photoRequestId=requestId;try{startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("image/*"),PHOTO);}catch(Exception e){activePicker=0;reportPhoto(requestId,null,"사진 선택 창을 열지 못했어요.");}});}
         @JavascriptInterface public void takePhoto(String requestId){runOnUiThread(()->{if(!beginPicker(CAMERA)){reportPhoto(requestId,null,"다른 파일 선택을 마친 뒤 다시 눌러 주세요.");return;}photoRequestId=requestId;try{
@@ -152,16 +171,16 @@ public final class MainActivity extends Activity {
         super.onActivityResult(requestCode,resultCode,data);
         if(requestCode==FILE_CHOOSER){activePicker=0;if(fileCallback!=null){fileCallback.onReceiveValue(resultCode==RESULT_OK&&data!=null?new Uri[]{data.getData()}:null);fileCallback=null;}return;}
         if(requestCode==SHARE){activePicker=0;notifyUser("공유 앱에서 업로드 완료 여부를 확인해 주세요.");return;}
-        if(requestCode!=EXPORT&&requestCode!=IMPORT&&requestCode!=PHOTO&&requestCode!=CAMERA)return;
+        if(requestCode!=EXPORT&&requestCode!=DOCUMENT_EXPORT&&requestCode!=IMPORT&&requestCode!=PHOTO&&requestCode!=CAMERA)return;
         final String token=photoRequestId;
-        if(resultCode!=RESULT_OK||(requestCode!=CAMERA&&(data==null||data.getData()==null))){activePicker=0;if(requestCode==EXPORT)backupFile().delete();if(requestCode==PHOTO||requestCode==CAMERA){reportPhoto(token,null,null);if(cameraFile!=null)cameraFile.delete();}else notifyUser("파일 선택을 취소했어요.");return;}
+        if(resultCode!=RESULT_OK||(requestCode!=CAMERA&&(data==null||data.getData()==null))){activePicker=0;if(requestCode==EXPORT)backupFile().delete();if(requestCode==DOCUMENT_EXPORT)documentFile().delete();if(requestCode==PHOTO||requestCode==CAMERA){reportPhoto(token,null,null);if(cameraFile!=null)cameraFile.delete();}else notifyUser("파일 선택을 취소했어요.");return;}
         final Uri uri=requestCode==CAMERA?null:data.getData();final File capture=cameraFile;
         io.execute(()->{try{
-            if(requestCode==EXPORT){try(InputStream in=new FileInputStream(backupFile());OutputStream out=getContentResolver().openOutputStream(uri,"wt")){if(out==null)throw new Exception("No output stream");byte[] buffer=new byte[8192];int size;while((size=in.read(buffer))!=-1)out.write(buffer,0,size);}notifyUser("백업 파일을 저장했어요. 선택한 폴더에서 확인해 주세요.");}
+            if(requestCode==EXPORT||requestCode==DOCUMENT_EXPORT){try(InputStream in=new FileInputStream(requestCode==EXPORT?backupFile():documentFile());OutputStream out=getContentResolver().openOutputStream(uri,"wt")){if(out==null)throw new Exception("No output stream");byte[] buffer=new byte[8192];int size;while((size=in.read(buffer))!=-1)out.write(buffer,0,size);}notifyUser(requestCode==EXPORT?"백업 파일을 저장했어요. 선택한 폴더에서 확인해 주세요.":"문서 파일을 저장했어요. 선택한 폴더에서 확인해 주세요.");}
             else if(requestCode==IMPORT){String text=new String(readLimited(getContentResolver().openInputStream(uri),MAX_BYTES),StandardCharsets.UTF_8);event("chaekjang-restore",JSONObject.quote(text));}
             else{byte[] bytes=readLimited(requestCode==CAMERA?new FileInputStream(capture):getContentResolver().openInputStream(uri),MAX_PHOTO_BYTES);reportPhoto(token,thumbnail(bytes),null);}
-        }catch(Exception|OutOfMemoryError e){if(requestCode==PHOTO||requestCode==CAMERA)reportPhoto(token,null,"사진을 읽지 못했어요. 32MB 이하의 JPG 또는 PNG 사진으로 다시 선택해 주세요.");else notifyUser(requestCode==EXPORT?"파일을 저장하지 못했어요. 다른 폴더나 공유 버튼을 이용해 주세요.":"파일을 읽지 못했어요. 128MB 이하의 JSON 백업인지 확인해 주세요.");}
-        finally{if(requestCode==EXPORT)backupFile().delete();if(requestCode==CAMERA&&capture!=null)capture.delete();runOnUiThread(()->activePicker=0);}});
+        }catch(Exception|OutOfMemoryError e){if(requestCode==PHOTO||requestCode==CAMERA)reportPhoto(token,null,"사진을 읽지 못했어요. 32MB 이하의 JPG 또는 PNG 사진으로 다시 선택해 주세요.");else notifyUser((requestCode==EXPORT||requestCode==DOCUMENT_EXPORT)?"파일을 저장하지 못했어요. 다른 폴더나 공유 버튼을 이용해 주세요.":"파일을 읽지 못했어요. 128MB 이하의 JSON 백업인지 확인해 주세요.");}
+        finally{if(requestCode==EXPORT)backupFile().delete();if(requestCode==DOCUMENT_EXPORT)documentFile().delete();if(requestCode==CAMERA&&capture!=null)capture.delete();runOnUiThread(()->activePicker=0);}});
     }
     @Override protected void onSaveInstanceState(Bundle outState){outState.putString("photoRequestId",photoRequestId);if(cameraFile!=null)outState.putString("cameraFile",cameraFile.getName());super.onSaveInstanceState(outState);}
     @Override public void onBackPressed(){webView.evaluateJavascript("(()=>{const d=document.querySelector('dialog[open]');if(d){d.close();return true;}return false;})()",handled->{if(!"true".equals(handled))super.onBackPressed();});}

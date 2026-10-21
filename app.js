@@ -1,3 +1,4 @@
+import {spreadsheetDocument} from './document-export.mjs';
 import {collectionCount, volumeSummary, makeVolumes, seriesStatus, validateBackup, selectBooks, changeStatus, localDay, isDay, validPhoto, MAX_BACKUP_BYTES, MAX_PHOTO_LENGTH, registrationTime} from './model.mjs';
 import {loadCollection, saveCollection} from './storage.mjs';
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -181,6 +182,28 @@ async function exportFile(mode){
   }catch(err){if(err.name!=='AbortError')toast(err.message||'백업 파일을 준비하지 못했어요.');}
 }
 $('#save-backup').onclick=()=>exportFile('save');$('#share-backup').onclick=()=>exportFile('share');
+$('#export-documents').onclick=()=>{
+  if(!canUse())return;const list=actualBooks();$('#document-summary').textContent=`내 시리즈 ${list.length}개 · 권별 기록 ${list.reduce((n,b)=>n+b.volumes.length,0).toLocaleString()}개 (미보유 포함)`;
+  $('#document-demo-note').hidden=!demo;$('#share-document').hidden=!android()&&!navigator.share;$('#save-document').textContent=android()?'휴대폰·Drive에 저장':'문서 다운로드';$('#documents-dialog').showModal();
+};
+$('#document-format').onchange=e=>$('#csv-scope-label').hidden=e.target.value!=='csv';
+async function exportDocument(mode){
+  if(!canUse())return;
+  const buttons=[$('#save-document'),$('#share-document')];buttons.forEach(b=>b.disabled=true);
+  try{
+    const format=$('#document-format').value,documentFile=spreadsheetDocument(actualBooks(),format,$('#csv-scope').value);
+    if(android()){
+      let binary='';for(let i=0;i<documentFile.bytes.length;i+=32768)binary+=String.fromCharCode(...documentFile.bytes.subarray(i,i+32768));
+      window.ChaekjangNative.exportDocument(btoa(binary),format,mode);$('#documents-dialog').close();toast(mode==='share'?'문서를 공유할 앱을 선택해 주세요.':'문서 파일을 저장할 위치를 선택해 주세요.');return;
+    }
+    const blob=new Blob([documentFile.bytes],{type:documentFile.mime}),file=new File([blob],documentFile.name,{type:documentFile.mime});
+    if(mode==='share'&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'나의 책장 컬렉션'});}
+    else{const url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download=documentFile.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('문서 파일을 다운로드했어요.');}
+    $('#documents-dialog').close();
+  }catch(err){if(err.name!=='AbortError')toast(err.message||'문서를 준비하지 못했어요.');}
+  finally{buttons.forEach(b=>b.disabled=false);}
+}
+$('#save-document').onclick=()=>exportDocument('save');$('#share-document').onclick=()=>exportDocument('share');
 async function restoreText(text){
   try{
     if(saveBusy){toast('저장 중이에요. 완료 후 다시 복원해 주세요.');return;}

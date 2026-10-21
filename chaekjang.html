@@ -29,6 +29,8 @@ body[data-theme=dark]{--owned-badge-bg:#1d4a3b;--owned-badge-text:#b9f6d5;--trad
 .badge,.status-count{background:var(--owned-badge-bg);color:var(--owned-badge-text);font-size:16px;font-weight:800;border-radius:6px;padding:5px 10px;line-height:1.4;border:1px solid currentColor;display:inline-block}.badge{margin:0 4px 4px 0}.badge.trading,.status-count.trading{background:var(--trade-badge-bg);color:var(--trade-badge-text)}.badge.sold,.status-count.sold{background:var(--sold-badge-bg);color:var(--sold-badge-text)}.badge.partial,.status-count.partial{background:var(--partial-badge-bg);color:var(--partial-badge-text)}.badge.missing,.status-count.missing{background:var(--missing-badge-bg);color:var(--missing-badge-text)}.card-status-summary{display:flex;gap:6px;flex-wrap:wrap;min-width:0}.card-bottom{align-items:flex-end;gap:10px;margin-top:12px}.detail-link{flex-shrink:0;font-size:14px;white-space:nowrap;padding:5px 0}.status-count.partial{font-size:17px;border-width:2px}.card-bottom .status-count{max-width:100%;overflow-wrap:anywhere}
 #volumes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;max-height:min(55dvh,560px);padding:3px;align-content:start}.volume{min-width:0}.volume span{font-size:15px;padding:8px 5px;text-align:center;align-items:center;justify-content:center;height:100%;letter-spacing:-.3px}.volume small{letter-spacing:-.4px;white-space:nowrap;font-size:12px}.volume.trading span{color:var(--trade-badge-text);background:var(--trade-badge-bg)}.volume.sold span{color:var(--sold-badge-text);background:var(--sold-badge-bg)}.volume.sold small{color:inherit}#detail .hint{margin:8px 0 10px}
 @media(max-width:360px){#volumes{grid-template-columns:repeat(2,minmax(0,1fr))}.card-bottom{flex-wrap:wrap}.detail-link{margin-left:auto}}
+
+.collection-actions{display:flex;gap:8px;align-items:center}.collection-actions button{font-size:14px;min-height:42px;color:var(--green)}#export-documents{border:1px solid var(--green);border-radius:7px;padding:6px 10px;font-weight:700;background:var(--surface)}.collection-actions #demo{text-decoration:underline}.document-label{display:flex;flex-direction:column;gap:8px;margin:16px 0;font-weight:600}@media(max-width:360px){.collection-head{flex-wrap:wrap}.collection-actions{margin-left:auto}}
 </style></head>
 <body>
 <aside>
@@ -41,7 +43,7 @@ body[data-theme=dark]{--owned-badge-bg:#1d4a3b;--owned-badge-text:#b9f6d5;--trad
 </aside>
 <main>
 <header>
-  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.4.0</span><span class="header-context">나만의 작은 도서관</span>
+  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.5.0</span><span class="header-context">나만의 작은 도서관</span>
   <div class="header-actions"><button id="theme-settings" aria-label="색깔 테마 설정" title="색깔 테마">◐</button><button id="backup">백업</button><button id="restore">복원</button></div>
   <input type="file" id="file" accept="application/json,.json" hidden>
 </header>
@@ -54,7 +56,7 @@ body[data-theme=dark]{--owned-badge-bg:#1d4a3b;--owned-badge-text:#b9f6d5;--trad
     <article><span>거래완료</span><strong id="sold">0<small>권</small></strong><p>새로운 독자에게 이어진 이야기</p></article>
   </div>
   <div class="add-book-row"><button class="primary" id="add">＋ 책 등록하기</button></div>
-  <div class="collection-head"><h2>컬렉션 <span id="result-count">0</span></h2><button id="demo">샘플 둘러보기</button></div>
+  <div class="collection-head"><h2>컬렉션 <span id="result-count">0</span></h2><div class="collection-actions"><button id="export-documents">엑셀 내보내기</button><button id="demo">샘플 둘러보기</button></div></div>
   <div class="toolbar">
     <div class="tabs"><button class="selected" data-filter="all">전체</button><button data-filter="보유중">보유중</button><button data-filter="거래중">거래중</button><button data-filter="거래완료">거래완료</button></div>
     <label class="search"><span>⌕</span><input id="search" placeholder="제목, 작가, 메모, 날짜 검색" aria-label="컬렉션 검색"><kbd>/</kbd></label>
@@ -65,7 +67,7 @@ body[data-theme=dark]{--owned-badge-bg:#1d4a3b;--owned-badge-text:#b9f6d5;--trad
   <div id="list" class="book-grid"></div>
   <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 책 등록하기</button></div>
   <div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div>
-  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.4.0</span></footer>
+  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.5.0</span></footer>
 </section>
 </main>
 <dialog id="editor"><form id="book-form">
@@ -104,6 +106,15 @@ body[data-theme=dark]{--owned-badge-bg:#1d4a3b;--owned-badge-text:#b9f6d5;--trad
   <div class="backup-actions"><button id="save-backup" class="primary">휴대폰·Drive에 파일 저장</button><button id="share-backup" class="secondary" hidden>Google Drive 등에 공유</button></div>
   <p class="hint">저장 창에서 내 휴대폰이나 Google Drive를 선택하세요. Drive 앱 설치와 로그인이 필요할 수 있어요. 자동 동기화는 아니에요.</p>
   <p class="hint" id="backup-demo-note" hidden>샘플 보기 중에도 실제 내 컬렉션만 백업해요.</p>
+</dialog>
+<dialog id="documents-dialog">
+  <div class="modal-head"><h2>책 목록 문서로 내보내기</h2><button class="close" aria-label="닫기">×</button></div>
+  <p id="document-summary"></p><p class="hint">제목, 작가, 권별 상태, 메모, 등록일과 판매일을 내보내요. 엑셀에는 시리즈 요약·권별 상세 시트가 함께 들어가요.</p>
+  <label class="document-label">파일 형식<select id="document-format"><option value="xlsx">엑셀 통합 문서 (.xlsx)</option><option value="csv">CSV 문서 (.csv)</option></select></label>
+  <label class="document-label" id="csv-scope-label" hidden>CSV 내용<select id="csv-scope"><option value="detail">권별 상세</option><option value="summary">시리즈 요약</option></select></label>
+  <div class="backup-actions"><button id="save-document" class="primary">휴대폰·Drive에 저장</button><button id="share-document" class="secondary" hidden>Google Drive 등에 공유</button></div>
+  <p class="hint">엑셀·CSV는 확인·편집용 문서예요. 앱에 복원하거나 표지 사진까지 보관하려면 기존 백업 기능을 사용해 주세요.</p>
+  <p class="hint" id="document-demo-note" hidden>샘플 보기 중에도 실제 내 컬렉션 전체를 내보내요.</p>
 </dialog>
 <dialog id="themes-dialog"><div class="modal-head"><h2>책장의 색깔 테마</h2><button class="close" aria-label="닫기">×</button></div><p class="hint">내 눈에 편한 색을 골라보세요. 다음에 열어도 유지돼요.</p><div class="theme-options">
   <button data-theme-option="forest" class="theme-choice"><span class="swatch forest"></span><strong>숲빛</strong><small>싱그러운 그린</small></button>
@@ -223,6 +234,67 @@ async function saveCollection(books) {
     tx.onabort=()=>reject(tx.error||Error('기기 저장에 실패했어요.'));
     tx.onerror=()=>{}; // onabort reports the final transaction outcome.
   });
+}
+
+
+function documentTables(books){
+  const summary=[['제목','작가','권수 범위','보유중','거래중','거래완료','미보유','등록일','최근 판매일','메모']];
+  const detail=[['제목','작가','권','상태','등록일','거래완료일','메모']];
+  for(const book of books){
+    const volumes=[...book.volumes].sort((a,b)=>a.number-b.number),counts={'보유중':0,'거래중':0,'거래완료':0,'미보유':0};
+    const registered=localDay(new Date(book.createdAt));
+    for(const v of volumes){counts[v.status]++;detail.push([book.title,book.author,v.number,v.status,registered,v.status==='거래완료'?(v.soldAt||'미기록'):'',book.note]);}
+    const dates=volumes.filter(v=>v.status==='거래완료'&&v.soldAt).map(v=>v.soldAt).sort();
+    const unknown=volumes.some(v=>v.status==='거래완료'&&!v.soldAt);
+    summary.push([book.title,book.author,volumes.length===1?`${volumes[0].number}권`:`${volumes[0].number}–${volumes.at(-1).number}권`,counts['보유중'],counts['거래중'],counts['거래완료'],counts['미보유'],registered,dates.length?dates.at(-1)+(unknown?' (일부 미기록)':''):unknown?'미기록':'',book.note]);
+  }
+  return {summary,detail};
+}
+function csvDocument(rows){
+  // Treat user text as text even when opened by a spreadsheet that recognizes formulas.
+  return '\ufeff'+rows.map(row=>row.map(value=>{
+    let text=String(value??'');if(typeof value!=='number'&&/^[\s\u0000-\u001f]*[=+\-@]/.test(text))text="'"+text;
+    return '"'+text.replaceAll('"','""')+'"';
+  }).join(',')).join('\r\n')+'\r\n';
+}
+function xmlText(value){return String(value??'').replace(/[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u{10000}-\u{10FFFF}]/gu,'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&apos;');}
+function columnName(index){let name='';for(index++;index;index=Math.floor((index-1)/26))name=String.fromCharCode(65+(index-1)%26)+name;return name;}
+function sheetXml(rows,widths){
+  const last=columnName(rows[0].length-1)+rows.length;
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:'+last+'"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>'+widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join('')+'</cols><sheetData>'+rows.map((row,r)=>`<row r="${r+1}">`+row.map((value,c)=>typeof value==='number'?`<c r="${columnName(c)}${r+1}"><v>${value}</v></c>`:`<c r="${columnName(c)}${r+1}" t="inlineStr"${r===0?' s="1"':''}><is><t xml:space="preserve">${xmlText(value)}</t></is></c>`).join('')+'</row>').join('')+`</sheetData><autoFilter ref="A1:${last}"/></worksheet>`;
+}
+const crcTable=Array.from({length:256},(_,n)=>{for(let i=0;i<8;i++)n=(n&1)?0xedb88320^(n>>>1):n>>>1;return n>>>0;});
+function crc32(bytes){let crc=0xffffffff;for(const byte of bytes)crc=crcTable[(crc^byte)&255]^(crc>>>8);return (crc^0xffffffff)>>>0;}
+function zipStored(files){
+  const encoder=new TextEncoder(),parts=[],central=[];let offset=0,centralSize=0;
+  for(const [path,text] of Object.entries(files)){
+    const name=encoder.encode(path),data=encoder.encode(text),crc=crc32(data),header=new Uint8Array(30+name.length),h=new DataView(header.buffer);
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x800,true);h.setUint16(12,33,true);h.setUint32(14,crc,true);h.setUint32(18,data.length,true);h.setUint32(22,data.length,true);h.setUint16(26,name.length,true);header.set(name,30);
+    const entry=new Uint8Array(46+name.length),e=new DataView(entry.buffer);e.setUint32(0,0x02014b50,true);e.setUint16(4,20,true);e.setUint16(6,20,true);e.setUint16(8,0x800,true);e.setUint16(14,33,true);e.setUint32(16,crc,true);e.setUint32(20,data.length,true);e.setUint32(24,data.length,true);e.setUint16(28,name.length,true);e.setUint32(42,offset,true);entry.set(name,46);
+    parts.push(header,data);central.push(entry);offset+=header.length+data.length;centralSize+=entry.length;
+    if(offset+centralSize+22>MAX_BACKUP_BYTES)throw Error('문서 크기가 128MB를 넘었어요. 메모 길이를 줄인 뒤 다시 시도해 주세요.');
+  }
+  const end=new Uint8Array(22),e=new DataView(end.buffer);e.setUint32(0,0x06054b50,true);e.setUint16(8,central.length,true);e.setUint16(10,central.length,true);e.setUint32(12,centralSize,true);e.setUint32(16,offset,true);
+  const result=new Uint8Array(offset+centralSize+22);let cursor=0;for(const part of [...parts,...central,end]){result.set(part,cursor);cursor+=part.length;}return result;
+}
+function xlsxDocument(tables){
+  const ns='http://schemas.openxmlformats.org/spreadsheetml/2006/main',rel='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  return zipStored({
+    '[Content_Types].xml':'<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>',
+    '_rels/.rels':`<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${rel}/officeDocument" Target="xl/workbook.xml"/></Relationships>`,
+    'xl/workbook.xml':`<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="${ns}" xmlns:r="${rel}"><sheets><sheet name="시리즈 요약" sheetId="1" r:id="rId1"/><sheet name="권별 상세" sheetId="2" r:id="rId2"/></sheets></workbook>`,
+    'xl/_rels/workbook.xml.rels':`<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${rel}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${rel}/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="${rel}/styles" Target="styles.xml"/></Relationships>`,
+    'xl/styles.xml':`<?xml version="1.0" encoding="UTF-8"?><styleSheet xmlns="${ns}"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF225C51"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="2"><xf xfId="0" fontId="0" fillId="0" borderId="0" numFmtId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf><xf xfId="0" fontId="1" fillId="2" borderId="0" numFmtId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`,
+    'xl/worksheets/sheet1.xml':sheetXml(tables.summary,[28,22,16,12,12,12,12,16,26,55]),
+    'xl/worksheets/sheet2.xml':sheetXml(tables.detail,[28,22,10,16,16,18,55])
+  });
+}
+function spreadsheetDocument(books,format,scope='detail'){
+  const tables=documentTables(books);
+  if(format==='xlsx')return {bytes:xlsxDocument(tables),mime:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',name:`책장-목록-${localDay()}.xlsx`};
+  if(format!=='csv'||!['summary','detail'].includes(scope))throw Error('올바른 문서 형식을 선택해 주세요.');
+  const bytes=new TextEncoder().encode(csvDocument(tables[scope]));if(bytes.length>MAX_BACKUP_BYTES)throw Error('문서 크기가 128MB를 넘었어요.');
+  return {bytes,mime:'text/csv',name:`책장-${scope==='summary'?'시리즈요약':'권별상세'}-${localDay()}.csv`};
 }
 
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -406,6 +478,28 @@ async function exportFile(mode){
   }catch(err){if(err.name!=='AbortError')toast(err.message||'백업 파일을 준비하지 못했어요.');}
 }
 $('#save-backup').onclick=()=>exportFile('save');$('#share-backup').onclick=()=>exportFile('share');
+$('#export-documents').onclick=()=>{
+  if(!canUse())return;const list=actualBooks();$('#document-summary').textContent=`내 시리즈 ${list.length}개 · 권별 기록 ${list.reduce((n,b)=>n+b.volumes.length,0).toLocaleString()}개 (미보유 포함)`;
+  $('#document-demo-note').hidden=!demo;$('#share-document').hidden=!android()&&!navigator.share;$('#save-document').textContent=android()?'휴대폰·Drive에 저장':'문서 다운로드';$('#documents-dialog').showModal();
+};
+$('#document-format').onchange=e=>$('#csv-scope-label').hidden=e.target.value!=='csv';
+async function exportDocument(mode){
+  if(!canUse())return;
+  const buttons=[$('#save-document'),$('#share-document')];buttons.forEach(b=>b.disabled=true);
+  try{
+    const format=$('#document-format').value,documentFile=spreadsheetDocument(actualBooks(),format,$('#csv-scope').value);
+    if(android()){
+      let binary='';for(let i=0;i<documentFile.bytes.length;i+=32768)binary+=String.fromCharCode(...documentFile.bytes.subarray(i,i+32768));
+      window.ChaekjangNative.exportDocument(btoa(binary),format,mode);$('#documents-dialog').close();toast(mode==='share'?'문서를 공유할 앱을 선택해 주세요.':'문서 파일을 저장할 위치를 선택해 주세요.');return;
+    }
+    const blob=new Blob([documentFile.bytes],{type:documentFile.mime}),file=new File([blob],documentFile.name,{type:documentFile.mime});
+    if(mode==='share'&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'나의 책장 컬렉션'});}
+    else{const url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download=documentFile.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('문서 파일을 다운로드했어요.');}
+    $('#documents-dialog').close();
+  }catch(err){if(err.name!=='AbortError')toast(err.message||'문서를 준비하지 못했어요.');}
+  finally{buttons.forEach(b=>b.disabled=false);}
+}
+$('#save-document').onclick=()=>exportDocument('save');$('#share-document').onclick=()=>exportDocument('share');
 async function restoreText(text){
   try{
     if(saveBusy){toast('저장 중이에요. 완료 후 다시 복원해 주세요.');return;}

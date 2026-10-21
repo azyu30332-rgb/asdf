@@ -7,8 +7,8 @@ android {
         applicationId 'kr.chaekjang.app'
         minSdk 26
         targetSdk 35
-        versionCode 7
-        versionName '1.4.0'
+        versionCode 8
+        versionName '1.5.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     compileOptions {
@@ -30,7 +30,7 @@ android {
 tasks.register('bundleWebApp', Exec) {
     workingDir rootProject.projectDir.parentFile
     commandLine 'node', 'build-standalone.mjs'
-    inputs.files('../../index.html', '../../style.css', '../../model.mjs', '../../storage.mjs', '../../app.js', '../../build-standalone.mjs')
+    inputs.files('../../index.html', '../../style.css', '../../model.mjs', '../../storage.mjs', '../../document-export.mjs', '../../app.js', '../../build-standalone.mjs')
     outputs.file('../../chaekjang.html')
 }
 tasks.register('syncWebAssets', Copy) {

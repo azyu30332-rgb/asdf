@@ -127,6 +127,43 @@ public class NativeFilesTest {
         JSONObject backup=new JSONObject(new String(Files.readAllBytes(output.toPath()),StandardCharsets.UTF_8));assertEquals(2,backup.getInt("version"));assertEquals(0,backup.getJSONArray("books").length());
         intended(hasAction(Intent.ACTION_CREATE_DOCUMENT));
     }
+    private void seedDocumentBooks() throws Exception{
+        fire("persist([{id:'export-test',title:'문서 테스트',author:'작가',note:'거실 책장, 메모',createdAt:1700000000000,volumes:[{number:1,status:'보유중'},{number:2,status:'미보유'},{number:3,status:'거래완료',soldAt:'2025-03-04'}]}])");
+        waitJs("books.length===1 && !saveBusy");
+    }
+    @Test public void excelDocumentWritesRealWorkbookToSelectedPhoneFile() throws Exception{
+        seedDocumentBooks();File output=fixture("collection.xlsx");if(output.exists())assertTrue(output.delete());
+        intending(hasAction(Intent.ACTION_CREATE_DOCUMENT)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK,new Intent().setData(uri(output))));
+        fire("document.querySelector('#export-documents').click();document.querySelector('#save-document').click()");
+        waitJs("document.querySelector('#toast').textContent.includes('문서 파일을 저장했어요')");
+        intended(allOf(hasAction(Intent.ACTION_CREATE_DOCUMENT),hasType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")));
+        boolean workbook=false,detail=false;
+        try(java.util.zip.ZipInputStream zip=new java.util.zip.ZipInputStream(new java.io.FileInputStream(output))){
+            java.util.zip.ZipEntry entry;byte[] buffer=new byte[4096];
+            while((entry=zip.getNextEntry())!=null){java.io.ByteArrayOutputStream bytes=new java.io.ByteArrayOutputStream();int n;while((n=zip.read(buffer))!=-1)bytes.write(buffer,0,n);String text=bytes.toString("UTF-8");
+                if(entry.getName().equals("xl/workbook.xml")){assertTrue(text.contains("시리즈 요약"));assertTrue(text.contains("권별 상세"));workbook=true;}
+                if(entry.getName().equals("xl/worksheets/sheet2.xml")){assertTrue(text.contains("문서 테스트"));assertTrue(text.contains("미보유"));assertTrue(text.contains("2025-03-04"));assertTrue(text.contains("거실 책장, 메모"));detail=true;}
+            }
+        }
+        assertTrue(workbook&&detail);assertEquals("1",js("books.length"));
+    }
+    @Test public void csvDocumentCanSaveAfterCancelWithKoreanEncoding() throws Exception{
+        seedDocumentBooks();File output=fixture("collection.csv");if(output.exists())assertTrue(output.delete());
+        intending(hasAction(Intent.ACTION_CREATE_DOCUMENT)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED,null));
+        fire("document.querySelector('#export-documents').click();document.querySelector('#document-format').value='csv';document.querySelector('#save-document').click()");waitJs("document.querySelector('#toast').textContent.includes('취소')");
+        intending(hasAction(Intent.ACTION_CREATE_DOCUMENT)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK,new Intent().setData(uri(output))));
+        fire("document.querySelector('#export-documents').click();document.querySelector('#save-document').click()");waitJs("document.querySelector('#toast').textContent.includes('문서 파일을 저장했어요')");
+        String text=new String(Files.readAllBytes(output.toPath()),StandardCharsets.UTF_8);assertEquals(0xfeff,text.charAt(0));assertTrue(text.contains("미보유"));assertTrue(text.contains("2025-03-04"));assertTrue(text.contains("\"거실 책장, 메모\""));
+        intended(allOf(hasAction(Intent.ACTION_CREATE_DOCUMENT),hasType("text/csv")),times(2));
+    }
+    @Test public void workbookShareIncludesReadableXlsxAndCorrectMime() throws Exception{
+        seedDocumentBooks();intending(hasAction(Intent.ACTION_CHOOSER)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED,null));
+        fire("document.querySelector('#export-documents').click();document.querySelector('#share-document').click()");waitJs("document.querySelector('#toast').textContent.includes('공유 앱')");
+        intended(hasAction(Intent.ACTION_CHOOSER));Intent chooser=null;for(Intent intent:Intents.getIntents())if(Intent.ACTION_CHOOSER.equals(intent.getAction()))chooser=intent;
+        assertNotNull(chooser);Intent send=chooser.getParcelableExtra(Intent.EXTRA_INTENT);assertNotNull(send);assertEquals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",send.getType());
+        Uri file=send.getParcelableExtra(Intent.EXTRA_STREAM);assertNotNull(file);assertTrue((send.getFlags()&Intent.FLAG_GRANT_READ_URI_PERMISSION)!=0);
+        try(java.io.InputStream in=context().getContentResolver().openInputStream(file)){assertNotNull(in);assertEquals('P',in.read());assertEquals('K',in.read());}
+    }
     @Test public void restoreButtonReadsBackupAndPreservesSaleDates() throws Exception{
         File input=fixture("test-import.json");String json="{\"version\":2,\"books\":[{\"id\":\"restored\",\"title\":\"복원 테스트\",\"author\":\"작가\",\"note\":\"메모\",\"createdAt\":1700000000000,\"volumes\":[{\"number\":1,\"status\":\"거래완료\",\"soldAt\":\"2025-01-02\"}]}]}";
         try(FileOutputStream out=new FileOutputStream(input)){out.write(json.getBytes(StandardCharsets.UTF_8));}
