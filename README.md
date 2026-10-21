@@ -4,9 +4,9 @@
 
 ## Android 설치 파일
 
-[책장 v1.3.0 APK 직접 다운로드](https://github.com/azyu30332-rgb/asdf/releases/download/v1.3.0/chaekjang-1.3.0.apk)
+[책장 v1.3.1 APK 직접 다운로드](https://github.com/azyu30332-rgb/asdf/releases/download/v1.3.1/chaekjang-1.3.1.apk)
 
-파일 이름이 `chaekjang-1.3.0.apk`인지 확인하고 설치하세요. 이전 `app-debug.apk`를 다시 열면 이전 버전이 설치될 수 있습니다. 새 앱 상단에 **v1.3.0**이 항상 표시됩니다. 앱을 삭제하지 말고 업데이트 설치하면 기존 데이터가 유지됩니다.
+파일 이름이 `chaekjang-1.3.1.apk`인지 확인하고 설치하세요. 이전 `app-debug.apk`를 다시 열면 이전 버전이 설치될 수 있습니다. 새 앱 상단에 **v1.3.1**이 항상 표시됩니다. 먼저 기존 앱에서 백업하세요. 업데이트 설치가 서명 충돌로 거부되면 백업 파일이 저장되었는지 확인한 뒤 앱을 삭제하고 새 버전을 설치하여 복원하세요. 이전 배포본의 서명 키가 달랐던 문제를 이번 버전에서 수정했습니다.
 
 공개 릴리스의 APK 링크는 로그인이나 ZIP 압축 해제를 요구하지 않습니다. `Source code` ZIP은 설치 파일이 아닙니다. 게시 전 빌드는 `tests/verify_apk.py`로 실제 APK 버전·서명·내장 화면을 검사합니다. 빌드와 에뮬레이터 검증 후 별도 권한의 게시 작업이 릴리스에 파일을 올립니다.
 

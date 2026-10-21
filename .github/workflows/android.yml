@@ -18,12 +18,19 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      # Keep personal test updates compatible while this cache remains available.
-      # Production distribution needs a separately managed release signing key.
+      # Restore the legacy key if it exists, and explicitly use the cached path.
       - uses: actions/cache@v4
         with:
           path: ~/.android/debug.keystore
           key: chaekjang-android-debug-key-v1
+      - uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: chaekjang-explicit-signing-key-v2
+      - name: Prepare persistent Android signing key
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/prepare-android-signing.py
       - name: Install Android SDK components
         run: |
           test -d "$ANDROID_HOME"

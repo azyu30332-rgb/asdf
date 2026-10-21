@@ -13,7 +13,11 @@ build_tools=sdk/'build-tools/35.0.0'
 badging=subprocess.check_output([str(build_tools/'aapt'),'dump','badging',str(apk)],text=True)
 assert f"versionCode='{code}'" in badging and f"versionName='{version}'" in badging,'APK version mismatch'
 assert "name='kr.chaekjang.app'" in badging,'Unexpected application ID'
-subprocess.run([str(build_tools/'apksigner'),'verify',str(apk)],check=True)
+certificates=subprocess.check_output([str(build_tools/'apksigner'),'verify','--print-certs',str(apk)],text=True)
+signing_sha256=re.search(r'Signer #1 certificate SHA-256 digest: (\w+)',certificates).group(1)
+if os.environ.get('CHAEKJANG_KEYSTORE'):
+    store_cert=subprocess.check_output(['keytool','-exportcert','-keystore',os.environ['CHAEKJANG_KEYSTORE'],'-storepass','android','-alias','androiddebugkey'])
+    assert hashlib.sha256(store_cert).hexdigest()==signing_sha256,'APK did not use the persistent signing key'
 with zipfile.ZipFile(apk) as archive:
     embedded=archive.read('assets/index.html')
 assert embedded==(root/'chaekjang.html').read_bytes(),'APK contains stale web assets'
@@ -25,5 +29,5 @@ name=f'chaekjang-{version}.apk';shutil.copyfile(apk,output/name)
 digest=hashlib.sha256(apk.read_bytes()).hexdigest()
 (output/'SHA256SUMS').write_text(f'{digest}  {name}\n')
 commit=os.environ.get('GITHUB_SHA') or subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip()
-(output/'release-metadata.json').write_text(json.dumps({'version':version,'versionCode':code,'commit':commit,'sha256':digest,'apk':name},indent=2)+'\n')
+(output/'release-metadata.json').write_text(json.dumps({'version':version,'versionCode':code,'signingSha256':signing_sha256,'commit':commit,'sha256':digest,'apk':name},indent=2)+'\n')
 print(f'Verified Android package {version} (code {code}), matching bundled UI and signature: {name}')
