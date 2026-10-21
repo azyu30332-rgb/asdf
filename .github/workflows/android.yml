@@ -26,7 +26,12 @@ jobs:
       - name: Install Android SDK components
         run: |
           test -d "$ANDROID_HOME"
-          sdkmanager --sdk_root="$ANDROID_HOME" 'platforms;android-35' 'build-tools;35.0.0'
+          sdk_manager="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$sdk_manager" ]; then
+            sdk_manager="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -print -quit)"
+          fi
+          test -x "$sdk_manager"
+          "$sdk_manager" --sdk_root="$ANDROID_HOME" 'platforms;android-35' 'build-tools;35.0.0'
       - name: Test collection logic
         run: npm test
       - name: Build and lint APK
