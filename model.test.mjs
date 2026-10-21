@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { makeVolumes, seriesStatus, validateBackup, selectBooks } from './model.mjs';
+const book=(title,volumes=makeVolumes(1,3),note='')=>({id:title,title,author:'작가',note,createdAt:1,volumes});
+test('일괄 등록에서 빠진 권 범위를 제외한다',()=>{assert.deepEqual(makeVolumes(1,10,'3, 7-9').map(v=>v.number),[1,2,4,5,6,10]);});
+test('잘못된 범위 및 빈 시리즈는 거절한다',()=>{for(const args of [[3,1],[0,5],[1,10001],[1,3,'1-3'],[1,3,'4'],[1,3,'x'],[1,3,'3-2']]) assert.throws(()=>makeVolumes(...args));});
+test('일부 권만 거래중이어도 최상단에 정렬한다',()=>{const a=book('가'),b=book('나',[{number:1,status:'거래중'},{number:2,status:'보유중'}]);assert.equal(seriesStatus(b),'거래중');assert.equal(selectBooks([a,b],'all','','title')[0].title,'나');assert.equal(selectBooks([a,b],'보유중','','recent').length,2);});
+test('제목·메모·권수를 검색한다',()=>{const b=book('슬램덩크',makeVolumes(1,31),'거실 책장');for(const q of ['슬램','거실','31권'])assert.equal(selectBooks([b],'all',q,'recent').length,1);assert.equal(selectBooks([b],'거래완료','','recent').length,0);});
+test('백업 왕복 및 중복 ID·잘못된 상태 차단',()=>{const b=book('원피스');assert.deepEqual(validateBackup(JSON.parse(JSON.stringify({version:1,books:[b]}))),[b]);assert.throws(()=>validateBackup({version:1,books:[b,b]}));assert.throws(()=>validateBackup({version:1,books:[book('불량',[{number:1,status:'오류'}])]}));});
+test('3,000권 검색·상태 집계용 데이터 유지',()=>{const books=Array.from({length:100},(_,i)=>book(`시리즈 ${i}`,makeVolumes(1,30)));const output=selectBooks(books,'all','30권','count');assert.equal(output.length,100);assert.equal(output.reduce((s,b)=>s+b.volumes.length,0),3000);});

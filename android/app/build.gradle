@@ -1,0 +1,35 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'kr.chaekjang.app'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'kr.chaekjang.app'
+        minSdk 26
+        targetSdk 35
+        versionCode 1
+        versionName '1.0.0'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildTypes {
+        release { minifyEnabled false }
+    }
+}
+
+// The same tested UI runs entirely from the APK; no server or network is used.
+tasks.register('bundleWebApp', Exec) {
+    workingDir rootProject.projectDir.parentFile
+    commandLine 'node', 'build-standalone.mjs'
+    inputs.files('../../index.html', '../../style.css', '../../model.mjs', '../../app.js', '../../build-standalone.mjs')
+    outputs.file('../../chaekjang.html')
+}
+tasks.register('syncWebAssets', Copy) {
+    dependsOn 'bundleWebApp'
+    from '../../chaekjang.html'
+    into 'src/main/assets'
+    rename { 'index.html' }
+}
+tasks.named('preBuild') { dependsOn 'syncWebAssets' }
