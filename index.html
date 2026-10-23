@@ -12,7 +12,7 @@
 </aside>
 <main>
 <header>
-  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.7.0</span><span class="header-context">나만의 작은 도서관</span>
+  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.8.0</span><span class="header-context">나만의 작은 도서관</span>
   <div class="header-actions"><button id="theme-settings" aria-label="색깔 테마 설정" title="색깔 테마">◐</button><button id="backup">백업</button><button id="restore">복원</button></div>
   <input type="file" id="file" accept="application/json,.json" hidden>
 </header>
@@ -37,20 +37,21 @@
   <div id="list" class="book-grid"></div>
   <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 책 등록하기</button></div>
   <div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div>
-  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.7.0</span></footer>
+  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.8.0</span></footer>
 </section>
 </main>
+<button id="floating-add" class="floating-add" type="button" aria-label="책 등록하기" title="책 등록하기"><span aria-hidden="true">＋</span></button>
 <dialog id="editor"><form id="book-form">
   <div class="modal-head"><h2>책 등록하기</h2><button type="button" class="close" aria-label="닫기">×</button></div>
+  <fieldset class="photo-field"><legend>표지·판매 사진 <span>(최대 12장)</span></legend><div class="photo-layout"><button type="button" class="photo-preview" id="editor-preview" aria-label="표지 사진 크게 보기" disabled><span>冊</span><img hidden alt="등록할 표지 사진"></button><div class="photo-actions"><button type="button" class="secondary" data-photo="editor" data-source="camera">사진 찍기</button><button type="button" class="secondary" data-photo="editor" data-source="gallery">여러 사진 추가</button><button type="button" class="secondary" id="edit-editor-cover" disabled>자르기·회전</button></div></div><small>판매용 사진은 최대 1,600px로 압축해 보관해요. 첫 사진이 표지예요. 책 등록을 마쳐야 사진도 저장돼요.</small><div class="album-toolbar"><strong id="editor-photo-count">0/12장</strong><button type="button" data-photo-all="editor">전체 선택</button></div><div class="photo-album" id="editor-album"></div><div class="album-actions"><button type="button" class="secondary" data-photo-export="editor" data-mode="save">선택 사진 저장</button><button type="button" class="secondary" data-photo-export="editor" data-mode="share">선택 사진 공유</button></div></fieldset>
   <label>시리즈 제목 <input name="title" required maxlength="150" placeholder="예: 슬램덩크"></label>
-  <label>폴더<select name="folder"><option value="">미분류</option></select></label>
-  <label>작가<input name="author" maxlength="100" placeholder="예: 이노우에 다케히코"></label>
-  <fieldset class="photo-field"><legend>표지·판매 사진 <span>(최대 12장)</span></legend><div class="photo-layout"><div class="photo-preview" id="editor-preview"><span>冊</span><img hidden alt="등록할 표지 사진"></div><div class="photo-actions"><button type="button" class="secondary" data-photo="editor" data-source="camera">사진 찍기</button><button type="button" class="secondary" data-photo="editor" data-source="gallery">여러 사진 추가</button></div></div><small>판매용 사진은 최대 1,600px로 압축해 보관해요. 첫 사진이 표지예요. 책 등록을 마쳐야 사진도 저장돼요.</small><div class="album-toolbar"><strong id="editor-photo-count">0/12장</strong><button type="button" data-photo-all="editor">전체 선택</button></div><div class="photo-album" id="editor-album"></div><div class="album-actions"><button type="button" class="secondary" data-photo-export="editor" data-mode="save">선택 사진 저장</button><button type="button" class="secondary" data-photo-export="editor" data-mode="share">선택 사진 공유</button></div></fieldset>
   <div class="form-row"><label>시작 권<input name="from" type="number" min="1" max="10000" value="1" required></label><label>마지막 권<input name="to" type="number" min="1" max="10000" value="1" required></label></div>
   <label>빠진 권 <span class="optional">선택</span><input name="missing" placeholder="예: 3, 7-9"><small>예: 3, 7-9. 빠진 권도 회색 미보유로 표시돼요.</small></label>
+  <label>작가<input name="author" maxlength="100" placeholder="예: 이노우에 다케히코"></label>
   <label>등록일<input type="date" name="registeredOn" min="1970-01-01" required></label>
   <label>등록 상태<select name="status"><option>거래중</option><option>거래완료</option><option selected>보유중</option><option>미보유</option></select></label>
   <label id="initial-sale" hidden>거래완료일<input type="date" name="soldOn"></label>
+  <label>폴더<select name="folder"><option value="">미분류</option></select></label>
   <label>나만의 메모<textarea name="note" rows="3" maxlength="5000" placeholder="책 상태, 보관 위치, 판매 가격 등을 남겨보세요."></textarea></label>
   <p id="form-error" class="error" role="alert"></p>
   <div class="modal-actions"><button type="button" class="close secondary">취소</button><button class="primary" type="submit">컬렉션에 등록</button></div>
@@ -73,7 +74,7 @@
   <div class="modal-actions"><button id="delete" class="danger">시리즈 삭제</button><button id="save-note" class="primary">메모 저장</button></div>
 </dialog>
 <dialog id="photo-viewer"><div class="modal-head"><h2 id="photo-viewer-title">판매 사진</h2><button class="close" aria-label="닫기">×</button></div><img id="photo-viewer-image" alt="선택한 책 사진 크게 보기"><div class="album-actions"><button class="primary" id="save-viewer-photo">이 사진 저장</button><button class="secondary" id="share-viewer-photo">이 사진 공유</button><button class="secondary" id="edit-viewer-photo">자르기·회전</button></div></dialog>
-<dialog id="photo-editor"><div class="modal-head"><h2>사진 자르기·회전</h2><button class="close" aria-label="닫기">×</button></div><p class="hint">사진 위에서 남길 영역을 드래그하세요. 원본은 유지하고 편집본을 새 사진으로 추가해요.</p><div class="crop-stage"><canvas id="crop-canvas" aria-label="사진에서 자를 영역을 드래그하세요"></canvas></div><div class="crop-actions"><button class="secondary" id="rotate-left">↶ 왼쪽 회전</button><button class="secondary" id="rotate-right">↷ 오른쪽 회전</button><button class="secondary" id="reset-crop">전체 영역</button></div><p id="crop-size" class="hint" aria-live="polite"></p><button class="primary" id="save-crop">편집본 추가 저장</button></dialog>
+<dialog id="photo-editor"><div class="modal-head"><h2>사진 자르기·회전</h2><button class="close" aria-label="닫기">×</button></div><p class="hint" id="crop-help">사진 위에서 남길 영역을 드래그하세요. 원본은 유지하고 편집본을 새 사진으로 추가해요.</p><div class="crop-stage"><canvas id="crop-canvas" aria-label="사진에서 자를 영역을 드래그하세요"></canvas></div><div class="crop-actions"><button class="secondary" id="rotate-left">↶ 왼쪽 회전</button><button class="secondary" id="rotate-right">↷ 오른쪽 회전</button><button class="secondary" id="reset-crop">전체 영역</button></div><p id="crop-size" class="hint" aria-live="polite"></p><button class="primary" id="save-crop">편집본 추가 저장</button></dialog>
 <dialog id="folders-dialog"><div class="modal-head"><h2>책 폴더 관리</h2><button class="close" aria-label="닫기">×</button></div><p class="hint">폴더를 만들고 책 등록·상세 화면에서 책을 넣으세요. 폴더를 삭제해도 책과 사진은 미분류에 남아요.</p><form id="folder-form"><label>폴더 이름<input id="folder-name" maxlength="60" required placeholder="예: 판매할 책, 완결 소장, 거실 책장"></label><div class="album-actions"><button class="primary" id="folder-submit" type="submit">폴더 만들기</button><button class="secondary" type="button" id="cancel-folder-edit">입력 취소</button></div></form><div id="folder-list"></div></dialog>
 <dialog id="backup-dialog">
   <div class="modal-head"><h2>내 컬렉션 백업</h2><button class="close" aria-label="닫기">×</button></div>
@@ -96,6 +97,8 @@
   <button data-theme-option="cream" class="theme-choice"><span class="swatch cream"></span><strong>따뜻한 크림</strong><small>포근한 종이빛</small></button>
   <button data-theme-option="blue" class="theme-choice"><span class="swatch blue"></span><strong>차분한 블루</strong><small>맑고 편안한 파랑</small></button>
   <button data-theme-option="dark" class="theme-choice"><span class="swatch dark"></span><strong>다크</strong><small>어두운 곳에서도 편하게</small></button>
+  <button data-theme-option="sunny" class="theme-choice"><span class="swatch sunny"></span><strong>햇살 노랑</strong><small>포근하고 발랄한 햇빛</small></button>
+  <button data-theme-option="blossom" class="theme-choice"><span class="swatch blossom"></span><strong>벚꽃 핑크</strong><small>사랑스러운 꽃잎빛</small></button>
 </div></dialog>
 <dialog id="favorites-dialog"><div class="modal-head"><h2>즐겨찾기 색상</h2><button class="close" aria-label="닫기">×</button></div><p id="favorite-book-title"></p><p class="hint">책마다 별 색상 하나를 골라 분류하세요. 선택하면 바로 저장돼요.</p><div id="favorite-options" class="favorite-options"></div></dialog>
 <input type="file" id="photo-file" accept="image/*" multiple hidden><input type="file" id="camera-file" accept="image/*" capture="environment" hidden>

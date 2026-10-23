@@ -1,3 +1,4 @@
+export function authorText(author){return ['','작가 미등록','미등록'].includes(author.trim())?'':author;}
 export const FAVORITE_COLORS={yellow:'노랑',red:'빨강',blue:'파랑',green:'초록'};
 export function favoriteLabel(value){return FAVORITE_COLORS[value]?FAVORITE_COLORS[value]+' 별':'없음';}
 export function matchesFavorite(book,filter){return filter==='all'||(filter==='any'?!!book.favorite:filter==='none'?!book.favorite:book.favorite===filter);}
@@ -83,5 +84,5 @@ export function collectionCount(volumes){return volumes.filter(v=>v.status!=='�
 export function volumeSummary(volumes){const missing=volumes.length-collectionCount(volumes);return `소장 ${collectionCount(volumes)}권${missing?` · 미보유 ${missing}권`:''}`;}
 export function selectBooks(books, filter, query, sort) {
   const q = query.trim().toLocaleLowerCase();
-  return books.filter(b => (filter === 'all' || b.volumes.some(v => v.status === filter)) && (!q || [b.title,b.author,b.note,b.folder||'',localDay(new Date(b.createdAt)),...b.volumes.flatMap(v=>[`${v.number}권`,v.soldAt||''])].some(s=>s.toLocaleLowerCase().includes(q)))).sort((a,b) => Number(seriesStatus(b)==='거래중') - Number(seriesStatus(a)==='거래중') || (sort === 'title' ? a.title.localeCompare(b.title,'ko') : sort === 'count' ? collectionCount(b.volumes)-collectionCount(a.volumes) : b.createdAt-a.createdAt));
+  return books.filter(b => (filter === 'all' || b.volumes.some(v => v.status === filter)) && (!q || [b.title,authorText(b.author),b.note,b.folder||'',localDay(new Date(b.createdAt)),...b.volumes.flatMap(v=>[`${v.number}권`,v.soldAt||''])].some(s=>s.toLocaleLowerCase().includes(q)))).sort((a,b) => Number(seriesStatus(b)==='거래중') - Number(seriesStatus(a)==='거래중') || (sort === 'title' ? a.title.localeCompare(b.title,'ko') : sort === 'count' ? collectionCount(b.volumes)-collectionCount(a.volumes) : b.createdAt-a.createdAt));
 }

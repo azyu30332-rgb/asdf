@@ -22,7 +22,7 @@ with zipfile.ZipFile(apk) as archive:
     embedded=archive.read('assets/index.html')
 assert embedded==(root/'chaekjang.html').read_bytes(),'APK contains stale web assets'
 text=embedded.decode('utf-8')
-for marker in [f'설치 버전">v{version}</span>','themes-dialog','사진 찍기','거래완료일','share-backup','restore','export-documents','document-format','시리즈 요약','권별 상세','photo-album','photo-viewer','선택 사진 저장','선택 사진 공유','photo-editor','folders-dialog','folder-tiles','favorite-options','favorite-filters','편집본 추가 저장']:
+for marker in [f'설치 버전">v{version}</span>','themes-dialog','사진 찍기','거래완료일','share-backup','restore','export-documents','document-format','시리즈 요약','권별 상세','photo-album','photo-viewer','선택 사진 저장','선택 사진 공유','photo-editor','folders-dialog','folder-tiles','favorite-options','favorite-filters','floating-add','edit-editor-cover','햇살 노랑','벚꽃 핑크','편집본 추가 저장']:
     assert marker in text,f'APK UI is missing {marker}'
 output=root/'dist/android';output.mkdir(parents=True,exist_ok=True)
 name=f'chaekjang-{version}.apk';shutil.copyfile(apk,output/name)

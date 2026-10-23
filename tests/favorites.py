@@ -32,9 +32,9 @@ async def main():
   async with page.expect_download() as download:await page.locator('#save-backup').click()
   file=await (await download.value).path();backup=json.loads(Path(file).read_text());assert backup['books'][1]['favorite']=='red' and len(backup['books'][1]['photos'])==2
   original=await page.evaluate('books');await page.evaluate('persist([])');page.once('dialog',lambda d:d.accept());await page.locator('#file').set_input_files(str(file));await page.wait_for_function('books.length===5 && !saveBusy');assert await page.evaluate('books')==original
-  for theme in ['forest','cream','blue','dark']:
+  for theme in ['forest','cream','blue','sunny','blossom','dark']:
    await page.evaluate('theme=>setTheme(theme)',theme);await page.screenshot(path=f'/tmp/chaekjang170-{theme}.png',full_page=True)
    assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth')
   assert not errors,errors
-  await ctx.close();print('PASS: visual folder cards, expand/collapse, all four favorite colors, combined filters/search, keyboard star, detail changes, reload, exact photos/notes/state and backup/restore, four themes without horizontal overflow.')
+  await ctx.close();print('PASS: visual folder cards, expand/collapse, all four favorite colors, combined filters/search, keyboard star, detail changes, reload, exact photos/notes/state and backup/restore, six themes without horizontal overflow.')
 asyncio.run(main())

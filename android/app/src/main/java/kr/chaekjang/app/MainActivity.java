@@ -112,7 +112,7 @@ public final class MainActivity extends Activity {
         @JavascriptInterface public void setTheme(String theme){runOnUiThread(()->{
             if(isFinishing()||isDestroyed())return;
             boolean dark="dark".equals(theme);
-            int background=Color.parseColor(dark?"#161d24":"cream".equals(theme)?"#f8f2e8":"blue".equals(theme)?"#f1f6fc":"#f5f8f6");
+            int background=Color.parseColor(dark?"#161d24":"cream".equals(theme)?"#f8f2e8":"blue".equals(theme)?"#f1f6fc":"sunny".equals(theme)?"#fff9e6":"blossom".equals(theme)?"#fff3f7":"#f5f8f6");
             rootContainer.setBackgroundColor(background);webView.setBackgroundColor(background);
             getWindow().setStatusBarColor(background);getWindow().setNavigationBarColor(background);
             if(Build.VERSION.SDK_INT>=30){android.view.WindowInsetsController controller=getWindow().getInsetsController();if(controller!=null){int mask=android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS|android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;controller.setSystemBarsAppearance(dark?0:mask,mask);}}

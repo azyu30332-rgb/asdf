@@ -1,5 +1,5 @@
 import {spreadsheetDocument} from './document-export.mjs';
-import {FAVORITE_COLORS, favoriteLabel, matchesFavorite, validateFolders, bookPhotos, validSalePhoto, MAX_BOOK_PHOTOS, MAX_SALE_PHOTO_LENGTH, collectionCount, volumeSummary, makeVolumes, seriesStatus, validateBackup, selectBooks, changeStatus, localDay, isDay, validPhoto, MAX_BACKUP_BYTES, MAX_PHOTO_LENGTH, registrationTime} from './model.mjs';
+import {authorText, FAVORITE_COLORS, favoriteLabel, matchesFavorite, validateFolders, bookPhotos, validSalePhoto, MAX_BOOK_PHOTOS, MAX_SALE_PHOTO_LENGTH, collectionCount, volumeSummary, makeVolumes, seriesStatus, validateBackup, selectBooks, changeStatus, localDay, isDay, validPhoto, MAX_BACKUP_BYTES, MAX_PHOTO_LENGTH, registrationTime} from './model.mjs';
 import {loadCollection, loadFolders, saveCollection} from './storage.mjs';
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 let books=[], demo=false, realBooks=[], filter='all', page=1, currentId=null, ready=false, storageBlocked=false, saveBusy=false;
@@ -8,7 +8,7 @@ let favoriteFilter='all',favoriteBookId=null,foldersExpanded=false;
 let toastTimer, photoRequest=null;
 const draftPhotos={editor:null,detail:null};
 const draftImages={editor:[],detail:[]};let photoEditBusy=false,viewerPhoto=null,editorSession=0;
-const themes=['forest','cream','blue','dark'];
+const themes=['forest','cream','blue','dark','sunny','blossom'];
 const android = () => !!window.ChaekjangNative;
 function toast(message){$('#toast').textContent=message;$('#toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').style.display='none',5000);}
 function setTheme(theme,persistChoice=false){
@@ -60,7 +60,7 @@ function render(){
   matches.slice((page-1)*12,page*12).forEach(b=>{
     const status=seriesStatus(b),card=el('article','book-card'+(status==='거래중'?' is-trading':''));
     card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label',`${b.title} 상세 및 권별 상태 관리`);
-    const top=el('div','card-top'),info=el('div','card-info'),star=favoriteButton(b);info.append(star); info.append(badge(status),el('h3','',b.title),el('p','author',b.author||'작가 미등록'));
+    const top=el('div','card-top'),info=el('div','card-info'),star=favoriteButton(b);info.append(star); info.append(badge(status),el('h3','',b.title),el('p','author',authorText(b.author)||'.'));
     const r=el('div','range',range(b.volumes));r.append(el('b','',volumeSummary(b.volumes)));info.append(r);if(b.folder)info.append(el('span','folder-tag','▱ '+b.folder));top.append(makeCover(b),info);
     const note=el('p','card-note','✎ '+(b.note||'남겨진 메모가 없어요.'));note.title=b.note;
     const dates=el('div','card-dates');dates.append(el('span','',`등록 ${dateLabel(localDay(new Date(b.createdAt)))}`));if(saleSummary(b))dates.append(el('span','',saleSummary(b)));
@@ -111,7 +111,7 @@ function renderAlbum(target){
     const open=el('button','album-open'),img=el('img');open.type='button';open.setAttribute('aria-label',`${index+1}번 사진 크게 보기`);img.src=photo;img.alt=`${index+1}번 책 사진`;img.loading='lazy';open.append(img);open.onclick=()=>openPhotoViewer(target,index);
     const controls=el('div','album-item-actions'),cover=el('button','',index===0?'현재 표지':'표지로'),remove=el('button','danger','삭제');cover.type=remove.type='button';cover.disabled=index===0;cover.onclick=()=>changeAlbum(target,[photo,...list.filter((_,i)=>i!==index)]);remove.onclick=()=>{if(confirm(`${index+1}번 사진을 앱에서 삭제할까요? 휴대폰 갤러리 원본은 유지돼요.`))changeAlbum(target,list.filter((_,i)=>i!==index));};controls.append(cover,remove);card.append(label,open,controls);album.append(card);
   });
-  updateAlbumButtons(target);
+  updateAlbumButtons(target);if(target==='editor'){$('#edit-editor-cover').disabled=!list.length;$('#editor-preview').disabled=!list.length;}
 }
 function updateAlbumButtons(target){const count=$$(`#${target}-album input:checked`).length;$$(`[data-photo-export="${target}"]`).forEach(b=>b.disabled=!count||photoEditBusy);}
 for(const target of ['editor','detail'])$(`#${target}-album`).onchange=()=>updateAlbumButtons(target);
@@ -145,8 +145,8 @@ async function outputPhotos(target,indexes,mode){
 $$('[data-photo-export]').forEach(b=>b.onclick=()=>outputPhotos(b.dataset.photoExport,$$(`#${b.dataset.photoExport}-album input:checked`).map(n=>Number(n.value)),b.dataset.mode));
 $('#save-viewer-photo').onclick=()=>{if(viewerPhoto)outputPhotos(viewerPhoto.target,[viewerPhoto.index],'save');};$('#share-viewer-photo').onclick=()=>{if(viewerPhoto)outputPhotos(viewerPhoto.target,[viewerPhoto.index],'share');};
 
-function add(){if(!canUse())return;editorSession++;$('#book-form').reset();$('#form-error').textContent='';$('#book-form [name=registeredOn]').value=localDay();$('#book-form [name=registeredOn]').max=localDay();$('#book-form [name=soldOn]').value=localDay();$('#initial-sale').hidden=true;showPhoto('editor',null);$('#book-form [name=folder]').value=folderFilter.startsWith('folder:')?folderFilter.slice(7):'';$('#editor').showModal();}
-$('#add').onclick=add;$('#empty-add').onclick=add;
+function add(){if(!canUse())return;editorSession++;$('#book-form').reset();$('#form-error').textContent='';$('#book-form [name=registeredOn]').value=localDay();$('#book-form [name=registeredOn]').max=localDay();$('#book-form [name=soldOn]').value=localDay();$('#initial-sale').hidden=true;showPhoto('editor',null);$('#book-form [name=folder]').value=folderFilter.startsWith('folder:')?folderFilter.slice(7):'';$('#editor').showModal();$('#editor').scrollTop=0;}
+$('#add').onclick=add;$('#empty-add').onclick=add;$('#floating-add').onclick=add;
 $$('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
 $('#book-form [name=status]').onchange=e=>$('#initial-sale').hidden=e.target.value!=='거래완료';
@@ -167,7 +167,7 @@ $('#search').oninput=()=>{page=1;render();};$('#sort').onchange=()=>{page=1;rend
 document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&!$$('dialog').some(d=>d.open)){e.preventDefault();$('#search').focus();}});
 function updateDetailDates(b){$('#detail-dates').textContent=`등록일 ${dateLabel(localDay(new Date(b.createdAt)))}${saleSummary(b)?' · '+saleSummary(b):''}`;}
 function openDetail(id){
-  currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;
+  currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${authorText(b.author)||'.'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;
   updateDetailDates(b);$('#detail-favorite').replaceChildren(favoriteButton(b),document.createTextNode('즐겨찾기 색상 변경'));$('#detail-folder').value=b.folder||'';$('#detail-note').value=b.note;showPhoto('detail',b.photo||null,bookPhotos(b));$('#sale-controls').hidden=true;$('#sold-on').value=localDay();$('#replace-sold-date').checked=false;renderVolumes(b);$('#detail').showModal();$('#detail').scrollTop=0;
 }
 function renderVolumes(b){$('#volumes').replaceChildren();b.volumes.forEach(v=>{
@@ -192,18 +192,21 @@ async function applyStatus(status){
   if(saveBusy)return;
   const selected=new Set($$('#volumes input:checked').map(n=>Number(n.value)));if(!selected.size){toast('상태를 변경할 권을 먼저 선택해 주세요.');return;}
   try{$$('[data-set-status]').forEach(b=>b.disabled=true);$('#apply').disabled=true;const next=books.map(b=>b.id===currentId?{...b,volumes:b.volumes.map(v=>selected.has(v.number)?changeStatus(v,status,$('#sold-on').value,$('#replace-sold-date').checked):v)}:b);
-    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);$('#sale-controls').hidden=true;updateDetailDates(b);$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
+    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);$('#sale-controls').hidden=true;updateDetailDates(b);$('#detail-author').textContent=`${authorText(b.author)||'.'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
   }catch(err){toast(err.message);}finally{updateSelection();}
 }
 $('#save-note').onclick=async()=>{if(photoRequest?.target==='detail'||photoEditBusy){toast('사진을 처리 중이에요. 잠시 기다려 주세요.');return;}if(await persist(books.map(b=>b.id===currentId?{...b,note:$('#detail-note').value,photo:draftPhotos.detail,photos:[...draftImages.detail]}:b))){$('#detail').close();toast('사진과 메모를 저장했어요.');}};
 $('#delete').onclick=async()=>{const b=books.find(b=>b.id===currentId);if(confirm(`「${b.title}」 ${b.volumes.length}권을 삭제할까요? 삭제 전 백업을 권장해요.`)&&await persist(books.filter(b=>b.id!==currentId))){$('#detail').close();toast('시리즈를 삭제했어요.');}};
 let cropState=null;
-$('#edit-viewer-photo').onclick=async()=>{
+async function editViewerPhoto(){
   if(!viewerPhoto)return;const {target,index}=viewerPhoto,photo=draftImages[target][index];if(draftImages[target].length>=MAX_BOOK_PHOTOS){toast('편집본을 추가하려면 사진 한 장을 정리해 주세요. 원본은 덮어쓰지 않아요.');return;}
   const imageId=currentId,session=editorSession,image=new Image();image.src=photo;try{await image.decode();}catch{toast('사진을 읽지 못했어요.');return;}
   if(!$('#photo-viewer').open||(target==='detail'&&imageId!==currentId)||(target==='editor'&&session!==editorSession))return;
-  cropState={target,bookId:imageId,session,image,rotation:0,rotated:null,rect:null,start:null};renderCrop(true);$('#photo-editor').showModal();
-};
+  cropState={target,bookId:imageId,session,image,rotation:0,rotated:null,rect:null,start:null};$('#crop-help').textContent=target==='editor'?'사진 위에서 남길 영역을 드래그하세요. 편집본을 표지로 쓰고 원본도 함께 보관해요.':'사진 위에서 남길 영역을 드래그하세요. 원본은 유지하고 편집본을 새 사진으로 추가해요.';renderCrop(true);$('#photo-editor').showModal();
+}
+$('#edit-viewer-photo').onclick=editViewerPhoto;
+$('#editor-preview').onclick=()=>{if(draftImages.editor.length)openPhotoViewer('editor',0);};
+$('#edit-editor-cover').onclick=()=>{if(draftImages.editor.length){openPhotoViewer('editor',0);editViewerPhoto();}};
 function renderCrop(reset=false){
   const state=cropState;if(!state)return;const source=document.createElement('canvas'),quarter=state.rotation%2;source.width=quarter?state.image.naturalHeight:state.image.naturalWidth;source.height=quarter?state.image.naturalWidth:state.image.naturalHeight;const ctx=source.getContext('2d');ctx.translate(source.width/2,source.height/2);ctx.rotate(state.rotation*Math.PI/2);ctx.drawImage(state.image,-state.image.naturalWidth/2,-state.image.naturalHeight/2);state.rotated=source;
   const canvas=$('#crop-canvas');canvas.width=Math.min(900,source.width);canvas.height=Math.max(1,Math.round(source.height*canvas.width/source.width));if(reset||!state.rect)state.rect={x:0,y:0,w:canvas.width,h:canvas.height};paintCrop();
@@ -221,7 +224,7 @@ $('#save-crop').onclick=async()=>{
   const button=$('#save-crop');button.disabled=true;
   try{const r=state.rect,scale=state.rotated.width/$('#crop-canvas').width,canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(r.w*scale));canvas.height=Math.max(1,Math.round(r.h*scale));canvas.getContext('2d').drawImage(state.rotated,r.x*scale,r.y*scale,r.w*scale,r.h*scale,0,0,canvas.width,canvas.height);const edited=await shrinkPhoto(canvas.toDataURL('image/jpeg',.85),true);
     if(!$('#photo-editor').open||(state.target==='detail'&&state.bookId!==currentId)||(state.target==='editor'&&state.session!==editorSession))return;
-    if(await changeAlbum(state.target,[...draftImages[state.target],edited])){$('#photo-editor').close();viewerPhoto={target:state.target,index:draftImages[state.target].length-1};$('#photo-viewer-image').src=edited;$('#photo-viewer-title').textContent='편집본';toast('원본을 유지하고 편집본을 추가했어요.');cropState=null;}
+    const updated=state.target==='editor'?[edited,...draftImages.editor]:[...draftImages.detail,edited];if(await changeAlbum(state.target,updated)){$('#photo-editor').close();viewerPhoto={target:state.target,index:state.target==='editor'?0:draftImages.detail.length-1};$('#photo-viewer-image').src=edited;$('#photo-viewer-title').textContent='편집본';toast('원본을 유지하고 편집본을 추가했어요.');cropState=null;}
   }catch{toast('사진을 편집하지 못했어요. 원본은 유지했어요.');}finally{button.disabled=false;}
 };
 async function shrinkPhoto(file,large=false){
@@ -244,13 +247,13 @@ async function acceptPhotos(requestId,photos,error){
     if((request.target==='editor'&&request.session!==editorSession)||!$(`#${request.target}`).open||(request.target==='detail'&&request.bookId!==currentId))return;
     if(!Array.isArray(photos)||!photos.every(validSalePhoto)){toast('사진 형식을 읽지 못했어요.');return;}
     const combined=[...draftImages[request.target],...photos];if(combined.length>MAX_BOOK_PHOTOS){toast(`한 시리즈에 최대 ${MAX_BOOK_PHOTOS}장까지 보관할 수 있어요.`);return;}
-    if(await changeAlbum(request.target,combined,true))toast(request.target==='detail'?`${photos.length}장 사진을 앱에 보관했어요.`:'사진을 준비했어요. 책 등록을 마쳐 보관하세요.');
+    if(await changeAlbum(request.target,combined,true)){toast(request.target==='detail'?`${photos.length}장 사진을 앱에 보관했어요.`:'사진을 준비했어요. 책 등록을 마쳐 보관하세요.');if(request.target==='editor'&&request.source==='camera')openPhotoViewer('editor',combined.length-1);}
   }finally{if(photoRequest?.id===requestId)photoRequest=null;}
 }
 $$('[data-photo]').forEach(b=>b.onclick=()=>{
   if(photoRequest||photoEditBusy){toast('사진을 처리 중이에요. 잠시 기다려 주세요.');return;}
   const remaining=MAX_BOOK_PHOTOS-draftImages[b.dataset.photo].length;if(!remaining){toast(`한 시리즈에 최대 ${MAX_BOOK_PHOTOS}장까지 보관할 수 있어요.`);return;}
-  photoRequest={id:crypto.randomUUID(),target:b.dataset.photo,bookId:currentId,remaining,session:editorSession};
+  photoRequest={id:crypto.randomUUID(),target:b.dataset.photo,source:b.dataset.source,bookId:currentId,remaining,session:editorSession};
   try{
     if(android()){if(b.dataset.source==='camera')window.ChaekjangNative.takeBookPhoto(photoRequest.id);else window.ChaekjangNative.choosePhotos(photoRequest.id,remaining);}
     else $(b.dataset.source==='camera'?'#camera-file':'#photo-file').click();

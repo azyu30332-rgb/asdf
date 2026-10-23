@@ -99,6 +99,14 @@ public class NativeFilesTest {
         assertEquals(JSONObject.quote("v"+version),js("document.querySelector('#app-version').textContent"));
         assertEquals("true",js("document.querySelector('#app-version').getBoundingClientRect().top>=0"));
     }
+    @Test public void floatingAddOpensOrderedRegistrationAfterScrolling() throws Exception{
+        fire("persist(Array.from({length:12},(_,i)=>({id:String(i),title:'책 '+i,author:'',note:'',createdAt:1700000000000,volumes:[{number:1,status:'보유중'}]}))).then(()=>window.__manyBooks=true)");waitJs("window.__manyBooks && !saveBusy");
+        fire("scrollTo(0,document.body.scrollHeight)");waitJs("document.querySelector('#add').getBoundingClientRect().bottom<0");
+        assertEquals("true",js("(()=>{const r=document.querySelector('#floating-add').getBoundingClientRect();return r.top>0&&r.bottom<=innerHeight})()"));
+        fire("document.querySelector('#floating-add').click()");waitJs("document.querySelector('#editor').open");assertEquals("0",js("document.querySelector('#editor').scrollTop"));
+        assertEquals("true",js("document.querySelector('#book-form').children[1].classList.contains('photo-field')"));
+        assertEquals("true",js("(()=>{const f=document.querySelector('[name=folder]'),s=document.querySelector('[name=status]'),n=document.querySelector('[name=note]');return !!(s.compareDocumentPosition(f)&Node.DOCUMENT_POSITION_FOLLOWING)&&!!(f.compareDocumentPosition(n)&Node.DOCUMENT_POSITION_FOLLOWING)})()"));
+    }
     @Test public void missingVolumesRemainSelectableAndPurchasePersists() throws Exception{
         fire("document.querySelector('#add').click();document.querySelector('[name=title]').value='권별 테스트';document.querySelector('[name=to]').value='10';document.querySelector('[name=missing]').value='3,7-9';document.querySelector('#book-form').requestSubmit()");
         waitJs("books.length===1 && !saveBusy");
@@ -181,7 +189,11 @@ public class NativeFilesTest {
         intending(allOf(hasAction(Intent.ACTION_OPEN_DOCUMENT),hasType("image/*"))).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK,new Intent().setData(uri(image))));
         fire("document.querySelector('#add').click();document.querySelector('[data-photo=editor][data-source=gallery]').click()");
         waitJs("!document.querySelector('#editor-preview img').hidden && document.querySelector('#editor-preview img').naturalWidth>0");assertTrue(Integer.parseInt(js("draftPhotos.editor.length"))<=33000);
-        fire("document.querySelector('[name=title]').value='사진 테스트';document.querySelector('#book-form').requestSubmit()");waitJs("document.querySelector('.cover img')?.naturalWidth>0");
+        String original=js("draftImages.editor[0]");
+        fire("document.querySelector('#edit-editor-cover').click()");waitJs("document.querySelector('#photo-editor').open && cropState!==null");
+        fire("document.querySelector('#rotate-right').click();document.querySelector('#save-crop').click()");waitJs("draftImages.editor.length===2 && !photoEditBusy");assertEquals(original,js("draftImages.editor[1]"));
+        fire("document.querySelector('#photo-viewer .close').click()");waitJs("document.querySelector('#editor-preview img').naturalWidth>document.querySelector('#editor-preview img').naturalHeight");
+        fire("document.querySelector('[name=title]').value='사진 테스트';document.querySelector('#book-form').requestSubmit()");waitJs("document.querySelector('.cover img')?.naturalWidth>0");assertEquals(original,js("books[0].photos[1]"));assertEquals(JSONObject.quote("."),js("document.querySelector('.author').textContent"));
         activity.getScenario().recreate();waitJs("document.querySelector('.cover img')?.naturalWidth>0");intended(allOf(hasAction(Intent.ACTION_OPEN_DOCUMENT),hasType("image/*")));
     }
     @Test public void multiplePhotosSurviveSourceDeletionAndCanShareAndSaveToGallery() throws Exception{

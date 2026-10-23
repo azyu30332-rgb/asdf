@@ -42,6 +42,12 @@ body[data-theme=dark]{--owned-badge-bg:#1d4a3b;--owned-badge-text:#b9f6d5;--trad
 .folder-shelf{margin:8px 0 12px}.shelf-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.shelf-heading button{font-size:14px;padding:6px 10px;min-height:40px}.folder-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-height:116px;overflow:hidden;padding:3px}.folder-tiles.expanded{max-height:420px;overflow:auto}.folder-tile{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;min-width:0;min-height:106px;padding:12px;border:2px solid var(--line);border-radius:12px;background:var(--surface);text-align:left}.folder-tile[aria-pressed=true]{border-color:var(--green);background:var(--soft);box-shadow:0 0 0 1px var(--green)}.folder-tile strong{font-size:16px;line-height:1.25;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.folder-tile small{font-size:13px;color:var(--muted)}.folder-icon{display:block;position:relative;width:36px;height:24px;border-radius:3px 5px 5px 5px;background:#dfad57;margin:5px 0 2px;box-shadow:inset 0 -4px 0 #bf873833}.folder-icon:before{content:'';position:absolute;top:-5px;left:0;width:17px;height:7px;border-radius:4px 4px 0 0;background:#c78f39}#expand-folders{display:block;margin:4px auto 0;font-size:14px;min-height:36px;color:var(--green)}#expand-folders[hidden]{display:none}.folder-tile[data-folder-filter=all] .folder-icon{background:#69a7b7}.folder-tile[data-folder-filter=all] .folder-icon:before{background:#458596}.folder-row{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:8px}.folder-row strong:before{content:'▰ ';color:#b77b25}.favorite-filters{display:flex;gap:6px;overflow-x:auto;padding:3px 2px 8px;scrollbar-width:thin}.favorite-filter{display:flex;align-items:center;gap:4px;white-space:nowrap;border:1px solid var(--line);border-radius:20px;background:var(--surface);padding:6px 10px;min-height:42px;font-size:14px}.favorite-filter[aria-pressed=true]{border:2px solid var(--green);background:var(--soft);font-weight:800}.star-symbol{font-size:25px;line-height:1}.yellow .star-symbol,.book-favorite.yellow{color:#b57a00}.red .star-symbol,.book-favorite.red{color:#ce3248}.blue .star-symbol,.book-favorite.blue{color:#246dd0}.green .star-symbol,.book-favorite.green{color:#168258}.book-favorite{float:right;margin:0 0 4px 6px;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:30px;line-height:1;padding:0}.book-favorite.unmarked{color:var(--muted)}.favorite-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.favorite-choice{display:flex;align-items:center;justify-content:center;gap:10px;min-height:68px;border:2px solid var(--line);border-radius:12px;background:var(--surface)}.favorite-choice[aria-pressed=true]{border-color:var(--green);background:var(--soft)}.favorite-choice .star-symbol{font-size:32px}.detail-favorite{display:flex;align-items:center;gap:10px;font-size:15px;margin:12px 0}.detail-favorite .book-favorite{float:none;margin:0}body[data-theme=dark] .yellow .star-symbol,body[data-theme=dark] .book-favorite.yellow{color:#ffcf58}body[data-theme=dark] .red .star-symbol,body[data-theme=dark] .book-favorite.red{color:#ff8494}body[data-theme=dark] .blue .star-symbol,body[data-theme=dark] .book-favorite.blue{color:#82b4ff}body[data-theme=dark] .green .star-symbol,body[data-theme=dark] .book-favorite.green{color:#6bdfa6}@media(max-width:760px){.folder-tiles{grid-template-columns:repeat(2,minmax(0,1fr));max-height:230px}.folder-tiles.expanded{max-height:420px}}
 .folder-tile[hidden]{display:none}
 .favorite-filters{flex-wrap:wrap;overflow-x:visible}
+
+body[data-theme=sunny]{--bg:#fff9e6;--surface:#fffef8;--ink:#4c3b21;--muted:#7e6a46;--green:#936000;--line:#ead9a6;--soft:#ffedb2;--tab:#f6eac8;--shadow:#72501718}
+body[data-theme=blossom]{--bg:#fff3f7;--surface:#fffdfd;--ink:#523643;--muted:#856372;--green:#ac4269;--line:#edceda;--soft:#ffe1eb;--tab:#f6e3eb;--shadow:#883b5918}
+.swatch.sunny{background:radial-gradient(circle at 75% 45%,#ffd758 0 13px,transparent 14px),linear-gradient(110deg,#fff9e6 60%,#f8e7a2 60%)}.swatch.blossom{background:radial-gradient(circle at 75% 45%,#df80a1 0 13px,transparent 14px),linear-gradient(110deg,#fff3f7 60%,#f8d4e2 60%)}
+.floating-add{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(20px + env(safe-area-inset-bottom));width:60px;height:60px;border-radius:50%;background:var(--green);color:var(--accent-text);box-shadow:0 5px 18px #0004;border:2px solid var(--surface);z-index:40;display:grid;place-items:center;font-size:38px;line-height:1;padding:0}.floating-add:hover{filter:brightness(1.08)}.floating-add:focus-visible{outline:3px solid var(--ink);outline-offset:3px}body:has(dialog[open]) .floating-add{visibility:hidden}.page{padding-bottom:100px}#toast{bottom:calc(90px + env(safe-area-inset-bottom))}#editor-preview:disabled{cursor:default}#edit-editor-cover:disabled{opacity:.5}
+.folder-tile{display:grid;grid-template-columns:25px minmax(0,1fr);grid-template-rows:auto auto;column-gap:8px;row-gap:2px;padding:9px 10px;min-height:60px;border-radius:9px}.folder-tile .folder-icon{grid-column:1;grid-row:1/3;align-self:center;width:24px;height:17px;margin:4px 0 0}.folder-icon:before{width:12px;height:5px;top:-4px}.folder-tile strong{grid-column:2;grid-row:1;font-size:15px}.folder-tile small{grid-column:2;grid-row:2;font-size:12px}.folder-tiles{max-height:68px;gap:6px}.folder-tiles.expanded{max-height:300px}.folder-shelf{margin-bottom:8px}@media(max-width:760px){.folder-tiles{max-height:136px}.folder-tiles.expanded{max-height:300px}.page{padding-bottom:100px}}
 </style></head>
 <body>
 <aside>
@@ -54,7 +60,7 @@ body[data-theme=dark]{--owned-badge-bg:#1d4a3b;--owned-badge-text:#b9f6d5;--trad
 </aside>
 <main>
 <header>
-  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.7.0</span><span class="header-context">나만의 작은 도서관</span>
+  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.8.0</span><span class="header-context">나만의 작은 도서관</span>
   <div class="header-actions"><button id="theme-settings" aria-label="색깔 테마 설정" title="색깔 테마">◐</button><button id="backup">백업</button><button id="restore">복원</button></div>
   <input type="file" id="file" accept="application/json,.json" hidden>
 </header>
@@ -79,20 +85,21 @@ body[data-theme=dark]{--owned-badge-bg:#1d4a3b;--owned-badge-text:#b9f6d5;--trad
   <div id="list" class="book-grid"></div>
   <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 책 등록하기</button></div>
   <div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div>
-  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.7.0</span></footer>
+  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.8.0</span></footer>
 </section>
 </main>
+<button id="floating-add" class="floating-add" type="button" aria-label="책 등록하기" title="책 등록하기"><span aria-hidden="true">＋</span></button>
 <dialog id="editor"><form id="book-form">
   <div class="modal-head"><h2>책 등록하기</h2><button type="button" class="close" aria-label="닫기">×</button></div>
+  <fieldset class="photo-field"><legend>표지·판매 사진 <span>(최대 12장)</span></legend><div class="photo-layout"><button type="button" class="photo-preview" id="editor-preview" aria-label="표지 사진 크게 보기" disabled><span>冊</span><img hidden alt="등록할 표지 사진"></button><div class="photo-actions"><button type="button" class="secondary" data-photo="editor" data-source="camera">사진 찍기</button><button type="button" class="secondary" data-photo="editor" data-source="gallery">여러 사진 추가</button><button type="button" class="secondary" id="edit-editor-cover" disabled>자르기·회전</button></div></div><small>판매용 사진은 최대 1,600px로 압축해 보관해요. 첫 사진이 표지예요. 책 등록을 마쳐야 사진도 저장돼요.</small><div class="album-toolbar"><strong id="editor-photo-count">0/12장</strong><button type="button" data-photo-all="editor">전체 선택</button></div><div class="photo-album" id="editor-album"></div><div class="album-actions"><button type="button" class="secondary" data-photo-export="editor" data-mode="save">선택 사진 저장</button><button type="button" class="secondary" data-photo-export="editor" data-mode="share">선택 사진 공유</button></div></fieldset>
   <label>시리즈 제목 <input name="title" required maxlength="150" placeholder="예: 슬램덩크"></label>
-  <label>폴더<select name="folder"><option value="">미분류</option></select></label>
-  <label>작가<input name="author" maxlength="100" placeholder="예: 이노우에 다케히코"></label>
-  <fieldset class="photo-field"><legend>표지·판매 사진 <span>(최대 12장)</span></legend><div class="photo-layout"><div class="photo-preview" id="editor-preview"><span>冊</span><img hidden alt="등록할 표지 사진"></div><div class="photo-actions"><button type="button" class="secondary" data-photo="editor" data-source="camera">사진 찍기</button><button type="button" class="secondary" data-photo="editor" data-source="gallery">여러 사진 추가</button></div></div><small>판매용 사진은 최대 1,600px로 압축해 보관해요. 첫 사진이 표지예요. 책 등록을 마쳐야 사진도 저장돼요.</small><div class="album-toolbar"><strong id="editor-photo-count">0/12장</strong><button type="button" data-photo-all="editor">전체 선택</button></div><div class="photo-album" id="editor-album"></div><div class="album-actions"><button type="button" class="secondary" data-photo-export="editor" data-mode="save">선택 사진 저장</button><button type="button" class="secondary" data-photo-export="editor" data-mode="share">선택 사진 공유</button></div></fieldset>
   <div class="form-row"><label>시작 권<input name="from" type="number" min="1" max="10000" value="1" required></label><label>마지막 권<input name="to" type="number" min="1" max="10000" value="1" required></label></div>
   <label>빠진 권 <span class="optional">선택</span><input name="missing" placeholder="예: 3, 7-9"><small>예: 3, 7-9. 빠진 권도 회색 미보유로 표시돼요.</small></label>
+  <label>작가<input name="author" maxlength="100" placeholder="예: 이노우에 다케히코"></label>
   <label>등록일<input type="date" name="registeredOn" min="1970-01-01" required></label>
   <label>등록 상태<select name="status"><option>거래중</option><option>거래완료</option><option selected>보유중</option><option>미보유</option></select></label>
   <label id="initial-sale" hidden>거래완료일<input type="date" name="soldOn"></label>
+  <label>폴더<select name="folder"><option value="">미분류</option></select></label>
   <label>나만의 메모<textarea name="note" rows="3" maxlength="5000" placeholder="책 상태, 보관 위치, 판매 가격 등을 남겨보세요."></textarea></label>
   <p id="form-error" class="error" role="alert"></p>
   <div class="modal-actions"><button type="button" class="close secondary">취소</button><button class="primary" type="submit">컬렉션에 등록</button></div>
@@ -115,7 +122,7 @@ body[data-theme=dark]{--owned-badge-bg:#1d4a3b;--owned-badge-text:#b9f6d5;--trad
   <div class="modal-actions"><button id="delete" class="danger">시리즈 삭제</button><button id="save-note" class="primary">메모 저장</button></div>
 </dialog>
 <dialog id="photo-viewer"><div class="modal-head"><h2 id="photo-viewer-title">판매 사진</h2><button class="close" aria-label="닫기">×</button></div><img id="photo-viewer-image" alt="선택한 책 사진 크게 보기"><div class="album-actions"><button class="primary" id="save-viewer-photo">이 사진 저장</button><button class="secondary" id="share-viewer-photo">이 사진 공유</button><button class="secondary" id="edit-viewer-photo">자르기·회전</button></div></dialog>
-<dialog id="photo-editor"><div class="modal-head"><h2>사진 자르기·회전</h2><button class="close" aria-label="닫기">×</button></div><p class="hint">사진 위에서 남길 영역을 드래그하세요. 원본은 유지하고 편집본을 새 사진으로 추가해요.</p><div class="crop-stage"><canvas id="crop-canvas" aria-label="사진에서 자를 영역을 드래그하세요"></canvas></div><div class="crop-actions"><button class="secondary" id="rotate-left">↶ 왼쪽 회전</button><button class="secondary" id="rotate-right">↷ 오른쪽 회전</button><button class="secondary" id="reset-crop">전체 영역</button></div><p id="crop-size" class="hint" aria-live="polite"></p><button class="primary" id="save-crop">편집본 추가 저장</button></dialog>
+<dialog id="photo-editor"><div class="modal-head"><h2>사진 자르기·회전</h2><button class="close" aria-label="닫기">×</button></div><p class="hint" id="crop-help">사진 위에서 남길 영역을 드래그하세요. 원본은 유지하고 편집본을 새 사진으로 추가해요.</p><div class="crop-stage"><canvas id="crop-canvas" aria-label="사진에서 자를 영역을 드래그하세요"></canvas></div><div class="crop-actions"><button class="secondary" id="rotate-left">↶ 왼쪽 회전</button><button class="secondary" id="rotate-right">↷ 오른쪽 회전</button><button class="secondary" id="reset-crop">전체 영역</button></div><p id="crop-size" class="hint" aria-live="polite"></p><button class="primary" id="save-crop">편집본 추가 저장</button></dialog>
 <dialog id="folders-dialog"><div class="modal-head"><h2>책 폴더 관리</h2><button class="close" aria-label="닫기">×</button></div><p class="hint">폴더를 만들고 책 등록·상세 화면에서 책을 넣으세요. 폴더를 삭제해도 책과 사진은 미분류에 남아요.</p><form id="folder-form"><label>폴더 이름<input id="folder-name" maxlength="60" required placeholder="예: 판매할 책, 완결 소장, 거실 책장"></label><div class="album-actions"><button class="primary" id="folder-submit" type="submit">폴더 만들기</button><button class="secondary" type="button" id="cancel-folder-edit">입력 취소</button></div></form><div id="folder-list"></div></dialog>
 <dialog id="backup-dialog">
   <div class="modal-head"><h2>내 컬렉션 백업</h2><button class="close" aria-label="닫기">×</button></div>
@@ -138,10 +145,13 @@ body[data-theme=dark]{--owned-badge-bg:#1d4a3b;--owned-badge-text:#b9f6d5;--trad
   <button data-theme-option="cream" class="theme-choice"><span class="swatch cream"></span><strong>따뜻한 크림</strong><small>포근한 종이빛</small></button>
   <button data-theme-option="blue" class="theme-choice"><span class="swatch blue"></span><strong>차분한 블루</strong><small>맑고 편안한 파랑</small></button>
   <button data-theme-option="dark" class="theme-choice"><span class="swatch dark"></span><strong>다크</strong><small>어두운 곳에서도 편하게</small></button>
+  <button data-theme-option="sunny" class="theme-choice"><span class="swatch sunny"></span><strong>햇살 노랑</strong><small>포근하고 발랄한 햇빛</small></button>
+  <button data-theme-option="blossom" class="theme-choice"><span class="swatch blossom"></span><strong>벚꽃 핑크</strong><small>사랑스러운 꽃잎빛</small></button>
 </div></dialog>
 <dialog id="favorites-dialog"><div class="modal-head"><h2>즐겨찾기 색상</h2><button class="close" aria-label="닫기">×</button></div><p id="favorite-book-title"></p><p class="hint">책마다 별 색상 하나를 골라 분류하세요. 선택하면 바로 저장돼요.</p><div id="favorite-options" class="favorite-options"></div></dialog>
 <input type="file" id="photo-file" accept="image/*" multiple hidden><input type="file" id="camera-file" accept="image/*" capture="environment" hidden>
-<div id="toast" role="status"></div><script>const FAVORITE_COLORS={yellow:'노랑',red:'빨강',blue:'파랑',green:'초록'};
+<div id="toast" role="status"></div><script>function authorText(author){return ['','작가 미등록','미등록'].includes(author.trim())?'':author;}
+const FAVORITE_COLORS={yellow:'노랑',red:'빨강',blue:'파랑',green:'초록'};
 function favoriteLabel(value){return FAVORITE_COLORS[value]?FAVORITE_COLORS[value]+' 별':'없음';}
 function matchesFavorite(book,filter){return filter==='all'||(filter==='any'?!!book.favorite:filter==='none'?!book.favorite:book.favorite===filter);}
 const STATUSES = ['보유중', '거래중', '거래완료', '미보유'];
@@ -226,7 +236,7 @@ function collectionCount(volumes){return volumes.filter(v=>v.status!=='미보유
 function volumeSummary(volumes){const missing=volumes.length-collectionCount(volumes);return `소장 ${collectionCount(volumes)}권${missing?` · 미보유 ${missing}권`:''}`;}
 function selectBooks(books, filter, query, sort) {
   const q = query.trim().toLocaleLowerCase();
-  return books.filter(b => (filter === 'all' || b.volumes.some(v => v.status === filter)) && (!q || [b.title,b.author,b.note,b.folder||'',localDay(new Date(b.createdAt)),...b.volumes.flatMap(v=>[`${v.number}권`,v.soldAt||''])].some(s=>s.toLocaleLowerCase().includes(q)))).sort((a,b) => Number(seriesStatus(b)==='거래중') - Number(seriesStatus(a)==='거래중') || (sort === 'title' ? a.title.localeCompare(b.title,'ko') : sort === 'count' ? collectionCount(b.volumes)-collectionCount(a.volumes) : b.createdAt-a.createdAt));
+  return books.filter(b => (filter === 'all' || b.volumes.some(v => v.status === filter)) && (!q || [b.title,authorText(b.author),b.note,b.folder||'',localDay(new Date(b.createdAt)),...b.volumes.flatMap(v=>[`${v.number}권`,v.soldAt||''])].some(s=>s.toLocaleLowerCase().includes(q)))).sort((a,b) => Number(seriesStatus(b)==='거래중') - Number(seriesStatus(a)==='거래중') || (sort === 'title' ? a.title.localeCompare(b.title,'ko') : sort === 'count' ? collectionCount(b.volumes)-collectionCount(a.volumes) : b.createdAt-a.createdAt));
 }
 
 // Sale photos and thumbnails live in IndexedDB, which does not share localStorage's small quota.
@@ -343,7 +353,7 @@ let favoriteFilter='all',favoriteBookId=null,foldersExpanded=false;
 let toastTimer, photoRequest=null;
 const draftPhotos={editor:null,detail:null};
 const draftImages={editor:[],detail:[]};let photoEditBusy=false,viewerPhoto=null,editorSession=0;
-const themes=['forest','cream','blue','dark'];
+const themes=['forest','cream','blue','dark','sunny','blossom'];
 const android = () => !!window.ChaekjangNative;
 function toast(message){$('#toast').textContent=message;$('#toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').style.display='none',5000);}
 function setTheme(theme,persistChoice=false){
@@ -395,7 +405,7 @@ function render(){
   matches.slice((page-1)*12,page*12).forEach(b=>{
     const status=seriesStatus(b),card=el('article','book-card'+(status==='거래중'?' is-trading':''));
     card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label',`${b.title} 상세 및 권별 상태 관리`);
-    const top=el('div','card-top'),info=el('div','card-info'),star=favoriteButton(b);info.append(star); info.append(badge(status),el('h3','',b.title),el('p','author',b.author||'작가 미등록'));
+    const top=el('div','card-top'),info=el('div','card-info'),star=favoriteButton(b);info.append(star); info.append(badge(status),el('h3','',b.title),el('p','author',authorText(b.author)||'.'));
     const r=el('div','range',range(b.volumes));r.append(el('b','',volumeSummary(b.volumes)));info.append(r);if(b.folder)info.append(el('span','folder-tag','▱ '+b.folder));top.append(makeCover(b),info);
     const note=el('p','card-note','✎ '+(b.note||'남겨진 메모가 없어요.'));note.title=b.note;
     const dates=el('div','card-dates');dates.append(el('span','',`등록 ${dateLabel(localDay(new Date(b.createdAt)))}`));if(saleSummary(b))dates.append(el('span','',saleSummary(b)));
@@ -446,7 +456,7 @@ function renderAlbum(target){
     const open=el('button','album-open'),img=el('img');open.type='button';open.setAttribute('aria-label',`${index+1}번 사진 크게 보기`);img.src=photo;img.alt=`${index+1}번 책 사진`;img.loading='lazy';open.append(img);open.onclick=()=>openPhotoViewer(target,index);
     const controls=el('div','album-item-actions'),cover=el('button','',index===0?'현재 표지':'표지로'),remove=el('button','danger','삭제');cover.type=remove.type='button';cover.disabled=index===0;cover.onclick=()=>changeAlbum(target,[photo,...list.filter((_,i)=>i!==index)]);remove.onclick=()=>{if(confirm(`${index+1}번 사진을 앱에서 삭제할까요? 휴대폰 갤러리 원본은 유지돼요.`))changeAlbum(target,list.filter((_,i)=>i!==index));};controls.append(cover,remove);card.append(label,open,controls);album.append(card);
   });
-  updateAlbumButtons(target);
+  updateAlbumButtons(target);if(target==='editor'){$('#edit-editor-cover').disabled=!list.length;$('#editor-preview').disabled=!list.length;}
 }
 function updateAlbumButtons(target){const count=$$(`#${target}-album input:checked`).length;$$(`[data-photo-export="${target}"]`).forEach(b=>b.disabled=!count||photoEditBusy);}
 for(const target of ['editor','detail'])$(`#${target}-album`).onchange=()=>updateAlbumButtons(target);
@@ -480,8 +490,8 @@ async function outputPhotos(target,indexes,mode){
 $$('[data-photo-export]').forEach(b=>b.onclick=()=>outputPhotos(b.dataset.photoExport,$$(`#${b.dataset.photoExport}-album input:checked`).map(n=>Number(n.value)),b.dataset.mode));
 $('#save-viewer-photo').onclick=()=>{if(viewerPhoto)outputPhotos(viewerPhoto.target,[viewerPhoto.index],'save');};$('#share-viewer-photo').onclick=()=>{if(viewerPhoto)outputPhotos(viewerPhoto.target,[viewerPhoto.index],'share');};
 
-function add(){if(!canUse())return;editorSession++;$('#book-form').reset();$('#form-error').textContent='';$('#book-form [name=registeredOn]').value=localDay();$('#book-form [name=registeredOn]').max=localDay();$('#book-form [name=soldOn]').value=localDay();$('#initial-sale').hidden=true;showPhoto('editor',null);$('#book-form [name=folder]').value=folderFilter.startsWith('folder:')?folderFilter.slice(7):'';$('#editor').showModal();}
-$('#add').onclick=add;$('#empty-add').onclick=add;
+function add(){if(!canUse())return;editorSession++;$('#book-form').reset();$('#form-error').textContent='';$('#book-form [name=registeredOn]').value=localDay();$('#book-form [name=registeredOn]').max=localDay();$('#book-form [name=soldOn]').value=localDay();$('#initial-sale').hidden=true;showPhoto('editor',null);$('#book-form [name=folder]').value=folderFilter.startsWith('folder:')?folderFilter.slice(7):'';$('#editor').showModal();$('#editor').scrollTop=0;}
+$('#add').onclick=add;$('#empty-add').onclick=add;$('#floating-add').onclick=add;
 $$('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
 $('#book-form [name=status]').onchange=e=>$('#initial-sale').hidden=e.target.value!=='거래완료';
@@ -502,7 +512,7 @@ $('#search').oninput=()=>{page=1;render();};$('#sort').onchange=()=>{page=1;rend
 document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&!$$('dialog').some(d=>d.open)){e.preventDefault();$('#search').focus();}});
 function updateDetailDates(b){$('#detail-dates').textContent=`등록일 ${dateLabel(localDay(new Date(b.createdAt)))}${saleSummary(b)?' · '+saleSummary(b):''}`;}
 function openDetail(id){
-  currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;
+  currentId=id;const b=books.find(b=>b.id===id);$('#detail-title').textContent=b.title;$('#detail-author').textContent=`${authorText(b.author)||'.'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;
   updateDetailDates(b);$('#detail-favorite').replaceChildren(favoriteButton(b),document.createTextNode('즐겨찾기 색상 변경'));$('#detail-folder').value=b.folder||'';$('#detail-note').value=b.note;showPhoto('detail',b.photo||null,bookPhotos(b));$('#sale-controls').hidden=true;$('#sold-on').value=localDay();$('#replace-sold-date').checked=false;renderVolumes(b);$('#detail').showModal();$('#detail').scrollTop=0;
 }
 function renderVolumes(b){$('#volumes').replaceChildren();b.volumes.forEach(v=>{
@@ -527,18 +537,21 @@ async function applyStatus(status){
   if(saveBusy)return;
   const selected=new Set($$('#volumes input:checked').map(n=>Number(n.value)));if(!selected.size){toast('상태를 변경할 권을 먼저 선택해 주세요.');return;}
   try{$$('[data-set-status]').forEach(b=>b.disabled=true);$('#apply').disabled=true;const next=books.map(b=>b.id===currentId?{...b,volumes:b.volumes.map(v=>selected.has(v.number)?changeStatus(v,status,$('#sold-on').value,$('#replace-sold-date').checked):v)}:b);
-    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);$('#sale-controls').hidden=true;updateDetailDates(b);$('#detail-author').textContent=`${b.author||'작가 미등록'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
+    if(await persist(next)){const b=books.find(b=>b.id===currentId);renderVolumes(b);$('#sale-controls').hidden=true;updateDetailDates(b);$('#detail-author').textContent=`${authorText(b.author)||'.'} · ${range(b.volumes)} · ${volumeSummary(b.volumes)}`;toast(`${selected.size}권을 ${status}(으)로 변경했어요.`);}
   }catch(err){toast(err.message);}finally{updateSelection();}
 }
 $('#save-note').onclick=async()=>{if(photoRequest?.target==='detail'||photoEditBusy){toast('사진을 처리 중이에요. 잠시 기다려 주세요.');return;}if(await persist(books.map(b=>b.id===currentId?{...b,note:$('#detail-note').value,photo:draftPhotos.detail,photos:[...draftImages.detail]}:b))){$('#detail').close();toast('사진과 메모를 저장했어요.');}};
 $('#delete').onclick=async()=>{const b=books.find(b=>b.id===currentId);if(confirm(`「${b.title}」 ${b.volumes.length}권을 삭제할까요? 삭제 전 백업을 권장해요.`)&&await persist(books.filter(b=>b.id!==currentId))){$('#detail').close();toast('시리즈를 삭제했어요.');}};
 let cropState=null;
-$('#edit-viewer-photo').onclick=async()=>{
+async function editViewerPhoto(){
   if(!viewerPhoto)return;const {target,index}=viewerPhoto,photo=draftImages[target][index];if(draftImages[target].length>=MAX_BOOK_PHOTOS){toast('편집본을 추가하려면 사진 한 장을 정리해 주세요. 원본은 덮어쓰지 않아요.');return;}
   const imageId=currentId,session=editorSession,image=new Image();image.src=photo;try{await image.decode();}catch{toast('사진을 읽지 못했어요.');return;}
   if(!$('#photo-viewer').open||(target==='detail'&&imageId!==currentId)||(target==='editor'&&session!==editorSession))return;
-  cropState={target,bookId:imageId,session,image,rotation:0,rotated:null,rect:null,start:null};renderCrop(true);$('#photo-editor').showModal();
-};
+  cropState={target,bookId:imageId,session,image,rotation:0,rotated:null,rect:null,start:null};$('#crop-help').textContent=target==='editor'?'사진 위에서 남길 영역을 드래그하세요. 편집본을 표지로 쓰고 원본도 함께 보관해요.':'사진 위에서 남길 영역을 드래그하세요. 원본은 유지하고 편집본을 새 사진으로 추가해요.';renderCrop(true);$('#photo-editor').showModal();
+}
+$('#edit-viewer-photo').onclick=editViewerPhoto;
+$('#editor-preview').onclick=()=>{if(draftImages.editor.length)openPhotoViewer('editor',0);};
+$('#edit-editor-cover').onclick=()=>{if(draftImages.editor.length){openPhotoViewer('editor',0);editViewerPhoto();}};
 function renderCrop(reset=false){
   const state=cropState;if(!state)return;const source=document.createElement('canvas'),quarter=state.rotation%2;source.width=quarter?state.image.naturalHeight:state.image.naturalWidth;source.height=quarter?state.image.naturalWidth:state.image.naturalHeight;const ctx=source.getContext('2d');ctx.translate(source.width/2,source.height/2);ctx.rotate(state.rotation*Math.PI/2);ctx.drawImage(state.image,-state.image.naturalWidth/2,-state.image.naturalHeight/2);state.rotated=source;
   const canvas=$('#crop-canvas');canvas.width=Math.min(900,source.width);canvas.height=Math.max(1,Math.round(source.height*canvas.width/source.width));if(reset||!state.rect)state.rect={x:0,y:0,w:canvas.width,h:canvas.height};paintCrop();
@@ -556,7 +569,7 @@ $('#save-crop').onclick=async()=>{
   const button=$('#save-crop');button.disabled=true;
   try{const r=state.rect,scale=state.rotated.width/$('#crop-canvas').width,canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(r.w*scale));canvas.height=Math.max(1,Math.round(r.h*scale));canvas.getContext('2d').drawImage(state.rotated,r.x*scale,r.y*scale,r.w*scale,r.h*scale,0,0,canvas.width,canvas.height);const edited=await shrinkPhoto(canvas.toDataURL('image/jpeg',.85),true);
     if(!$('#photo-editor').open||(state.target==='detail'&&state.bookId!==currentId)||(state.target==='editor'&&state.session!==editorSession))return;
-    if(await changeAlbum(state.target,[...draftImages[state.target],edited])){$('#photo-editor').close();viewerPhoto={target:state.target,index:draftImages[state.target].length-1};$('#photo-viewer-image').src=edited;$('#photo-viewer-title').textContent='편집본';toast('원본을 유지하고 편집본을 추가했어요.');cropState=null;}
+    const updated=state.target==='editor'?[edited,...draftImages.editor]:[...draftImages.detail,edited];if(await changeAlbum(state.target,updated)){$('#photo-editor').close();viewerPhoto={target:state.target,index:state.target==='editor'?0:draftImages.detail.length-1};$('#photo-viewer-image').src=edited;$('#photo-viewer-title').textContent='편집본';toast('원본을 유지하고 편집본을 추가했어요.');cropState=null;}
   }catch{toast('사진을 편집하지 못했어요. 원본은 유지했어요.');}finally{button.disabled=false;}
 };
 async function shrinkPhoto(file,large=false){
@@ -579,13 +592,13 @@ async function acceptPhotos(requestId,photos,error){
     if((request.target==='editor'&&request.session!==editorSession)||!$(`#${request.target}`).open||(request.target==='detail'&&request.bookId!==currentId))return;
     if(!Array.isArray(photos)||!photos.every(validSalePhoto)){toast('사진 형식을 읽지 못했어요.');return;}
     const combined=[...draftImages[request.target],...photos];if(combined.length>MAX_BOOK_PHOTOS){toast(`한 시리즈에 최대 ${MAX_BOOK_PHOTOS}장까지 보관할 수 있어요.`);return;}
-    if(await changeAlbum(request.target,combined,true))toast(request.target==='detail'?`${photos.length}장 사진을 앱에 보관했어요.`:'사진을 준비했어요. 책 등록을 마쳐 보관하세요.');
+    if(await changeAlbum(request.target,combined,true)){toast(request.target==='detail'?`${photos.length}장 사진을 앱에 보관했어요.`:'사진을 준비했어요. 책 등록을 마쳐 보관하세요.');if(request.target==='editor'&&request.source==='camera')openPhotoViewer('editor',combined.length-1);}
   }finally{if(photoRequest?.id===requestId)photoRequest=null;}
 }
 $$('[data-photo]').forEach(b=>b.onclick=()=>{
   if(photoRequest||photoEditBusy){toast('사진을 처리 중이에요. 잠시 기다려 주세요.');return;}
   const remaining=MAX_BOOK_PHOTOS-draftImages[b.dataset.photo].length;if(!remaining){toast(`한 시리즈에 최대 ${MAX_BOOK_PHOTOS}장까지 보관할 수 있어요.`);return;}
-  photoRequest={id:crypto.randomUUID(),target:b.dataset.photo,bookId:currentId,remaining,session:editorSession};
+  photoRequest={id:crypto.randomUUID(),target:b.dataset.photo,source:b.dataset.source,bookId:currentId,remaining,session:editorSession};
   try{
     if(android()){if(b.dataset.source==='camera')window.ChaekjangNative.takeBookPhoto(photoRequest.id);else window.ChaekjangNative.choosePhotos(photoRequest.id,remaining);}
     else $(b.dataset.source==='camera'?'#camera-file':'#photo-file').click();

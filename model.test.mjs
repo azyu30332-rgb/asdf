@@ -23,3 +23,5 @@ test('폴더와 빈 폴더도 백업 왕복에서 유지하고 잘못된 이름�
 
 
 test('네 가지 별 색상을 사진·메모와 함께 보존하고 잘못된 색은 거절한다',async()=>{const {FAVORITE_COLORS,matchesFavorite}=await import('./model.mjs');for(const favorite of Object.keys(FAVORITE_COLORS)){const b={...book(favorite),favorite,folder:'보관',photo:'data:image/jpeg;base64,/9j/2Q==',photos:['data:image/jpeg;base64,/9j/2Q==']};assert.deepEqual(validateBackup({version:3,books:[b],folders:['보관','빈 폴더']}),[b]);assert.equal(matchesFavorite(b,favorite),true);assert.equal(matchesFavorite(b,'any'),true);assert.equal(matchesFavorite(b,'none'),false);}assert.equal(matchesFavorite(book('없음'),'none'),true);for(const favorite of ['purple',null,[],['red'],1,'__proto__'])assert.throws(()=>validateBackup({version:3,books:[{...book('오류'),favorite}]}));});
+
+test('작가 공란과 예전 미등록 표시는 검색에서 제외하고 실제 제목은 검색한다',()=>{const b={...book('슬램덩크'),author:'작가 미등록'},m={...book('미생'),author:''};assert.deepEqual(selectBooks([b,m],'all','미','recent'),[m]);assert.equal(selectBooks([{...b,author:'미우라'}],'all','미','recent').length,1);assert.equal(b.author,'작가 미등록');});

@@ -12,7 +12,7 @@ async def main():
   legacy={'version':1,'books':[{'id':'legacy','title':'기존 만화','author':'작가','note':'기존 메모','createdAt':1700000000000,'volumes':[{'number':1,'status':'거래완료'},{'number':2,'status':'보유중'}]}]}
   await page.add_init_script('if(!localStorage.getItem("seeded")){localStorage.setItem("chaekjang.collection.v1",'+json.dumps(json.dumps(legacy,ensure_ascii=False))+');localStorage.setItem("seeded","yes");}')
   await page.goto(os.environ.get('TEST_BASE_URL','http://127.0.0.1:3010')+'/chaekjang.html');await page.locator('.book-card').wait_for()
-  assert await page.locator('#app-version').inner_text()=='v1.7.0'
+  assert await page.locator('#app-version').inner_text()=='v1.8.0'
   assert await page.locator('#app-version').is_visible()
   assert '판매일 미기록' in await page.locator('.card-dates').inner_text()
   assert await page.evaluate('books[0].createdAt')==1700000000000
@@ -22,7 +22,7 @@ async def main():
   assert await page.locator('.book-card').first.evaluate('(n)=>n.getBoundingClientRect().top')<1000
   assert await page.locator('.stats').evaluate('(n)=>getComputedStyle(n).gap')=='0px'
   await page.locator('#theme-settings').click()
-  for theme in ['forest','cream','blue','dark']:
+  for theme in ['forest','cream','blue','sunny','blossom','dark']:
    await page.locator(f'[data-theme-option={theme}]').click();assert await page.locator('body').get_attribute('data-theme')==theme
   await page.locator('#themes-dialog .close').click();await page.reload();await page.locator('.book-card').wait_for();assert await page.locator('body').get_attribute('data-theme')=='dark'
   await page.locator('.book-card').click()
@@ -101,7 +101,7 @@ async def main():
   assert await page.evaluate('realBooks.length')==2
   await page.set_viewport_size({'width':1440,'height':1000});await page.screenshot(path='/tmp/chaekjang-v110-desktop.png',full_page=True)
   assert await page.evaluate('document.documentElement.scrollWidth<=innerWidth');assert not errors,errors
-  print('PASS: legacy migration, larger fonts, compact spacing, four persistent themes, real photo compression/persistence, per-volume sale dates, idempotence and corrections, real-data backup in sample mode, photos/dates backup restore, invalid restore protection, responsive layout; no JavaScript errors')
+  print('PASS: legacy migration, larger fonts, compact spacing, six persistent themes, real photo compression/persistence, per-volume sale dates, idempotence and corrections, real-data backup in sample mode, photos/dates backup restore, invalid restore protection, responsive layout; no JavaScript errors')
   await ctx.close()
 
 asyncio.run(main())
