@@ -191,9 +191,9 @@ public class NativeFilesTest {
         waitJs("!document.querySelector('#editor-preview img').hidden && document.querySelector('#editor-preview img').naturalWidth>0");assertTrue(Integer.parseInt(js("draftPhotos.editor.length"))<=33000);
         String original=js("draftImages.editor[0]");
         fire("document.querySelector('#edit-editor-cover').click()");waitJs("document.querySelector('#photo-editor').open && cropState!==null");
-        fire("document.querySelector('#rotate-right').click();document.querySelector('#save-crop').click()");waitJs("draftImages.editor.length===2 && !photoEditBusy");assertEquals(original,js("draftImages.editor[1]"));
+        fire("document.querySelector('#rotate-right').click();document.querySelector('#save-crop').click()");waitJs("draftImages.editor.length===1 && !photoEditBusy && !document.querySelector('#photo-editor').open");assertNotEquals(original,js("draftImages.editor[0]"));String edited=js("draftImages.editor[0]");assertEquals("true",js("document.querySelector('#save-viewer-photo').hidden && document.querySelector('#share-viewer-photo').hidden"));
         fire("document.querySelector('#photo-viewer .close').click()");waitJs("document.querySelector('#editor-preview img').naturalWidth>document.querySelector('#editor-preview img').naturalHeight");
-        fire("document.querySelector('[name=title]').value='사진 테스트';document.querySelector('#book-form').requestSubmit()");waitJs("document.querySelector('.cover img')?.naturalWidth>0");assertEquals(original,js("books[0].photos[1]"));assertEquals(JSONObject.quote("."),js("document.querySelector('.author').textContent"));
+        fire("document.querySelector('[name=title]').value='사진 테스트';document.querySelector('#book-form').requestSubmit()");waitJs("document.querySelector('.cover img')?.naturalWidth>0");assertEquals("1",js("books[0].photos.length"));assertEquals(edited,js("books[0].photos[0]"));assertEquals(JSONObject.quote("."),js("document.querySelector('.author').textContent"));
         activity.getScenario().recreate();waitJs("document.querySelector('.cover img')?.naturalWidth>0");intended(allOf(hasAction(Intent.ACTION_OPEN_DOCUMENT),hasType("image/*")));
     }
     @Test public void multiplePhotosSurviveSourceDeletionAndCanShareAndSaveToGallery() throws Exception{

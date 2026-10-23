@@ -60,7 +60,7 @@ body[data-theme=blossom]{--bg:#fff3f7;--surface:#fffdfd;--ink:#523643;--muted:#8
 </aside>
 <main>
 <header>
-  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.8.0</span><span class="header-context">나만의 작은 도서관</span>
+  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.8.1</span><span class="header-context">나만의 작은 도서관</span>
   <div class="header-actions"><button id="theme-settings" aria-label="색깔 테마 설정" title="색깔 테마">◐</button><button id="backup">백업</button><button id="restore">복원</button></div>
   <input type="file" id="file" accept="application/json,.json" hidden>
 </header>
@@ -85,7 +85,7 @@ body[data-theme=blossom]{--bg:#fff3f7;--surface:#fffdfd;--ink:#523643;--muted:#8
   <div id="list" class="book-grid"></div>
   <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 책 등록하기</button></div>
   <div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div>
-  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.8.0</span></footer>
+  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.8.1</span></footer>
 </section>
 </main>
 <button id="floating-add" class="floating-add" type="button" aria-label="책 등록하기" title="책 등록하기"><span aria-hidden="true">＋</span></button>
@@ -476,7 +476,7 @@ async function changeAlbum(target,images,fromRequest=false){
   }catch(err){toast(err.message||'사진을 저장하지 못했어요.');return false;}
   finally{photoEditBusy=false;updateAlbumButtons(target);}
 }
-function openPhotoViewer(target,index){const photo=draftImages[target][index];if(!photo)return;viewerPhoto={target,index};$('#photo-viewer-title').textContent=`${index+1}번 사진`;$('#photo-viewer-image').src=photo;$('#photo-viewer').showModal();}
+function openPhotoViewer(target,index){const photo=draftImages[target][index];if(!photo)return;viewerPhoto={target,index};$('#save-viewer-photo').hidden=target==='editor';$('#share-viewer-photo').hidden=target==='editor';$('#photo-viewer-title').textContent=`${index+1}번 사진`;$('#photo-viewer-image').src=photo;$('#photo-viewer').showModal();}
 async function outputPhotos(target,indexes,mode){
   const images=indexes.map(i=>draftImages[target][i]).filter(Boolean);if(!images.length){toast('저장하거나 공유할 사진을 선택해 주세요.');return;}
   const title=target==='editor'?$('#book-form [name=title]').value:books.find(b=>b.id===currentId)?.title;
@@ -544,10 +544,10 @@ $('#save-note').onclick=async()=>{if(photoRequest?.target==='detail'||photoEditB
 $('#delete').onclick=async()=>{const b=books.find(b=>b.id===currentId);if(confirm(`「${b.title}」 ${b.volumes.length}권을 삭제할까요? 삭제 전 백업을 권장해요.`)&&await persist(books.filter(b=>b.id!==currentId))){$('#detail').close();toast('시리즈를 삭제했어요.');}};
 let cropState=null;
 async function editViewerPhoto(){
-  if(!viewerPhoto)return;const {target,index}=viewerPhoto,photo=draftImages[target][index];if(draftImages[target].length>=MAX_BOOK_PHOTOS){toast('편집본을 추가하려면 사진 한 장을 정리해 주세요. 원본은 덮어쓰지 않아요.');return;}
+  if(!viewerPhoto)return;const {target,index}=viewerPhoto,photo=draftImages[target][index];if(target==='detail'&&draftImages[target].length>=MAX_BOOK_PHOTOS){toast('편집본을 추가하려면 사진 한 장을 정리해 주세요. 원본은 덮어쓰지 않아요.');return;}
   const imageId=currentId,session=editorSession,image=new Image();image.src=photo;try{await image.decode();}catch{toast('사진을 읽지 못했어요.');return;}
   if(!$('#photo-viewer').open||(target==='detail'&&imageId!==currentId)||(target==='editor'&&session!==editorSession))return;
-  cropState={target,bookId:imageId,session,image,rotation:0,rotated:null,rect:null,start:null};$('#crop-help').textContent=target==='editor'?'사진 위에서 남길 영역을 드래그하세요. 편집본을 표지로 쓰고 원본도 함께 보관해요.':'사진 위에서 남길 영역을 드래그하세요. 원본은 유지하고 편집본을 새 사진으로 추가해요.';renderCrop(true);$('#photo-editor').showModal();
+  cropState={target,index,photo,bookId:imageId,session,image,rotation:0,rotated:null,rect:null,start:null};$('#crop-help').textContent=target==='editor'?'사진 위에서 남길 영역을 드래그하세요. 편집한 사진으로 교체하며 사진 수는 늘어나지 않아요.':'사진 위에서 남길 영역을 드래그하세요. 원본은 유지하고 편집본을 새 사진으로 추가해요.';$('#save-crop').textContent=target==='editor'?'편집 적용':'편집본 추가 저장';renderCrop(true);$('#photo-editor').showModal();
 }
 $('#edit-viewer-photo').onclick=editViewerPhoto;
 $('#editor-preview').onclick=()=>{if(draftImages.editor.length)openPhotoViewer('editor',0);};
@@ -569,7 +569,8 @@ $('#save-crop').onclick=async()=>{
   const button=$('#save-crop');button.disabled=true;
   try{const r=state.rect,scale=state.rotated.width/$('#crop-canvas').width,canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(r.w*scale));canvas.height=Math.max(1,Math.round(r.h*scale));canvas.getContext('2d').drawImage(state.rotated,r.x*scale,r.y*scale,r.w*scale,r.h*scale,0,0,canvas.width,canvas.height);const edited=await shrinkPhoto(canvas.toDataURL('image/jpeg',.85),true);
     if(!$('#photo-editor').open||(state.target==='detail'&&state.bookId!==currentId)||(state.target==='editor'&&state.session!==editorSession))return;
-    const updated=state.target==='editor'?[edited,...draftImages.editor]:[...draftImages.detail,edited];if(await changeAlbum(state.target,updated)){$('#photo-editor').close();viewerPhoto={target:state.target,index:state.target==='editor'?0:draftImages.detail.length-1};$('#photo-viewer-image').src=edited;$('#photo-viewer-title').textContent='편집본';toast('원본을 유지하고 편집본을 추가했어요.');cropState=null;}
+    if(state.target==='editor'&&draftImages.editor[state.index]!==state.photo)return;
+    const updated=state.target==='editor'?draftImages.editor.map((photo,i)=>i===state.index?edited:photo):[...draftImages.detail,edited];if(await changeAlbum(state.target,updated)){$('#photo-editor').close();viewerPhoto={target:state.target,index:state.target==='editor'?state.index:draftImages.detail.length-1};$('#photo-viewer-image').src=edited;$('#photo-viewer-title').textContent='편집한 사진';toast(state.target==='editor'?'편집한 사진으로 교체했어요.':'원본을 유지하고 편집본을 추가했어요.');cropState=null;}
   }catch{toast('사진을 편집하지 못했어요. 원본은 유지했어요.');}finally{button.disabled=false;}
 };
 async function shrinkPhoto(file,large=false){
