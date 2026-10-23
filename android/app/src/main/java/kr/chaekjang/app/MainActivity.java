@@ -50,6 +50,7 @@ public final class MainActivity extends Activity {
     private final ExecutorService io=Executors.newSingleThreadExecutor();
     private final List<String> pendingScripts=new ArrayList<>();
     private WebView webView;
+    private PhotoLibrary photoLibrary;
     private FrameLayout rootContainer;
     private boolean pageReady;
     private int activePicker;
@@ -59,6 +60,7 @@ public final class MainActivity extends Activity {
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
+        photoLibrary=new PhotoLibrary(this,io,this::beginPicker,()->activePicker=0,this::event,this::notifyUser,state);
         // Do not restore a stale busy flag: cancelled pickers must never disable backup forever.
         if(state!=null){photoRequestId=state.getString("photoRequestId");String name=state.getString("cameraFile");if(name!=null)cameraFile=new File(new File(getCacheDir(),"camera"),name);}
         FrameLayout container=new FrameLayout(this);rootContainer=container;container.setBackgroundColor(Color.rgb(245,248,246));
@@ -73,7 +75,7 @@ public final class MainActivity extends Activity {
                 Uri uri=request.getUrl();
                 // Let WebView decode the small bundled JPEG thumbnails locally.
                 // These data URLs perform no network request and are also validated before storage.
-                if("data".equals(uri.getScheme())&&uri.toString().startsWith("data:image/jpeg;base64,")&&uri.toString().length()<=33000)return null;
+                if("data".equals(uri.getScheme())&&uri.toString().startsWith("data:image/jpeg;base64,")&&uri.toString().length()<=700000)return null;
                 if("https".equals(uri.getScheme())&&HOST.equals(uri.getHost())&&"/index.html".equals(uri.getPath())&&"GET".equals(request.getMethod())){try{return new WebResourceResponse("text/html","UTF-8",getAssets().open("index.html"));}catch(Exception ignored){}}
                 return new WebResourceResponse("text/plain","UTF-8",404,"Not Found",java.util.Collections.emptyMap(),new ByteArrayInputStream(new byte[0]));
             }
@@ -119,7 +121,7 @@ public final class MainActivity extends Activity {
         @JavascriptInterface public void exportBackup(String text,String mode){runOnUiThread(()->{
             int code="share".equals(mode)?SHARE:EXPORT;if(!beginPicker(code))return;
             io.execute(()->{try{
-                byte[] bytes=text.getBytes(StandardCharsets.UTF_8);if(bytes.length>MAX_BYTES)throw new Exception("Backup too large");JSONObject json=new JSONObject(text);int version=json.getInt("version");if((version!=1&&version!=2)||json.optJSONArray("books")==null)throw new Exception("Invalid backup");
+                byte[] bytes=text.getBytes(StandardCharsets.UTF_8);if(bytes.length>MAX_BYTES)throw new Exception("Backup too large");JSONObject json=new JSONObject(text);int version=json.getInt("version");if((version!=1&&version!=2&&version!=3)||json.optJSONArray("books")==null)throw new Exception("Invalid backup");
                 File destination=backupFile();if(code==SHARE){File dir=new File(getCacheDir(),"backups");if(!dir.isDirectory()&&!dir.mkdirs())throw new Exception("Cannot create backup directory");destination=new File(dir,"책장-백업-"+java.time.LocalDate.now()+"-"+UUID.randomUUID()+".json");}
                 try(OutputStream out=new FileOutputStream(destination)){out.write(bytes);}final File file=destination;
                 runOnUiThread(()->{try{
@@ -147,21 +149,26 @@ public final class MainActivity extends Activity {
             }catch(Exception|OutOfMemoryError e){documentFile().delete();runOnUiThread(()->activePicker=0);notifyUser("문서를 준비하지 못했어요. 저장 공간과 파일 크기(128MB 이하)를 확인해 주세요.");}});
         });}
         @JavascriptInterface public void importBackup(){runOnUiThread(()->{if(!beginPicker(IMPORT))return;try{Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*");startActivityForResult(intent,IMPORT);}catch(Exception e){activePicker=0;notifyUser("파일 선택 창을 열지 못했어요. 휴대폰의 파일 앱을 확인해 주세요.");}});}
+        @JavascriptInterface public void choosePhotos(String token,int remaining){photoLibrary.choose(token,remaining);}
+        @JavascriptInterface public void takeBookPhoto(String token){photoLibrary.take(token);}
+        @JavascriptInterface public void exportPhotos(String photos,String title,String mode){photoLibrary.output(photos,title,mode);}
         @JavascriptInterface public void choosePhoto(String requestId){runOnUiThread(()->{if(!beginPicker(PHOTO)){reportPhoto(requestId,null,"다른 파일 선택을 마친 뒤 다시 눌러 주세요.");return;}photoRequestId=requestId;try{startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("image/*"),PHOTO);}catch(Exception e){activePicker=0;reportPhoto(requestId,null,"사진 선택 창을 열지 못했어요.");}});}
         @JavascriptInterface public void takePhoto(String requestId){runOnUiThread(()->{if(!beginPicker(CAMERA)){reportPhoto(requestId,null,"다른 파일 선택을 마친 뒤 다시 눌러 주세요.");return;}photoRequestId=requestId;try{
             File dir=new File(getCacheDir(),"camera");if(!dir.isDirectory()&&!dir.mkdirs())throw new Exception("Cannot create camera directory");cameraFile=new File(dir,UUID.randomUUID()+".jpg");Uri uri=FileProvider.getUriForFile(MainActivity.this,getPackageName()+".files",cameraFile);Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT,uri).addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);intent.setClipData(ClipData.newRawUri("책 표지 사진",uri));startActivityForResult(intent,CAMERA);
         }catch(Exception e){activePicker=0;reportPhoto(requestId,null,"카메라를 열지 못했어요. 사진 선택으로 등록해 주세요.");}});}
     }
-    private String thumbnail(byte[] input) throws Exception{
-        BitmapFactory.Options options=new BitmapFactory.Options();options.inJustDecodeBounds=true;BitmapFactory.decodeByteArray(input,0,input.length,options);if(options.outWidth<1||options.outHeight<1)throw new Exception("Unsupported photo");options.inJustDecodeBounds=false;options.inSampleSize=1;while(Math.max(options.outWidth,options.outHeight)/options.inSampleSize>640)options.inSampleSize*=2;
+    private String thumbnail(byte[] input) throws Exception{return photoImage(input,false);}
+    String resalePhoto(byte[] input) throws Exception{return photoImage(input,true);}
+    private String photoImage(byte[] input,boolean large) throws Exception{
+        BitmapFactory.Options options=new BitmapFactory.Options();options.inJustDecodeBounds=true;BitmapFactory.decodeByteArray(input,0,input.length,options);if(options.outWidth<1||options.outHeight<1)throw new Exception("Unsupported photo");options.inJustDecodeBounds=false;options.inSampleSize=1;while(Math.max(options.outWidth,options.outHeight)/options.inSampleSize>(large?2400:640))options.inSampleSize*=2;
         Bitmap source=BitmapFactory.decodeByteArray(input,0,input.length,options);if(source==null)throw new Exception("Cannot decode photo");
         try{
             Matrix transform=new Matrix();int orientation=new ExifInterface(new ByteArrayInputStream(input)).getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL);
             switch(orientation){case 2:transform.setScale(-1,1);break;case 3:transform.setRotate(180);break;case 4:transform.setScale(1,-1);break;case 5:transform.setRotate(90);transform.postScale(-1,1);break;case 6:transform.setRotate(90);break;case 7:transform.setRotate(270);transform.postScale(-1,1);break;case 8:transform.setRotate(270);break;default:break;}
             if(!transform.isIdentity()){Bitmap rotated=Bitmap.createBitmap(source,0,0,source.getWidth(),source.getHeight(),transform,true);if(rotated!=source){source.recycle();source=rotated;}}
-            for(int edge:new int[]{320,240,160}){
+            for(int edge:(large?new int[]{1600,1280,960,640}:new int[]{320,240,160})){
                 float ratio=Math.min(1f,(float)edge/Math.max(source.getWidth(),source.getHeight()));Bitmap output=Bitmap.createBitmap(Math.max(1,Math.round(source.getWidth()*ratio)),Math.max(1,Math.round(source.getHeight()*ratio)),Bitmap.Config.ARGB_8888);Canvas canvas=new Canvas(output);canvas.drawColor(Color.WHITE);canvas.drawBitmap(source,null,new android.graphics.Rect(0,0,output.getWidth(),output.getHeight()),new android.graphics.Paint(android.graphics.Paint.FILTER_BITMAP_FLAG));
-                try{for(int quality:new int[]{80,65,50,35}){ByteArrayOutputStream bytes=new ByteArrayOutputStream();if(!output.compress(Bitmap.CompressFormat.JPEG,quality,bytes))throw new Exception("Cannot encode photo");if(bytes.size()<=24576)return "data:image/jpeg;base64,"+Base64.encodeToString(bytes.toByteArray(),Base64.NO_WRAP);}}
+                try{for(int quality:new int[]{80,65,50,35}){ByteArrayOutputStream bytes=new ByteArrayOutputStream();if(!output.compress(Bitmap.CompressFormat.JPEG,quality,bytes))throw new Exception("Cannot encode photo");if(bytes.size()<=(large?500000:24576))return "data:image/jpeg;base64,"+Base64.encodeToString(bytes.toByteArray(),Base64.NO_WRAP);}}
                 finally{output.recycle();}
             }
             throw new Exception("Photo too complex");
@@ -169,6 +176,7 @@ public final class MainActivity extends Activity {
     }
     @Override protected void onActivityResult(int requestCode,int resultCode,Intent data){
         super.onActivityResult(requestCode,resultCode,data);
+        if(photoLibrary.result(requestCode,resultCode,data))return;
         if(requestCode==FILE_CHOOSER){activePicker=0;if(fileCallback!=null){fileCallback.onReceiveValue(resultCode==RESULT_OK&&data!=null?new Uri[]{data.getData()}:null);fileCallback=null;}return;}
         if(requestCode==SHARE){activePicker=0;notifyUser("공유 앱에서 업로드 완료 여부를 확인해 주세요.");return;}
         if(requestCode!=EXPORT&&requestCode!=DOCUMENT_EXPORT&&requestCode!=IMPORT&&requestCode!=PHOTO&&requestCode!=CAMERA)return;
@@ -182,7 +190,7 @@ public final class MainActivity extends Activity {
         }catch(Exception|OutOfMemoryError e){if(requestCode==PHOTO||requestCode==CAMERA)reportPhoto(token,null,"사진을 읽지 못했어요. 32MB 이하의 JPG 또는 PNG 사진으로 다시 선택해 주세요.");else notifyUser((requestCode==EXPORT||requestCode==DOCUMENT_EXPORT)?"파일을 저장하지 못했어요. 다른 폴더나 공유 버튼을 이용해 주세요.":"파일을 읽지 못했어요. 128MB 이하의 JSON 백업인지 확인해 주세요.");}
         finally{if(requestCode==EXPORT)backupFile().delete();if(requestCode==DOCUMENT_EXPORT)documentFile().delete();if(requestCode==CAMERA&&capture!=null)capture.delete();runOnUiThread(()->activePicker=0);}});
     }
-    @Override protected void onSaveInstanceState(Bundle outState){outState.putString("photoRequestId",photoRequestId);if(cameraFile!=null)outState.putString("cameraFile",cameraFile.getName());super.onSaveInstanceState(outState);}
-    @Override public void onBackPressed(){webView.evaluateJavascript("(()=>{const d=document.querySelector('dialog[open]');if(d){d.close();return true;}return false;})()",handled->{if(!"true".equals(handled))super.onBackPressed();});}
+    @Override protected void onSaveInstanceState(Bundle outState){photoLibrary.saveState(outState);outState.putString("photoRequestId",photoRequestId);if(cameraFile!=null)outState.putString("cameraFile",cameraFile.getName());super.onSaveInstanceState(outState);}
+    @Override public void onBackPressed(){webView.evaluateJavascript("(()=>{const d=[...document.querySelectorAll('dialog[open]')].at(-1);if(d){d.close();return true;}return false;})()",handled->{if(!"true".equals(handled))super.onBackPressed();});}
     @Override protected void onDestroy(){if(fileCallback!=null)fileCallback.onReceiveValue(null);if(webView!=null){webView.removeJavascriptInterface("ChaekjangNative");webView.destroy();}io.shutdown();super.onDestroy();}
 }

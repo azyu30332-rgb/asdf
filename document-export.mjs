@@ -1,15 +1,15 @@
 import {localDay, MAX_BACKUP_BYTES} from './model.mjs';
 
 export function documentTables(books){
-  const summary=[['제목','작가','권수 범위','보유중','거래중','거래완료','미보유','등록일','최근 판매일','메모']];
-  const detail=[['제목','작가','권','상태','등록일','거래완료일','메모']];
+  const summary=[['제목','작가','권수 범위','보유중','거래중','거래완료','미보유','등록일','최근 판매일','메모','폴더']];
+  const detail=[['제목','작가','권','상태','등록일','거래완료일','메모','폴더']];
   for(const book of books){
     const volumes=[...book.volumes].sort((a,b)=>a.number-b.number),counts={'보유중':0,'거래중':0,'거래완료':0,'미보유':0};
     const registered=localDay(new Date(book.createdAt));
-    for(const v of volumes){counts[v.status]++;detail.push([book.title,book.author,v.number,v.status,registered,v.status==='거래완료'?(v.soldAt||'미기록'):'',book.note]);}
+    for(const v of volumes){counts[v.status]++;detail.push([book.title,book.author,v.number,v.status,registered,v.status==='거래완료'?(v.soldAt||'미기록'):'',book.note,book.folder||'미분류']);}
     const dates=volumes.filter(v=>v.status==='거래완료'&&v.soldAt).map(v=>v.soldAt).sort();
     const unknown=volumes.some(v=>v.status==='거래완료'&&!v.soldAt);
-    summary.push([book.title,book.author,volumes.length===1?`${volumes[0].number}권`:`${volumes[0].number}–${volumes.at(-1).number}권`,counts['보유중'],counts['거래중'],counts['거래완료'],counts['미보유'],registered,dates.length?dates.at(-1)+(unknown?' (일부 미기록)':''):unknown?'미기록':'',book.note]);
+    summary.push([book.title,book.author,volumes.length===1?`${volumes[0].number}권`:`${volumes[0].number}–${volumes.at(-1).number}권`,counts['보유중'],counts['거래중'],counts['거래완료'],counts['미보유'],registered,dates.length?dates.at(-1)+(unknown?' (일부 미기록)':''):unknown?'미기록':'',book.note,book.folder||'미분류']);
   }
   return {summary,detail};
 }
@@ -48,8 +48,8 @@ export function xlsxDocument(tables){
     'xl/workbook.xml':`<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="${ns}" xmlns:r="${rel}"><sheets><sheet name="시리즈 요약" sheetId="1" r:id="rId1"/><sheet name="권별 상세" sheetId="2" r:id="rId2"/></sheets></workbook>`,
     'xl/_rels/workbook.xml.rels':`<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${rel}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${rel}/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="${rel}/styles" Target="styles.xml"/></Relationships>`,
     'xl/styles.xml':`<?xml version="1.0" encoding="UTF-8"?><styleSheet xmlns="${ns}"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF225C51"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="2"><xf xfId="0" fontId="0" fillId="0" borderId="0" numFmtId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf><xf xfId="0" fontId="1" fillId="2" borderId="0" numFmtId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`,
-    'xl/worksheets/sheet1.xml':sheetXml(tables.summary,[28,22,16,12,12,12,12,16,26,55]),
-    'xl/worksheets/sheet2.xml':sheetXml(tables.detail,[28,22,10,16,16,18,55])
+    'xl/worksheets/sheet1.xml':sheetXml(tables.summary,[28,22,16,12,12,12,12,16,26,55,22]),
+    'xl/worksheets/sheet2.xml':sheetXml(tables.detail,[28,22,10,16,16,18,55,22])
   });
 }
 export function spreadsheetDocument(books,format,scope='detail'){

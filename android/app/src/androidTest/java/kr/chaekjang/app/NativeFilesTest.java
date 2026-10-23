@@ -16,6 +16,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -89,7 +90,7 @@ public class NativeFilesTest {
         }
         assertTrue("Emulator window must be awake, unlocked and focused before UI tests",focused);
         waitJs("document.querySelector('#loading').hidden");
-        fire("saveCollection([]).then(()=>{books=[];render();window.__resetDone=true;})");waitJs("window.__resetDone===true");Intents.init();intentsInitialized=true;
+        fire("saveCollection([],[]).then(()=>{books=[];folders=[];render();window.__resetDone=true;})");waitJs("window.__resetDone===true");Intents.init();intentsInitialized=true;
     }
     @After public void finish(){if(intentsInitialized){Intents.release();intentsInitialized=false;}}
 
@@ -124,7 +125,7 @@ public class NativeFilesTest {
         File output=fixture("test-export.json");if(output.exists())assertTrue(output.delete());
         intending(hasAction(Intent.ACTION_CREATE_DOCUMENT)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK,new Intent().setData(uri(output))));
         fire("document.querySelector('#backup').click();document.querySelector('#save-backup').click()");waitJs("document.querySelector('#toast').textContent.includes('백업 파일을 저장했어요')");
-        JSONObject backup=new JSONObject(new String(Files.readAllBytes(output.toPath()),StandardCharsets.UTF_8));assertEquals(2,backup.getInt("version"));assertEquals(0,backup.getJSONArray("books").length());
+        JSONObject backup=new JSONObject(new String(Files.readAllBytes(output.toPath()),StandardCharsets.UTF_8));assertEquals(3,backup.getInt("version"));assertEquals(0,backup.getJSONArray("books").length());
         intended(hasAction(Intent.ACTION_CREATE_DOCUMENT));
     }
     private void seedDocumentBooks() throws Exception{
@@ -182,6 +183,32 @@ public class NativeFilesTest {
         waitJs("!document.querySelector('#editor-preview img').hidden && document.querySelector('#editor-preview img').naturalWidth>0");assertTrue(Integer.parseInt(js("draftPhotos.editor.length"))<=33000);
         fire("document.querySelector('[name=title]').value='사진 테스트';document.querySelector('#book-form').requestSubmit()");waitJs("document.querySelector('.cover img')?.naturalWidth>0");
         activity.getScenario().recreate();waitJs("document.querySelector('.cover img')?.naturalWidth>0");intended(allOf(hasAction(Intent.ACTION_OPEN_DOCUMENT),hasType("image/*")));
+    }
+    @Test public void multiplePhotosSurviveSourceDeletionAndCanShareAndSaveToGallery() throws Exception{
+        File first=fixture("album-first.jpg"),second=fixture("album-second.jpg");
+        for(int i=0;i<2;i++){Bitmap image=Bitmap.createBitmap(i==0?2400:1800,i==0?1800:2400,Bitmap.Config.ARGB_8888);image.eraseColor(i==0?Color.rgb(150,70,20):Color.rgb(20,80,160));try(FileOutputStream out=new FileOutputStream(i==0?first:second)){assertTrue(image.compress(Bitmap.CompressFormat.JPEG,90,out));}image.recycle();}
+        android.content.ClipData clip=android.content.ClipData.newRawUri("one",uri(first));clip.addItem(new android.content.ClipData.Item(uri(second)));
+        Intent multiResult=new Intent();multiResult.setClipData(clip);
+        intending(allOf(hasAction(Intent.ACTION_OPEN_DOCUMENT),hasType("image/*"))).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK,multiResult));
+        fire("document.querySelector('#add').click();document.querySelector('[name=title]').value='판매 사진 보관';document.querySelector('[data-photo=editor][data-source=gallery]').click()");
+        waitJs("draftImages.editor.length===2 && !photoRequest && !photoEditBusy");
+        fire("document.querySelector('#book-form').requestSubmit()");waitJs("books.length===1 && books[0].photos.length===2 && !saveBusy");assertTrue(first.delete());assertTrue(second.delete());
+        String original=js("JSON.stringify(books[0].photos)");activity.getScenario().recreate();waitJs("document.querySelector('.cover img')?.naturalWidth>0");assertEquals(original,js("JSON.stringify(books[0].photos)"));
+        fire("document.querySelector('.book-card').click();document.querySelector('#detail-album .album-open').click()");waitJs("document.querySelector('#photo-viewer-image').naturalWidth>0");assertEquals("1600",js("Math.max(document.querySelector('#photo-viewer-image').naturalWidth,document.querySelector('#photo-viewer-image').naturalHeight)"));
+        fire("document.querySelector('#photo-viewer .close').click();document.querySelector('[data-photo-all=detail]').click()");
+        intending(hasAction(Intent.ACTION_CHOOSER)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED,null));
+        fire("document.querySelector('[data-photo-export=detail][data-mode=share]').click()");waitJs("document.querySelector('#toast').textContent.includes('사진 전송')");
+        Intent chooser=null;for(Intent intent:Intents.getIntents())if(Intent.ACTION_CHOOSER.equals(intent.getAction()))chooser=intent;assertNotNull(chooser);Intent send=chooser.getParcelableExtra(Intent.EXTRA_INTENT);assertNotNull(send);assertEquals(Intent.ACTION_SEND_MULTIPLE,send.getAction());assertEquals("image/jpeg",send.getType());java.util.ArrayList<Uri> shared=send.getParcelableArrayListExtra(Intent.EXTRA_STREAM);assertNotNull(shared);assertEquals(2,shared.size());
+        for(Uri image:shared)try(java.io.InputStream in=context().getContentResolver().openInputStream(image)){assertNotNull(in);BitmapFactory.Options bounds=new BitmapFactory.Options();bounds.inJustDecodeBounds=true;BitmapFactory.decodeStream(in,null,bounds);assertEquals(1600,Math.max(bounds.outWidth,bounds.outHeight));}
+        fire("window.addEventListener('chaekjang-photos-exported',e=>window.__savedAlbum=e.detail,{once:true});document.querySelector('[data-photo-export=detail][data-mode=save]').click()");waitJs("window.__savedAlbum?.count===2");
+        JSONArray saved=new JSONArray(js("window.__savedAlbum.uris"));
+        for(int i=0;i<saved.length();i++){Uri image=Uri.parse(saved.getString(i));try(java.io.InputStream in=context().getContentResolver().openInputStream(image)){assertNotNull(in);BitmapFactory.Options bounds=new BitmapFactory.Options();bounds.inJustDecodeBounds=true;BitmapFactory.decodeStream(in,null,bounds);assertEquals(1600,Math.max(bounds.outWidth,bounds.outHeight));}assertEquals(1,context().getContentResolver().delete(image,null,null));}
+        assertEquals(original,js("JSON.stringify(books[0].photos)"));
+        fire("document.querySelector('#detail-album .album-open').click();document.querySelector('#edit-viewer-photo').click()");waitJs("document.querySelector('#photo-editor').open && cropState!==null");
+        fire("document.querySelector('#rotate-right').click();document.querySelector('#save-crop').click()");waitJs("books[0].photos.length===3 && !photoEditBusy");assertEquals(original,js("JSON.stringify(books[0].photos.slice(0,2))"));
+        fire("document.querySelector('#photo-viewer .close').click();document.querySelector('#detail .close').click();document.querySelector('#manage-folders').click();document.querySelector('#folder-name').value='판매 사진';document.querySelector('#folder-form').requestSubmit()");waitJs("folders.includes('판매 사진') && !saveBusy");
+        fire("document.querySelector('#folders-dialog .close').click();document.querySelector('.book-card').click();document.querySelector('#detail-folder').value='판매 사진';document.querySelector('#detail-folder').dispatchEvent(new Event('change'))");waitJs("books[0].folder==='판매 사진' && !saveBusy");
+        activity.getScenario().recreate();waitJs("books[0]?.photos?.length===3 && folders.includes('판매 사진') && ready");assertEquals(JSONObject.quote("판매 사진"),js("books[0].folder"));assertEquals(original,js("JSON.stringify(books[0].photos.slice(0,2))"));
     }
     @Test public void cameraCancelAllowsSelectingAnotherPhoto() throws Exception{
         intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED,null));

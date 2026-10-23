@@ -1,4 +1,4 @@
-// Photo thumbnails live in IndexedDB, which does not share localStorage's small quota.
+// Sale photos and thumbnails live in IndexedDB, which does not share localStorage's small quota.
 // The legacy snapshot is kept intact; an existing IndexedDB snapshot always takes priority.
 const DB_NAME = 'chaekjang-library';
 const LEGACY_KEY = 'chaekjang.collection.v1';
@@ -28,13 +28,18 @@ export async function loadCollection(validate) {
   await saveCollection(books);
   return books;
 }
-export async function saveCollection(books) {
+export async function saveCollection(books,folders=[]) {
   const db = await openDatabase();
   return new Promise((resolve,reject) => {
     const tx = db.transaction('library','readwrite');
-    tx.objectStore('library').put({version:2,books},'collection');
+    tx.objectStore('library').put({version:3,books,folders},'collection');
     tx.oncomplete=()=>resolve();
     tx.onabort=()=>reject(tx.error||Error('기기 저장에 실패했어요.'));
     tx.onerror=()=>{}; // onabort reports the final transaction outcome.
   });
+}
+
+export async function loadFolders(validate){
+  const db=await openDatabase();const data=await new Promise((resolve,reject)=>{const tx=db.transaction('library','readonly');const req=tx.objectStore('library').get('collection');tx.oncomplete=()=>resolve(req.result);tx.onabort=()=>reject(tx.error);});
+  return validate(data||{books:[],folders:[]});
 }

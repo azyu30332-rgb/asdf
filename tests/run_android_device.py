@@ -21,8 +21,12 @@ adb('wait-for-device',required=True)
 # an awake, unlocked, focused app window, so optional setup commands do not replace it.
 for command in ['settings put system screen_off_timeout 1800000','svc power stayon true','input keyevent KEYCODE_WAKEUP','wm dismiss-keyguard','am force-stop com.google.android.apps.nexuslauncher']:
     adb('shell',command)
+upgrade=subprocess.run([sys.executable,str(root/'tests/check_android_upgrade.py')],cwd=root)
+if upgrade.returncode:
+    annotation('error','Previous-version photo preservation failed','The replace-install test did not pass; APK publication is blocked.')
+    raise SystemExit(upgrade.returncode)
 print('Starting actual connectedDebugAndroidTest',flush=True)
-result=subprocess.run(['bash','./gradlew','--no-daemon','connectedDebugAndroidTest'],cwd=root/'android',stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+result=subprocess.run(['bash','./gradlew','--no-daemon','connectedDebugAndroidTest','-Pandroid.testInstrumentationRunnerArguments.notClass=kr.chaekjang.app.UpgradeStateTest'],cwd=root/'android',stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
 print(result.stdout,flush=True)
 if result.returncode:
     marker=result.stdout.find('* What went wrong:')
