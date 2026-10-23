@@ -11,3 +11,5 @@ test('CSV는 한국어 BOM·인용·쉼표·줄바꿈을 보존하며 셀 수식
 test('실제 XLSX 패키지와 CSV 요약·상세 및 빈 목록 내보내기를 지원한다',()=>{
  const x=spreadsheetDocument(books,'xlsx');assert.deepEqual([...x.bytes.slice(0,4)],[80,75,3,4]);assert.ok(x.name.endsWith('.xlsx'));assert.ok(new TextDecoder().decode(x.bytes).includes('제목, &quot;인용&quot; &amp; &lt;책&gt;'));assert.equal(documentTables([]).summary.length,1);assert.ok(spreadsheetDocument([],'xlsx').bytes.length>0);assert.ok(new TextDecoder().decode(spreadsheetDocument(books,'csv','summary').bytes).includes('최근 판매일'));assert.throws(()=>spreadsheetDocument(books,'exe'));
 });
+
+test('별 색상 분류를 엑셀과 CSV의 마지막 열에 포함한다',()=>{const t=documentTables([{...books[0],favorite:'red'}]);assert.equal(t.summary[0].at(-1),'즐겨찾기');assert.equal(t.summary[1].at(-1),'빨강 별');assert.equal(t.detail[1].at(-1),'빨강 별');assert.ok(csvDocument(t.summary).includes('빨강 별'));assert.ok(new TextDecoder().decode(spreadsheetDocument([{...books[0],favorite:'green'}],'xlsx').bytes).includes('초록 별'));});

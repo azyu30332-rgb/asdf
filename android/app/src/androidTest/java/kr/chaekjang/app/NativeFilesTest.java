@@ -208,7 +208,11 @@ public class NativeFilesTest {
         fire("document.querySelector('#rotate-right').click();document.querySelector('#save-crop').click()");waitJs("books[0].photos.length===3 && !photoEditBusy");assertEquals(original,js("JSON.stringify(books[0].photos.slice(0,2))"));
         fire("document.querySelector('#photo-viewer .close').click();document.querySelector('#detail .close').click();document.querySelector('#manage-folders').click();document.querySelector('#folder-name').value='판매 사진';document.querySelector('#folder-form').requestSubmit()");waitJs("folders.includes('판매 사진') && !saveBusy");
         fire("document.querySelector('#folders-dialog .close').click();document.querySelector('.book-card').click();document.querySelector('#detail-folder').value='판매 사진';document.querySelector('#detail-folder').dispatchEvent(new Event('change'))");waitJs("books[0].folder==='판매 사진' && !saveBusy");
-        activity.getScenario().recreate();waitJs("books[0]?.photos?.length===3 && folders.includes('판매 사진') && ready");assertEquals(JSONObject.quote("판매 사진"),js("books[0].folder"));assertEquals(original,js("JSON.stringify(books[0].photos.slice(0,2))"));
+        fire("document.querySelector('#detail .close').click();document.querySelector('.book-card .book-favorite').click()");waitJs("document.querySelector('#favorites-dialog').open && !document.querySelector('#detail').open");
+        fire("document.querySelector('[data-favorite-color=blue]').click()");waitJs("books[0].favorite==='blue' && !saveBusy");
+        fire("document.querySelector('[data-folder-filter=\"folder:판매 사진\"]').click();document.querySelector('[data-favorite-filter=red]').click()");assertEquals("0",js("document.querySelectorAll('.book-card').length"));
+        fire("document.querySelector('[data-favorite-filter=blue]').click()");assertEquals("1",js("document.querySelectorAll('.book-card').length"));
+        activity.getScenario().recreate();waitJs("books[0]?.favorite==='blue' && books[0]?.photos?.length===3 && folders.includes('판매 사진') && ready");assertEquals(JSONObject.quote("판매 사진"),js("books[0].folder"));assertEquals(original,js("JSON.stringify(books[0].photos.slice(0,2))"));
     }
     @Test public void cameraCancelAllowsSelectingAnotherPhoto() throws Exception{
         intending(hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED,null));

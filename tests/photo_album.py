@@ -57,8 +57,8 @@ async def main():
   await page.locator('#folder-name').fill('빈 폴더');await page.locator('#folder-submit').click();await page.wait_for_function('folders.length===2 && !saveBusy');await page.locator('#folders-dialog .close').click()
   await page.locator('.book-card').click();await page.locator('#detail-folder').select_option('판매 예정');await page.wait_for_function("books[0].folder==='판매 예정' && !saveBusy");await page.locator('#detail .close').click();await page.reload();await page.locator('.book-card').wait_for()
   assert await page.evaluate('folders')==['판매 예정','빈 폴더'];assert await page.evaluate('books[0].photos.length')==3
-  await page.locator('#folder-filter').select_option('folder:빈 폴더');assert await page.locator('.book-card').count()==0
-  await page.locator('#folder-filter').select_option('folder:판매 예정');assert await page.locator('.book-card').count()==1
+  await page.locator('[data-folder-filter="folder:빈 폴더"]').click();assert await page.locator('.book-card').count()==0
+  await page.locator('[data-folder-filter="folder:판매 예정"]').click();assert await page.locator('.book-card').count()==1
   await page.locator('#backup').click()
   async with page.expect_download() as folder_backup:await page.locator('#save-backup').click()
   folder_file=await (await folder_backup.value).path();saved=json.loads(Path(folder_file).read_text());assert saved['folders']==['판매 예정','빈 폴더'] and saved['books'][0]['folder']=='판매 예정'

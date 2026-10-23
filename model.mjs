@@ -1,3 +1,6 @@
+export const FAVORITE_COLORS={yellow:'노랑',red:'빨강',blue:'파랑',green:'초록'};
+export function favoriteLabel(value){return FAVORITE_COLORS[value]?FAVORITE_COLORS[value]+' 별':'없음';}
+export function matchesFavorite(book,filter){return filter==='all'||(filter==='any'?!!book.favorite:filter==='none'?!book.favorite:book.favorite===filter);}
 export const STATUSES = ['보유중', '거래중', '거래완료', '미보유'];
 export const MAX_BACKUP_BYTES = 128 * 1024 * 1024;
 export const MAX_PHOTO_LENGTH = 33000;
@@ -57,6 +60,7 @@ export function validateBackup(data) {
   const ids = new Set(); let total = 0;
   for (const b of data.books) {
     if (!b || typeof b.id !== 'string' || !b.id || ids.has(b.id) || typeof b.title !== 'string' || !b.title.trim() || b.title.length > 150 || typeof b.author !== 'string' || b.author.length > 100 || typeof b.note !== 'string' || b.note.length > 5000 || !Number.isFinite(b.createdAt) || b.createdAt < 0 || !Number.isFinite(new Date(b.createdAt).getTime()) || !Array.isArray(b.volumes) || !b.volumes.length || b.volumes.length > 10000 || (!validPhoto(b.photo)||(b.photos!==undefined&&(!Array.isArray(b.photos)||b.photos.length>MAX_BOOK_PHOTOS||!b.photos.every(validSalePhoto))))) throw Error('백업에 올바르지 않은 시리즈 또는 사진이 있어요.');
+    if(b.favorite!==undefined&&(typeof b.favorite!=='string'||(b.favorite!==''&&!Object.hasOwn(FAVORITE_COLORS,b.favorite))))throw Error('즐겨찾기 별 색상을 확인해 주세요.');
     ids.add(b.id); const nums = new Set();
     for (const v of b.volumes) {
       if (!v || !Number.isInteger(v.number) || v.number < 1 || v.number > 10000 || nums.has(v.number) || !STATUSES.includes(v.status) || (v.soldAt != null && (!isDay(v.soldAt) || v.status !== '거래완료'))) throw Error('백업에 올바르지 않은 권수, 상태 또는 판매일이 있어요.');
@@ -64,7 +68,7 @@ export function validateBackup(data) {
     }
     total += Math.max(...nums)-Math.min(...nums)+1; if (total > 100000) throw Error('백업은 최대 100,000권까지 지원해요.');
   }
-  return data.books.map(b => ({id:b.id,title:b.title.trim(),author:b.author,note:b.note,createdAt:b.createdAt,...(b.photo !== undefined ? {photo:b.photo}:{}),...(b.photos!==undefined?{photos:[...b.photos]}:{}),...(b.folder!==undefined?{folder:b.folder.trim()}:{}),volumes:fillMissing(b.volumes)}));
+  return data.books.map(b => ({id:b.id,title:b.title.trim(),author:b.author,note:b.note,createdAt:b.createdAt,...(b.photo !== undefined ? {photo:b.photo}:{}),...(b.photos!==undefined?{photos:[...b.photos]}:{}),...(b.folder!==undefined?{folder:b.folder.trim()}:{}),...(b.favorite!==undefined?{favorite:b.favorite}:{}),volumes:fillMissing(b.volumes)}));
 }
 // Older versions omitted missing numbers. Recover interior gaps without inventing endpoints.
 function fillMissing(volumes) {

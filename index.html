@@ -12,7 +12,7 @@
 </aside>
 <main>
 <header>
-  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.6.0</span><span class="header-context">나만의 작은 도서관</span>
+  <span class="mobile-brand">冊 책장</span><span class="version-badge" id="app-version" aria-label="설치 버전">v1.7.0</span><span class="header-context">나만의 작은 도서관</span>
   <div class="header-actions"><button id="theme-settings" aria-label="색깔 테마 설정" title="색깔 테마">◐</button><button id="backup">백업</button><button id="restore">복원</button></div>
   <input type="file" id="file" accept="application/json,.json" hidden>
 </header>
@@ -26,7 +26,7 @@
   </div>
   <div class="add-book-row"><button class="primary" id="add">＋ 책 등록하기</button></div>
   <div class="collection-head"><h2>컬렉션 <span id="result-count">0</span></h2><div class="collection-actions"><button id="export-documents">엑셀 내보내기</button><button id="demo">샘플 둘러보기</button></div></div>
-  <div class="folder-bar"><label>폴더 <select id="folder-filter" aria-label="폴더별 책 보기"><option value="all">전체 폴더</option></select></label><button class="secondary" id="manage-folders">폴더 관리</button></div>
+  <section class="folder-shelf" aria-label="폴더별 책 보기"><div class="shelf-heading"><strong>내 폴더</strong><button class="secondary" id="manage-folders">＋ 폴더 관리</button></div><div id="folder-tiles" class="folder-tiles"></div><button id="expand-folders" aria-expanded="false" hidden>폴더 모두 펼치기</button></section><div id="favorite-filters" class="favorite-filters" role="group" aria-label="즐겨찾기 색상별 보기"></div>
   <div class="toolbar">
     <div class="tabs"><button class="selected" data-filter="all">전체</button><button data-filter="보유중">보유중</button><button data-filter="거래중">거래중</button><button data-filter="거래완료">거래완료</button></div>
     <label class="search"><span>⌕</span><input id="search" placeholder="제목, 작가, 메모, 날짜 검색" aria-label="컬렉션 검색"><kbd>/</kbd></label>
@@ -37,7 +37,7 @@
   <div id="list" class="book-grid"></div>
   <div id="empty" class="empty" hidden><div>▥</div><h2>첫 번째 이야기를 꽂아보세요</h2><p>제목과 권수를 입력하면 한 번에 등록할 수 있어요.</p><button class="primary" id="empty-add">＋ 첫 책 등록하기</button></div>
   <div class="pagination"><span id="page-info"></span><div><button id="prev" aria-label="이전 페이지">←</button><button id="next" aria-label="다음 페이지">→</button></div></div>
-  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.6.0</span></footer>
+  <footer><span>이 기기에 저장됩니다 · 정기적으로 백업하세요.</span><span>책장 v1.7.0</span></footer>
 </section>
 </main>
 <dialog id="editor"><form id="book-form">
@@ -57,7 +57,7 @@
 </form></dialog>
 <dialog id="detail">
   <div class="modal-head"><h2 id="detail-title"></h2><button class="close" aria-label="닫기">×</button></div>
-  <p class="muted" id="detail-author"></p><p class="date-info" id="detail-dates"></p>
+  <p class="muted" id="detail-author"></p><p class="date-info" id="detail-dates"></p><div id="detail-favorite" class="detail-favorite"></div>
 
   <div class="volume-toolbar"><strong>권별 거래 상태</strong><button id="select-all">전체 선택</button></div>
   <p class="hint">변경할 권을 선택하고 아래 상태 버튼을 누르세요. 회색은 미보유예요.</p>
@@ -97,6 +97,7 @@
   <button data-theme-option="blue" class="theme-choice"><span class="swatch blue"></span><strong>차분한 블루</strong><small>맑고 편안한 파랑</small></button>
   <button data-theme-option="dark" class="theme-choice"><span class="swatch dark"></span><strong>다크</strong><small>어두운 곳에서도 편하게</small></button>
 </div></dialog>
+<dialog id="favorites-dialog"><div class="modal-head"><h2>즐겨찾기 색상</h2><button class="close" aria-label="닫기">×</button></div><p id="favorite-book-title"></p><p class="hint">책마다 별 색상 하나를 골라 분류하세요. 선택하면 바로 저장돼요.</p><div id="favorite-options" class="favorite-options"></div></dialog>
 <input type="file" id="photo-file" accept="image/*" multiple hidden><input type="file" id="camera-file" accept="image/*" capture="environment" hidden>
 <div id="toast" role="status"></div><script type="module" src="app.js"></script>
 </body></html>
